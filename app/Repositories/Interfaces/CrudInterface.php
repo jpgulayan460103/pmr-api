@@ -5,6 +5,8 @@ namespace App\Repositories\Interfaces;
 interface CrudInterface {
     
     public function getAll($request);
+
+    public function getAllPaginated($request);
  
     public function getById($id);
 

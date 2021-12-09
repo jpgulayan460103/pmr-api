@@ -2,11 +2,16 @@
 
 namespace App\Repositories;
 
-class CrudRepository {
+Trait CrudRepositoryTrait {
     
     protected $model;
+    protected $per_page = 10;
     public function getAll($request){
         return $this->model->all();
+    }
+
+    public function getAllPaginated($request){
+        return $this->model->paginate($this->per_page);
     }
  
     public function getById($id){
@@ -31,7 +36,7 @@ class CrudRepository {
     }
     
     public function delete($id = null){
-        return $this->model->delete($id);
+        return $this->model->find($id)->delete();
     }
 
     public function showDeleted($id = null){
