@@ -10,7 +10,7 @@ use App\Models\PurchaseOrder;
 class PurchaseOrderDelivery extends Model
 {
     use HasFactory;
-    private $fillable = [
+    protected $fillable = [
         'purchase_request_id',
         'purchase_order_id',
         'purchase_order_delivery_uuid',

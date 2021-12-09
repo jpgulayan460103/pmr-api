@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 class PurchaseRequestController extends Controller
 {
 
-    private $purchaseRequestRepo;
+    private $purchaseRequestRepository;
 
     public function __construct(PurchaseRequestRepository $purchaseRequestRepository)
     {
-        $this->purchaseRequestRepo = $purchaseRequestRepository;
+        $this->purchaseRequestRepository = $purchaseRequestRepository;
     }
 
 
@@ -24,7 +24,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->purchaseRequestRepo->getAll($request);
+        return $this->purchaseRequestRepository->getAll($request);
     }
 
     /**
@@ -34,7 +34,7 @@ class PurchaseRequestController extends Controller
      */
     public function create(Request $request)
     {
-        return $this->purchaseRequestRepo->create($request->all());
+        return $this->purchaseRequestRepository->create($request->all());
     }
 
     /**

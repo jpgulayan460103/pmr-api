@@ -3,18 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseOrder;
+use App\Repositories\PurchaseOrderRepository;
 use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
 {
+
+    private $purchaseOrderRepository;
+
+    public function __construct(PurchaseOrderRepository $purchaseOrderRepository)
+    {
+        $this->purchaseOrderRepository = $purchaseOrderRepository;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $this->purchaseOrderRepository->getAll($request);
     }
 
     /**

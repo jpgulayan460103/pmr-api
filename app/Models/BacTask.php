@@ -10,7 +10,7 @@ use App\Models\PurchaseRequest;
 class BacTask extends Model
 {
     use HasFactory;
-    private $fillable = [
+    protected $fillable = [
         'purchase_request_id',
         'bac_task_uuid',
         'preproc_conference',

@@ -10,7 +10,7 @@ use App\Models\Voucher;
 class VoucherAudit extends Model
 {
     use HasFactory;
-    private $fillable = [
+    protected $fillable = [
         'voucher_id',
         'voucher_audit_uuid',
         'voucher_number',
