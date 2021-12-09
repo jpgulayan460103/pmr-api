@@ -7,7 +7,7 @@ Trait CrudRepositoryTrait {
     protected $model;
     protected $per_page = 10;
     public function getAll($request){
-        return $this->model->all();
+        return $this->model->paginate($this->per_page);
     }
 
     public function getAllPaginated($request){
