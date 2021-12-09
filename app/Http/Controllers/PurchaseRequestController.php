@@ -34,7 +34,7 @@ class PurchaseRequestController extends Controller
      */
     public function create(Request $request)
     {
-        // return $this->purchaseRequestRepo->create();
+        return $this->purchaseRequestRepo->create($request->all());
     }
 
     /**
