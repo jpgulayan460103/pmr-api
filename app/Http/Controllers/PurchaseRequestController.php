@@ -24,7 +24,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->purchaseRequestRepo->getAllPaginated($request);
+        return $this->purchaseRequestRepo->getAll($request);
     }
 
     /**
