@@ -3,18 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseRequest;
+use App\Repositories\PurchaseRequestRepository;
 use Illuminate\Http\Request;
 
 class PurchaseRequestController extends Controller
 {
+
+    private $purchaseRequestRepo;
+
+    public function __construct(PurchaseRequestRepository $purchaseRequestRepository)
+    {
+        $this->purchaseRequestRepo = $purchaseRequestRepository;
+    }
+
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $this->purchaseRequestRepo->getAll($request);
     }
 
     /**
@@ -22,9 +32,9 @@ class PurchaseRequestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        // return $this->purchaseRequestRepo->create();
     }
 
     /**

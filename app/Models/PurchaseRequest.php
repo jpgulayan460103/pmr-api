@@ -10,7 +10,7 @@ use App\Models\PurhcaseOrder;
 class PurchaseRequest extends Model
 {
     use HasFactory;
-    private $fillable = [
+    protected $fillable = [
         'purchase_request_uuid',
         'code_uacs',
         'pr_number',
