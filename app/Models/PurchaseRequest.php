@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Models\PurhcaseOrder;
+use App\Models\PurchaseOrder;
 
 class PurchaseRequest extends Model
 {
@@ -30,7 +30,7 @@ class PurchaseRequest extends Model
 
     public function purchase_orders()
     {
-        return $this->hasMany(PurhcaseOrder::class);
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     public function bac_task()

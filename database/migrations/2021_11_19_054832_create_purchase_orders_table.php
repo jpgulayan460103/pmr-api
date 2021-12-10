@@ -16,7 +16,7 @@ class CreatePurchaseOrdersTable extends Migration
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('purchase_request_id')->nullable();
-            $table->string('purchase_order_number_uuid')->nullable();
+            $table->string('purchase_order_uuid')->nullable();
             $table->string("purchase_order_number")->nullable();
             $table->string("purchase_order_dir")->nullable();
             $table->string("name_of_supplier")->nullable();
@@ -29,7 +29,7 @@ class CreatePurchaseOrdersTable extends Migration
             $table->string("certificate_of_occupancy")->nullable();
             $table->string("certificate_of_completion")->nullable();
             $table->timestamps();
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests');
+            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
         });
     }
 

@@ -1,0 +1,23 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderDelivery;
+use App\Models\PurchaseRequest;
+
+class FakerDataSeeders extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        User::factory(10)->create();
+        PurchaseRequest::factory(10)->has(PurchaseOrder::factory()->count(3)->has(PurchaseOrderDelivery::factory()->count(4), 'purchase_order_delieveries'),'purchase_orders')->create();
+    }
+}

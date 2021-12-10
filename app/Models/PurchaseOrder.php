@@ -13,7 +13,7 @@ class PurchaseOrder extends Model
     use HasFactory;
     protected $fillable = [
         'purchase_request_id',
-        'purchase_order_number_uuid',
+        'purchase_order_uuid',
         'purchase_order_number',
         'purchase_order_dir',
         'name_of_supplier',
@@ -30,7 +30,7 @@ class PurchaseOrder extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->purchase_order_number_uuid = (string) Str::uuid();
+            $model->purchase_order_uuid = (string) Str::uuid();
         });
     }
 

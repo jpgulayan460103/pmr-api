@@ -11,8 +11,9 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     use CrudRepositoryTrait;
     public function __construct(PurchaseRequest $purchaseRequest)
     {
-        $this->model = $purchaseRequest;
-        $this->per_page = 2;
+        $this->model($purchaseRequest);
+        $this->perPage(2);
+        $this->attach(['purchase_orders']);
     }
 
 }

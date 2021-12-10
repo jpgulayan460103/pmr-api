@@ -36,7 +36,7 @@ class Voucher extends Model
 
     public function purchase_orders()
     {
-        return $this->hasMany(PurhcaseOrder::class);
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     public function voucher_audits()

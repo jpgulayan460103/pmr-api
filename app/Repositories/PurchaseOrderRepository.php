@@ -11,8 +11,16 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
     use CrudRepositoryTrait;
     public function __construct(PurchaseOrder $purchaseOrder)
     {
-        $this->model = $purchaseOrder;
-        $this->per_page = 2;
+        $this->model($purchaseOrder);
+        $this->perPage(2);
+        $this->attach(['purchase_request']);
+    }
+
+    public function getAllPaginated($request)
+    {
+        $this->modelQuery(new PurchaseOrder);
+        dd($this->model);
+        return $this->model;
     }
 
 }

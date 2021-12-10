@@ -15,7 +15,7 @@ class AddBacTaskPurchaseRequestReference extends Migration
     {
         Schema::table('purchase_requests', function (Blueprint $table) {
             $table->unsignedBigInteger('bac_task_id')->nullable();
-            $table->foreign('bac_task_id')->references('id')->on('bac_tasks');
+            $table->foreign('bac_task_id')->references('id')->on('bac_tasks')->onDelete('set null');
         });
     }
 
@@ -26,6 +26,9 @@ class AddBacTaskPurchaseRequestReference extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('purchase_requests', function (Blueprint $table) {
+            $table->dropForeign(['bac_task_id']);
+            $table->dropColumn('bac_task_id');
+        });
     }
 }

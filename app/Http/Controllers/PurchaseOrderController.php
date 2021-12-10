@@ -22,7 +22,8 @@ class PurchaseOrderController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->purchaseOrderRepository->getAll($request);
+        $this->purchaseOrderRepository->attach(['purchase_request','purchase_order_delieveries']);
+        return $this->purchaseOrderRepository->getAllPaginated($request);
     }
 
     /**
@@ -43,7 +44,7 @@ class PurchaseOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->purchaseOrderRepository->create($request->all());
     }
 
     /**
@@ -52,9 +53,9 @@ class PurchaseOrderController extends Controller
      * @param  \App\Models\PurchaseOrder  $purchaseOrder
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseOrder $purchaseOrder)
+    public function show(PurchaseOrder $purchaseOrder, $uuid)
     {
-        //
+        return $this->purchaseOrderRepository->getByUuid($uuid);
     }
 
     /**
