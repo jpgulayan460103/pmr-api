@@ -20,6 +20,11 @@ Trait HasCrud {
         return $this->model = $model->query();
     }
 
+    public function modelAttach()
+    {
+        return $this->model = $this->model->with($this->attach);
+    }
+
     /**
      * Set number of rows per pagination.
      *
@@ -43,23 +48,23 @@ Trait HasCrud {
 
     public function getAll($request) : object
     {
-        return $this->model->with($this->attach)->get();
+        return $this->modelAttach()->get();
     }
 
 
     public function getAllPaginated($request) : object
     {
-        return $this->model->with($this->attach)->paginate($this->perPage);
+        return $this->modelAttach()->paginate($this->perPage);
     }
  
     public function getById($id) : object
     {
-        return $this->model->with($this->attach)->find($id);
+        return $this->modelAttach()->find($id);
     }
 
     public function getByUuid($uuid) : object
     {
-        return $this->model->with($this->attach)->whereUuid($uuid);
+        return $this->modelAttach()->whereUuid($uuid);
     }
  
     public function create($data) : object

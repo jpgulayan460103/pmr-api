@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +29,6 @@ Route::resources([
     'purchase-requests' => PurchaseRequestController::class,
     'purchase-orders' => PurchaseOrderController::class,
     'items' => ItemController::class,
+    'users' => UserController::class,
 ]);
 

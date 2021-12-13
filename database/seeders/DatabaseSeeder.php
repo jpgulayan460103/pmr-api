@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(RoleSeeder::class);
         $this->call(UnitOfMeasureSeeder::class);
         $this->call(ItemCategorySeeder::class);
         $this->call(ItemSeeder::class);
