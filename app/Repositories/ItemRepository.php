@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Item;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
-use App\Repositories\CrudRepositoryTrait;
+use App\Repositories\HasCrud;
 
 class ItemRepository implements ItemRepositoryInterface
 {
-    use CrudRepositoryTrait;
+    use HasCrud;
     public function __construct(Item $item)
     {
         $this->model($item);

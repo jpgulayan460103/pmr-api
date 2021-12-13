@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\PurchaseOrder;
 use App\Repositories\Interfaces\PurchaseOrderRepositoryInterface;
-use App\Repositories\CrudRepositoryTrait;
+use App\Repositories\HasCrud;
 
 class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 {
-    use CrudRepositoryTrait;
+    use HasCrud;
     public function __construct(PurchaseOrder $purchaseOrder)
     {
         $this->model($purchaseOrder);

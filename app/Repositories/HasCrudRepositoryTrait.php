@@ -1,10 +1,7 @@
 <?php
 
 namespace App\Repositories;
-
-use Ramsey\Uuid\Type\Integer;
-
-Trait CrudRepositoryTrait {
+Trait HasCrud {
     
     protected $model;
     protected $perPage = 50;
