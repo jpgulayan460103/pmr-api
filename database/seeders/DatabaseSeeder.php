@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UnitOfMeasureSeeder::class);
         $this->call(ItemCategorySeeder::class);
+        $this->call(ItemSeeder::class);
         $this->call(FakerDataSeeders::class);
     }
 }

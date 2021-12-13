@@ -15,13 +15,6 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         $this->perPage(2);
         $this->attach(['purchase_request']);
     }
-
-    public function getAllPaginated($request)
-    {
-        $this->modelQuery(new PurchaseOrder);
-        dd($this->model);
-        return $this->model;
-    }
-
+    
 }
 

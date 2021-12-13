@@ -4,17 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use App\Repositories\ItemRepository;
 
 class ItemController extends Controller
 {
+
+    private $itemRepository;
+
+    public function __construct(ItemRepository $itemRepository)
+    {
+        $this->itemRepository = $itemRepository;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return $this->itemRepository->getAllPaginated($request);
     }
 
     /**
@@ -44,9 +52,9 @@ class ItemController extends Controller
      * @param  \App\Models\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show($id)
     {
-        //
+        return $this->itemRepository->getById($id);
     }
 
     /**
@@ -81,5 +89,10 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         //
+    }
+
+    public function test(Request $request)
+    {
+        # code...
     }
 }

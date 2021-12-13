@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UnitOfMeasure;
+use App\Models\ItemCategory;
 
 class Item extends Model
 {
@@ -14,4 +16,14 @@ class Item extends Model
         'item_category_id',
         'unit_of_measure_id',
     ];
+
+    public function item_category()
+    {
+        return $this->belongsTo(ItemCategory::class);
+    }
+
+    public function unit_of_measure()
+    {
+        return $this->belongsTo(UnitOfMeasure::class);
+    }
 }

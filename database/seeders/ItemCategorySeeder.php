@@ -32,6 +32,7 @@ class ItemCategorySeeder extends Seeder
             "Measuring and Observing and Testing Equipment",
             "Office Equipment and Accessories and Supplies",
             "Other Software",
+            "Others",
             "Paper Materials and Products",
             "Pesticides or Pest Repellents",
             "Printed Publications",

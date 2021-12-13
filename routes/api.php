@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\PurchaseOrderController;
 
@@ -23,5 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
-Route::get('/pr', [PurchaseRequestController::class, 'index']);
-Route::get('/po', [PurchaseOrderController::class, 'index']);
+Route::resources([
+    'purchase-requests' => PurchaseRequestController::class,
+    'purchase-orders' => PurchaseOrderController::class,
+    'items' => ItemController::class,
+]);
+
