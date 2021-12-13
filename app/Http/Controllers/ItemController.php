@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Repositories\ItemRepository;
+use App\Transformers\ItemTransformer;
 
 class ItemController extends Controller
 {
@@ -22,7 +23,8 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->itemRepository->getAllPaginated($request);
+        $items = $this->itemRepository->getAllPaginated($request);
+        return fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 
     /**
@@ -54,7 +56,8 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        return $this->itemRepository->getById($id);
+        $item = $this->itemRepository->getById($id);
+        return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 
     /**
