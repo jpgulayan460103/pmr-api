@@ -14,7 +14,7 @@ class AuthController extends Controller
         return response()->json([
                     'message' => 'Invalid login details'
                 ], 401);
-            }
+        }
 
         $user = User::where('username', $request['username'])->firstOrFail();
 
@@ -26,7 +26,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function ldap_auth(Request $request)
+    public function ldap_auth()
     {
         $adServer = config('services.ad.host');
 
@@ -47,7 +47,7 @@ class AuthController extends Controller
             $info = ldap_get_entries($ldap, $result);
             for ($i=0; $i<$info["count"]; $i++)
             {
-                if($info['count'] > 1){
+                if($info['count'] > 1)
                     break;
                     $fullname = $info[$i]["cn"][0];
                     $firstname = $info[$i]["givenname"][0];
@@ -55,20 +55,27 @@ class AuthController extends Controller
                     $lastname = $info[$i]["sn"][0];
                     $userDn = $info[$i]["distinguishedname"][0];
                     $data = [
-                        $fullname,
-                        $firstname,
-                        $middlename,
-                        $lastname,
-                        $userDn,
+                        "status" => "ok",
+                        "data" => [
+                            'fullname' => $fullname,
+                            'firstname' => $firstname,
+                            'middlename' => $middlename,
+                            'lastname' => $lastname,
+                            'userDn' => $userDn,
+                            'message' => "Successfully Logged in",
+                        ]
                     ];
                     return $data;
-                }
+                
             }
             @ldap_close($ldap);
         } else {
             $msg = "Invalid email address / password";
             return [
-                "message" => $msg
+                "status" => "error",
+                "data" => [
+                    'message' => $msg
+                ]
             ];
         }
 
