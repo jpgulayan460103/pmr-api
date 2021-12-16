@@ -25,10 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
-Route::resources([
-    'purchase-requests' => PurchaseRequestController::class,
-    'purchase-orders' => PurchaseOrderController::class,
-    'items' => ItemController::class,
-    'users' => UserController::class,
-]);
+Route::middleware(['auth:api'])->group(function () {
+    Route::resources([
+        'purchase-requests' => PurchaseRequestController::class,
+        'purchase-orders' => PurchaseOrderController::class,
+        'items' => ItemController::class,
+        'users' => UserController::class,
+    ]);
+});
 
