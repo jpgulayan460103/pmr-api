@@ -30,4 +30,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ad' => [
+        'host' => env('AD_HOST'),
+        'domain_1' => env('AD_DOMAIN_1'),
+        'domain_2' => env('AD_DOMAIN_2'),
+        'user' => env('AD_USER'),
+        'password' => env('AD_PASSWORD'),
+    ]
+
 ];

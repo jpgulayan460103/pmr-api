@@ -14,7 +14,9 @@ class AddPurchaseItemsReferences extends Migration
     public function up()
     {
         Schema::table('purchase_request_items', function (Blueprint $table) {
+            $table->unsignedBigInteger('item_id')->nullable();
             $table->unsignedBigInteger('purchase_request_item_detail_id')->nullable();
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->foreign('purchase_request_item_detail_id')->references('id')->on('purchase_request_item_details')->onDelete('cascade');
         });
         Schema::table('purchase_request_item_details', function (Blueprint $table) {
@@ -37,6 +39,8 @@ class AddPurchaseItemsReferences extends Migration
         Schema::table('purchase_request_items', function (Blueprint $table) {
             $table->dropForeign(['purchase_request_item_detail_id']);
             $table->dropColumn('purchase_request_item_detail_id');
+            $table->dropForeign(['item_id']);
+            $table->dropColumn('item_id');
         });
     }
 }
