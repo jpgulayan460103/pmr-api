@@ -36,6 +36,10 @@ return [
         'domain_2' => env('AD_DOMAIN_2'),
         'user' => env('AD_USER'),
         'password' => env('AD_PASSWORD'),
+    ],
+
+    'passport' => [
+        'endpoint' => env('PASSPORT_ENDPOINT')
     ]
 
 ];

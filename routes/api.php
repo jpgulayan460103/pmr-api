@@ -19,7 +19,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -36,10 +36,10 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 
-Route::resources([
-    'purchase-requests' => PurchaseRequestController::class,
-    'purchase-orders' => PurchaseOrderController::class,
-    'items' => ItemController::class,
-    'users' => UserController::class,
-]);
+// Route::resources([
+//     'purchase-requests' => PurchaseRequestController::class,
+//     'purchase-orders' => PurchaseOrderController::class,
+//     'items' => ItemController::class,
+//     'users' => UserController::class,
+// ]);
 

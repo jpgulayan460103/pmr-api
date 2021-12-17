@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -18,11 +20,13 @@ class AuthController extends Controller
 
         $user = User::where('username', $request['username'])->firstOrFail();
 
-        $token = $user->createToken('authToken')->accessToken;
+        // $token = $user->createToken('authToken'); //without refresh token
+        $token = $this->getAccessToken($request->only('username', 'password')); // with refresh token
 
+        return response()->json($token);
         return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
+            'access_token' => $token['access_token'],
+            'token_type' => 'Bearer',
         ]);
     }
 
@@ -79,5 +83,33 @@ class AuthController extends Controller
             ];
         }
 
+    }
+
+    public function getAccessToken($credentials)
+    {
+        $oauth = DB::table('oauth_clients')->where('id',2)->first();
+        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+            'grant_type' => 'password',
+            'client_id' => $oauth->id,
+            'client_secret' => $oauth->secret,
+            'username' => $credentials['username'],
+            'password' => $credentials['password'],
+            'scope' => '',
+        ]);
+        
+        return $response->json();
+    }
+
+    public function refreshToken(Request $request)
+    {
+        $oauth = DB::table('oauth_clients')->where('id',2)->first();
+        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+            'grant_type' => 'refresh_token',
+            'client_id' => $oauth->id,
+            'client_secret' => $oauth->secret,
+            'refresh_token' => $request->refresh_token,
+        ]);
+        
+        return $response->json();
     }
 }
