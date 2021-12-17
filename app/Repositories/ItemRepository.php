@@ -12,7 +12,7 @@ class ItemRepository implements ItemRepositoryInterface
     public function __construct(Item $item)
     {
         $this->model($item);
-        $this->perPage(2);
+        $this->perPage(200);
         $this->attach(['item_category','unit_of_measure']);
     }
 }

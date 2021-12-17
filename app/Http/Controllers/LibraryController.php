@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UnitOfMeasure;
+use App\Models\Library;
 use Illuminate\Http\Request;
 
-class UnitOfMeasureController extends Controller
+class LibraryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class UnitOfMeasureController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\UnitOfMeasure  $unitOfMeasure
+     * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function show(UnitOfMeasure $unitOfMeasure)
+    public function show(Library $library)
     {
         //
     }
@@ -52,10 +52,10 @@ class UnitOfMeasureController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\UnitOfMeasure  $unitOfMeasure
+     * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function edit(UnitOfMeasure $unitOfMeasure)
+    public function edit(Library $library)
     {
         //
     }
@@ -64,10 +64,10 @@ class UnitOfMeasureController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UnitOfMeasure  $unitOfMeasure
+     * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UnitOfMeasure $unitOfMeasure)
+    public function update(Request $request, Library $library)
     {
         //
     }
@@ -75,10 +75,10 @@ class UnitOfMeasureController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\UnitOfMeasure  $unitOfMeasure
+     * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UnitOfMeasure $unitOfMeasure)
+    public function destroy(Library $library)
     {
         //
     }

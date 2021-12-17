@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ItemCategory;
+use App\Models\Library;
 use Illuminate\Database\Seeder;
 
 class ItemCategorySeeder extends Seeder
@@ -44,8 +45,8 @@ class ItemCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $uom = ItemCategory::create(['category_name' => $category]);
-            echo "Category: ".$uom->category_name."\n";
+            $lib = Library::create(['name' => $category, 'type' => 'item_category']);
+            echo $lib->type.": ".$lib->name."\n";
         }
     }
 }

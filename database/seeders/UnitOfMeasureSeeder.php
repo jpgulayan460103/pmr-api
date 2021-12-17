@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\UnitOfMeasure;
+use App\Models\Library;
 use Illuminate\Database\Seeder;
 
 class UnitOfMeasureSeeder extends Seeder
@@ -38,8 +39,8 @@ class UnitOfMeasureSeeder extends Seeder
         ];
 
         foreach ($unit_of_measures as $unit_of_measure) {
-            $uom = UnitOfMeasure::create(['unit_of_measure' => $unit_of_measure]);
-            echo "Unit of Measure: ".$uom->unit_of_measure."\n";
+            $lib = Library::create(['type' => 'unit_of_measure', 'name' => $unit_of_measure]);
+            echo $lib->type.": ".$lib->name."\n";
         }
     }
 }

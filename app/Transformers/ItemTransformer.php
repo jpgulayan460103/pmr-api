@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\UnitOfMeasureTransformer;
 use App\Transformers\ItemCategoryTransformer;
+use App\Transformers\LibraryTransformer;
 
 class ItemTransformer extends TransformerAbstract
 {
@@ -45,14 +46,14 @@ class ItemTransformer extends TransformerAbstract
     public function includeUnitOfMeasure($table)
     {
         if ($table->unit_of_measure) {
-            return $this->item($table->unit_of_measure, new UnitOfMeasureTransformer);
+            return $this->item($table->unit_of_measure, new LibraryTransformer);
         }
     }
 
     public function includeItemCategory($table)
     {
         if ($table->item_category) {
-            return $this->item($table->item_category, new ItemCategoryTransformer);
+            return $this->item($table->item_category, new LibraryTransformer);
         }
     }
 }

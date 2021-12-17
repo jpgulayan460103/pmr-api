@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-class ItemCategoryTransformer extends TransformerAbstract
+class LibraryTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -32,7 +32,9 @@ class ItemCategoryTransformer extends TransformerAbstract
     public function transform($table)
     {
         return [
-            'name' => $table->category_name,
+            // 'id' => $table->id,
+            'name' => $table->name,
+            // 'type' => $table->type,
         ];
     }
 }
