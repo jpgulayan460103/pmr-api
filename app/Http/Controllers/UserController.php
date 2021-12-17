@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
@@ -42,9 +43,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
     {
-        //
+        return $this->userRepository->register($request->all());
     }
 
     /**
@@ -92,5 +93,10 @@ class UserController extends Controller
     public function destroy(User $User)
     {
         //
+    }
+
+    public function regsiter(Request $request)
+    {
+        
     }
 }

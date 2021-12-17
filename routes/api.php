@@ -32,5 +32,14 @@ Route::middleware(['auth:api'])->group(function () {
         'items' => ItemController::class,
         'users' => UserController::class,
     ]);
+    
 });
+
+
+Route::resources([
+    'purchase-requests' => PurchaseRequestController::class,
+    'purchase-orders' => PurchaseOrderController::class,
+    'items' => ItemController::class,
+    'users' => UserController::class,
+]);
 
