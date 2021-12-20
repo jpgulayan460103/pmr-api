@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <div id="pr-container">
+        <p >Appendix 60</p>
+        <p className="text-center ..."><b>PURCHASE REQUEST</b></p>
+        <table id="pr-table">
+            <thead>
+                <tr>
+                    <td colspan="">Entity Name: DSWD FO XI</td>
+                    <td colspan="">Fund Cluster: </td>
+                </tr>
+                <tr>
+                    <td colspan="">Office/Section:</td>
+                    <td colspan="">PR No.:</td>
+                    <td colspan=""></td>
+                </tr>
+                <tr>
+                    <td colspan="">ICTM Section</td>
+                    <td colspan="">Responsibility Center Code:</td>
+                    <td colspan="">Date: April 29, 2021</td>
+                </tr>
+                <tr>
+                    <td className='text-center'>Stock/ Property No.</td>
+                    <td className='text-center'>Unit</td>
+                    <td className='text-ellipsis overflow-hidden'>Item Description</td>
+                    <td className='text-center'>No.of Pax or Quantity</td>
+                    <td className='text-center'>Unit Cost</td>
+                    <td className='text-center'>Total Cost</td>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    data.map(item => (
+                        <tr>
+                            <td className='text-center'>78111501-GFA-001</td>
+                            <td className='text-center'>PAX</td>
+                            <td>{ item.description }</td>
+                            <td className='text-center'>13</td>
+                            <td className='text-right'>2000</td>
+                            <td className='text-right'>26000</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td className='text-right'>26000</td>
+                </tr>
+                <tr>
+                    <td colspan="">Purpose: *Training for Google Meet and Google Sites.</td>
+                </tr>
+                <tr>
+                    <td colspan="" style="border-bottom: 0"><br /><br />Signature:</td>
+                    <td style="border-bottom: 0">Requested By<br /><br />&nbsp;</td>
+                    <td colspan="" style="border-bottom: 0"><br /><br />&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="" style="border-top: 0; border-bottom: 0">Printed Name:</td>
+                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">MERLINDA A. PARAGAMAC</td>
+                    <td colspan="" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">RONALD RYAN R. CUI</td>
+                </tr>
+                <tr>
+                    <td colspan="" style="border-top: 0">Designation:</td>
+                    <td style=" text-align: center; border-top: 0">OIC-ARD for Administration</td>
+                    <td colspan="" style=" text-align: center; border-top: 0">OIC - Regional Director</td>
+                </tr>
+            </tbody>
+        </table>
+</head>
+<body>
+    
+</body>
+</html>

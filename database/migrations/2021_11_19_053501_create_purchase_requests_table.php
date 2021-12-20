@@ -17,7 +17,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->id();
             $table->string('purchase_request_uuid')->nullable();
             $table->string('code_uacs')->nullable();
-            $table->string('pr_number')->nullable();
+            $table->string('purchase_request_number')->nullable();
             $table->string('particulars')->nullable();
             $table->string('pr_dir')->nullable();
             $table->string('end_user')->nullable();

@@ -13,7 +13,7 @@ class PurchaseRequest extends Model
     protected $fillable = [
         'purchase_request_uuid',
         'code_uacs',
-        'pr_number',
+        'purchase_request_number',
         'particulars',
         'pr_dir',
         'end_user',

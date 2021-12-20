@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
+use PDF;
 
 class UserController extends Controller
 {
@@ -34,7 +35,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        // return view('pdf.purchase-request');
+        $pdf = PDF::setOptions(['dpi' => 1200, 'defaultFont' => 'Calibri']);
+        $pdf->setPaper('folio', 'portrait');
+        $pdf->loadView('pdf.purchase-request');
+        return $pdf->stream('purchase-request.pdf');
     }
 
     /**
