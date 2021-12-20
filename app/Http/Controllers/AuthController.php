@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Laravel\Passport\Token;
 
 class AuthController extends Controller
 {
@@ -21,8 +22,8 @@ class AuthController extends Controller
         $user = User::where('username', $request['username'])->firstOrFail();
 
         // $token = $user->createToken('authToken'); //without refresh token
+        Token::where('user_id', $user->id)->update(['revoked' => true]);
         $token = $this->getAccessToken($request->only('username', 'password')); // with refresh token
-
         return response()->json($token);
         return response()->json([
             'access_token' => $token['access_token'],
