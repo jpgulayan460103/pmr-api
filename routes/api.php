@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LibraryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,8 @@ Route::middleware(['auth:api'])->group(function () {
     ]);
     
 });
+Route::get('/libraries', [LibraryController::class, 'index']);
+Route::get('/libraries/{type}', [LibraryController::class, 'show']);
 
 
 Route::resources([

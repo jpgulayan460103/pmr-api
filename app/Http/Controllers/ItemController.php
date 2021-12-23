@@ -94,8 +94,9 @@ class ItemController extends Controller
         //
     }
 
-    public function test(Request $request)
+    public function all(Request $request)
     {
-        # code...
+        $item = $this->itemRepository->getAll($request);
+        return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 }

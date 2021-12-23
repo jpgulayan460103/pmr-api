@@ -17,7 +17,6 @@ class CreatePurchaseRequestItemsTable extends Migration
             $table->id();
             $table->string('item_name')->nullable();
             $table->string('item_code')->nullable();
-            $table->string('unit_of_measure')->nullable();
             $table->integer('quantity');
             $table->float('unit_cost',8,2);
             $table->float('total_unit_cost',8,2);

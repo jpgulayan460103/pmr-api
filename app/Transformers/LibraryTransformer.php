@@ -32,7 +32,8 @@ class LibraryTransformer extends TransformerAbstract
     public function transform($table)
     {
         return [
-            // 'id' => $table->id,
+            'id' => $table->id,
+            'value' => $table->name,
             'name' => $table->name,
             // 'type' => $table->type,
         ];

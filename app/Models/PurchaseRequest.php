@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseRequestItem;
+use Carbon\Carbon;
 
 class PurchaseRequest extends Model
 {
@@ -16,6 +18,7 @@ class PurchaseRequest extends Model
         'purchase_request_number',
         'particulars',
         'pr_dir',
+        'pr_date',
         'end_user',
         'types',
         'mode_of_procurement',
@@ -33,8 +36,18 @@ class PurchaseRequest extends Model
         return $this->hasMany(PurchaseOrder::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(PurchaseRequestItem::class);
+    }
+
     public function bac_task()
     {
         return $this->hasOne(BacTask::class);
+    }
+
+    public function setPrDateAttribute($value)
+    {
+        $this->attributes['pr_date'] = Carbon::parse($value);
     }
 }

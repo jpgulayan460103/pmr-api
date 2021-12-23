@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Library;
+use App\Models\Item;
+use App\Repositories\ItemRepository;
+use App\Transformers\ItemTransformer;
+use App\Transformers\LibraryTransformer;
 use Illuminate\Http\Request;
 
 class LibraryController extends Controller
@@ -14,7 +18,7 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        //
+        return Library::all();
     }
 
     /**
@@ -44,9 +48,15 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function show(Library $library)
+    public function show(Request $request, Library $library, $type)
     {
-        //
+        if($type == "items"){
+            $itemRepository = new ItemRepository(new Item);
+            $item = $itemRepository->getAll($request);
+            return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        }
+        $library = $library->orderBy('name')->whereType($type)->get();
+        return fractal($library, new LibraryTransformer);
     }
 
     /**

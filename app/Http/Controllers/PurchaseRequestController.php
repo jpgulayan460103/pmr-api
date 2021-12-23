@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePurchaseRequest;
 use App\Models\PurchaseRequest;
 use App\Repositories\PurchaseRequestRepository;
 use Illuminate\Http\Request;
@@ -43,9 +44,9 @@ class PurchaseRequestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatePurchaseRequest $request)
     {
-        return $this->purchaseRequestRepository->create($request->all());
+        return $this->purchaseRequestRepository->createWithItems($request);
     }
 
     /**
