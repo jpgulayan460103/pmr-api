@@ -18,8 +18,8 @@ class CreatePurchaseRequestItemsTable extends Migration
             $table->string('item_name')->nullable();
             $table->string('item_code')->nullable();
             $table->integer('quantity');
-            $table->float('unit_cost',8,2);
-            $table->float('total_unit_cost',8,2);
+            $table->float('unit_cost',15,2);
+            $table->float('total_unit_cost',15,2);
             $table->timestamps();
         });
     }

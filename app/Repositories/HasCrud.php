@@ -9,6 +9,7 @@ Trait HasCrud {
     protected $model;
     protected $perPage = 50;
     protected $attach = [];
+    protected $uuid = "uuid";
 
     public function model($model) : object
     {
@@ -64,7 +65,7 @@ Trait HasCrud {
 
     public function getByUuid($uuid) : object
     {
-        return $this->modelAttach()->whereUuid($uuid);
+        return $this->modelAttach()->where($this->uuid,$uuid)->first();
     }
  
     public function create($data) : object

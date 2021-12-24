@@ -5,7 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\LibraryTransformer;
 
-class ItemTransformer extends TransformerAbstract
+class PurchaseRequestItemTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -22,8 +22,7 @@ class ItemTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'unit_of_measure',
-        'item_category',
+        'unit_of_measure'
     ];
     
     /**
@@ -34,12 +33,13 @@ class ItemTransformer extends TransformerAbstract
     public function transform($table)
     {
         return [
-            'value' => $table->item_name,
             'item_name' => $table->item_name,
             'item_code' => $table->item_code,
-            'id' => $table->id,
-            // 'item_category_id' => $table->item_category_id,
-            // 'unit_of_measure_id' => $table->unit_of_measure_id,
+            'item_id' => $table->item_id,
+            'quantity' => $table->quantity,
+            'unit_cost' => $table->unit_cost,
+            'unit_of_measure_id' => $table->unit_of_measure_id,
+            'total_unit_cost' => $table->total_unit_cost,
         ];
     }
 
@@ -47,13 +47,6 @@ class ItemTransformer extends TransformerAbstract
     {
         if ($table->unit_of_measure) {
             return $this->item($table->unit_of_measure, new LibraryTransformer);
-        }
-    }
-
-    public function includeItemCategory($table)
-    {
-        if ($table->item_category) {
-            return $this->item($table->item_category, new LibraryTransformer);
         }
     }
 }

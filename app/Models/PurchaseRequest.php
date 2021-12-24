@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
+use App\Models\Library;
 use Carbon\Carbon;
 
 class PurchaseRequest extends Model
@@ -16,12 +17,16 @@ class PurchaseRequest extends Model
         'purchase_request_uuid',
         'code_uacs',
         'purchase_request_number',
-        'particulars',
+        'purpose',
+        'fund_cluster',
+        'center_code',
+        'total_cost',
         'pr_dir',
-        'pr_date',
-        'end_user',
+        'end_user_id',
         'types',
         'mode_of_procurement',
+        'pr_date',
+        'bac_task_id',    
     ];
     public static function boot()
     {
@@ -44,6 +49,11 @@ class PurchaseRequest extends Model
     public function bac_task()
     {
         return $this->hasOne(BacTask::class);
+    }
+
+    public function end_user()
+    {
+        return $this->belongsTo(Library::class);
     }
 
     public function setPrDateAttribute($value)

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreatePurchaseRequest;
 use App\Models\PurchaseRequest;
 use App\Repositories\PurchaseRequestRepository;
+use App\Transformers\PurchaseRequestTransformer;
 use Illuminate\Http\Request;
+use PDF;
 
 class PurchaseRequestController extends Controller
 {
@@ -25,7 +27,8 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->purchaseRequestRepository->getAll($request);
+        $purchase_request = $this->purchaseRequestRepository->getAll($request);
+        return fractal($purchase_request, new PurchaseRequestTransformer);
     }
 
     /**
@@ -55,9 +58,11 @@ class PurchaseRequestController extends Controller
      * @param  \App\Models\PurchaseRequest  $purchaseRequest
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseRequest $purchaseRequest)
+    public function show($id)
     {
-        //
+        $purchase_request = $this->purchaseRequestRepository->getByUuid($id);
+        // return $purchase_request;
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('items.unit_of_measure,end_user')->toArray();
     }
 
     /**
@@ -92,5 +97,15 @@ class PurchaseRequestController extends Controller
     public function destroy(PurchaseRequest $purchaseRequest)
     {
         //
+    }
+
+    public function pdf($id)
+    {
+        $purchase_request = $this->show($id);
+        $pdf = PDF::setOptions(['dpi' => 1200, 'defaultFont' => 'Calibri']);
+        $pdf->setPaper('folio', 'portrait');
+        $pdf->loadView('pdf.purchase-request',$purchase_request);
+        return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
     }
 }

@@ -14,7 +14,8 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         $this->model($purchaseRequest);
         $this->perPage(2);
-        $this->attach(['purchase_orders']);
+        $this->attach(['purchase_orders', 'items.unit_of_measure', 'end_user']);
+        $this->uuid = "purchase_request_uuid";
     }
 
     public function createWithItems($request)
@@ -26,6 +27,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $items[$key] = new PurchaseRequestItem($item);
         }
         $purchase_request->items()->saveMany($items);
+        return $purchase_request;
     }
 }
 

@@ -18,9 +18,12 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('purchase_request_uuid')->nullable();
             $table->string('code_uacs')->nullable();
             $table->string('purchase_request_number')->nullable();
-            $table->string('particulars')->nullable();
+            $table->string('purpose')->nullable();
+            $table->string('fund_cluster')->nullable();
+            $table->string('center_code')->nullable();
+            $table->float('total_cost',15,2)->nullable();
             $table->string('pr_dir')->nullable();
-            $table->unsignedBigInteger('end_user')->nullable();
+            $table->unsignedBigInteger('end_user_id')->nullable();
             $table->string('types')->nullable();
             $table->string('mode_of_procurement')->nullable();
             $table->date('pr_date')->nullable();

@@ -37,10 +37,11 @@ Route::middleware(['auth:api'])->group(function () {
 });
 Route::get('/libraries', [LibraryController::class, 'index']);
 Route::get('/libraries/{type}', [LibraryController::class, 'show']);
+Route::get('/pdf/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf']);
 
 
 Route::resources([
-    // 'purchase-requests' => PurchaseRequestController::class,
+    'purchase-requests' => PurchaseRequestController::class,
     // 'purchase-orders' => PurchaseOrderController::class,
     // 'items' => ItemController::class,
     'users' => UserController::class,

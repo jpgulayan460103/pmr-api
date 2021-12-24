@@ -26,9 +26,9 @@ class AddPrUnitOfMeasureReference extends Migration
      */
     public function down()
     {
-        Schema::table('purchase_requests', function (Blueprint $table) {
-            $table->dropForeign(['unit_of_measure']);
-            $table->dropColumn('unit_of_measure');
+        Schema::table('purchase_request_items', function (Blueprint $table) {
+            $table->dropForeign(['unit_of_measure_id']);
+            $table->dropColumn('unit_of_measure_id');
         });
     }
 }

@@ -6,13 +6,14 @@
     <title>Document</title>
     <style>
          @page {
-            margin: 0px 0px 0px 0px !important;
-            padding: 0px 0px 0px 0px !important;
+            /* margin: 0px 0px 0px 0px !important; */
+            /* padding: 0px 0px 0px 0px !important; */
         }
         #pr-table{
-            width: 100%;
-            border: 1px solid black;
+            width: 98%;
+            /* border: 1px solid black; */
             border-collapse: collapse;
+            border-top: 0;
         }
         #pr-table tr td{
             padding-left: 2pt;
@@ -21,38 +22,40 @@
         }
 
         #pr-container{
-            width: 8in;
-            margin-right: auto;
-            margin-left: auto;
+            width: 7.5in;
             font-size: 12pt;
         }
     </style>
 </head>
 <body>
 <div id="pr-container">
-        <p style="text-align: right;">Appendix 60</p>
-        <p style="text-align: center;"><b>PURCHASE REQUEST</b></p>
         <table id="pr-table" page-break-inside: auto;>
             <thead>
                 <tr>
+                    <td colspan="6" style="border: 0;text-align:right">Appendix 60</td>
+                </tr>
+                <tr>
+                    <th colspan="6" style="border: 0;height:25pt">PURCHASE REQUEST</th>
+                </tr>
+                <tr>
                     <td colspan="3">Entity Name: DSWD FO XI</td>
-                    <td colspan="3">Fund Cluster: </td>
+                    <td colspan="3">Fund Cluster: {{ $fund_cluster }}</td>
                 </tr>
                 <tr>
                     <td colspan="2">Office/Section:</td>
-                    <td colspan="2">PR No.:</td>
+                    <td colspan="2">PR No.: {{ $purchase_request_number }}</td>
                     <td colspan="2"></td>
                 </tr>
                 <tr>
-                    <td colspan="2"  style="text-align: center;">ICTM Section </td>
-                    <td colspan="2">Responsibility Center Code:</td>
-                    <td colspan="2">Date: April 29, 2021</td>
+                    <td colspan="2"  style="text-align: center;">{{ $end_user['name'] }}</td>
+                    <td colspan="2">Responsibility Center Code: {{ $center_code }}</td>
+                    <td colspan="2">Date: {{ $pr_date }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: center;">Stock/ Property No.</td>
                     <td style="text-align: center; width: 30pt;">Unit</td>
                     <td style="text-align: center; width: 250pt;">Item Description</td>
-                    <td style="text-align: center; width: 55pt;">No. of Pax or Quantity</td>
+                    <td style="text-align: center; width: 55pt;">Quantity</td>
                     <td style="text-align: center;">Unit Cost</td>
                     <td style="text-align: center;">Total Cost</td>
                 </tr>
@@ -62,14 +65,16 @@
                
             </tbody>
             <tbody>
+                @foreach($items['data'] as $key => $item)
                 <tr>
-                    <td style="text-align: center;">78111501-GFA-001</td>
-                    <td style="text-align: center;">PAX</td>
-                    <td>*Meals ( 2 meat dish, Vegetable/Noodle, 1 soup, rice, dessert/fruit and drinks)</td>
-                    <td style="text-align: center;">13</td>
-                    <td style="text-align: right;">2,000,000.00</td>
-                    <td style="text-align: right;">26,000,000.00</td>
+                    <td style="text-align: center;">{{ $item['item_code'] }}</td>
+                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td>{{ $item['item_name'] }}</td>
+                    <td style="text-align: center;">{{ $item['quantity'] }}</td>
+                    <td style="text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
+                    <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
+                @endforeach
  
                 <tr>
                     <td></td>
@@ -77,10 +82,10 @@
                     <td style="text-align: center;font-weight: bold;">Total</td>
                     <td></td>
                     <td></td>
-                    <td style="text-align: right">26,000.00</td>
+                    <td style="text-align: right">{{ number_format($total_cost,2) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="6">Purpose: *Training for Google Meet and Google Sites.</td>
+                    <td colspan="6">Purpose: {{ $purpose }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"><br /><br />Signature:</td>

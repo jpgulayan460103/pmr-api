@@ -24,20 +24,20 @@ class CreatePurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'end_user' => 'required', 
+            'end_user_id' => 'required', 
             'pr_date' => 'date|required',
             'purpose' => 'required',
             'items.*.item_name' => 'required',
             'items.*.unit_of_measure_id' => 'required',
             'items.*.quantity' => 'numeric|min:1',
-            'items.*.unit_cost' => 'numeric|min:0',
+            'items.*.unit_cost' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
         ];
     }
 
     public function messages()
     {
         return [
-            'end_user.required' => 'The office/section is required.',
+            'end_user_id.required' => 'The office/section is required.',
             'pr_date.required' => 'Date is required',
             'pr_date.date' => 'Not a valid date.',
             'items.*.unit_of_measure_id.required' => 'Required',
@@ -46,6 +46,7 @@ class CreatePurchaseRequest extends FormRequest
             'items.*.quantity.numeric' => 'Required',
             'items.*.unit_cost.min' => ':min is the minimum',
             'items.*.unit_cost.numeric' => 'Required',
+            'items.*.unit_cost.regex' => '2 decimal places only',
         ];
     }
 }
