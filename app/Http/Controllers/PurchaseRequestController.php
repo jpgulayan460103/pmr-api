@@ -102,9 +102,18 @@ class PurchaseRequestController extends Controller
     public function pdf($id)
     {
         $purchase_request = $this->show($id);
-        $pdf = PDF::setOptions(['dpi' => 1200, 'defaultFont' => 'Calibri']);
-        $pdf->setPaper('folio', 'portrait');
-        $pdf->loadView('pdf.purchase-request',$purchase_request);
+        $count = 0;
+        foreach ($purchase_request['items']['data'] as $key => $item) {
+            $count++;
+            $count += substr_count($item['item_name'],"\n");
+        }
+        // return $count;
+        $purchase_request['count_items'] = $count;
+        $pdf = PDF::loadView('pdf.purchase-request',$purchase_request);
+        $pdf->shrink_tables_to_fit = 1.4;
+        $pdf->use_kwt = true;
+        // $pdf->setPaper('folio', 'portrait');
+        // $pdf->loadView('pdf.purchase-request',$purchase_request);
         // return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
         return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
     }

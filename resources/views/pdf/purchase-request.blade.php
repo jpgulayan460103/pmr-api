@@ -7,7 +7,11 @@
     <style>
          @page {
             /* margin: 0px 0px 0px 0px !important; */
-            /* padding: 0px 0px 0px 0px !important; */
+            /* margin: 0px 0px 0px 0px !important; */
+            /* padding: 10px 10px 10px 10px !important; */
+            size: 8.5in 13in;
+            font-size: 12pt;
+            margin: 5%
         }
         #pr-table{
             width: 98%;
@@ -20,16 +24,15 @@
             padding-right: 2pt;
             border: 1px solid black;
         }
-
-        #pr-container{
-            width: 7.5in;
-            font-size: 12pt;
+        *{
+            line-height: 1;
         }
+        /* table {page-break-inside: auto;} */
     </style>
 </head>
 <body>
 <div id="pr-container">
-        <table id="pr-table" page-break-inside: auto;>
+        <table id="pr-table">
             <thead>
                 <tr>
                     <td colspan="6" style="border: 0;text-align:right">Appendix 60</td>
@@ -38,54 +41,30 @@
                     <th colspan="6" style="border: 0;height:25pt">PURCHASE REQUEST</th>
                 </tr>
                 <tr>
-                    <td colspan="3">Entity Name: DSWD FO XI</td>
-                    <td colspan="3">Fund Cluster: {{ $fund_cluster }}</td>
+                    <td colspan="4">Entity Name: DSWD FO XI</td>
+                    <td colspan="2">Fund Cluster: {{ $fund_cluster }}</td>
                 </tr>
                 <tr>
                     <td colspan="2">Office/Section:</td>
+                    <td colspan="2">{{ $end_user['name'] }}</td>
                     <td colspan="2">PR No.: {{ $purchase_request_number }}</td>
-                    <td colspan="2"></td>
                 </tr>
                 <tr>
-                    <td colspan="2"  style="text-align: center;">{{ $end_user['name'] }}</td>
+                    <td colspan="2"  style="text-align: center;"></td>
                     <td colspan="2">Responsibility Center Code: {{ $center_code }}</td>
                     <td colspan="2">Date: {{ $pr_date }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center; width: 100pt;">Stock/ Property No.</td>
+                    <td style="text-align: center">Stock/ Property No.</td>
                     <td style="text-align: center; width: 30pt;">Unit</td>
-                    <td style="text-align: center; width: 250pt;">Item Description</td>
-                    <td style="text-align: center; width: 55pt;">Quantity</td>
+                    <td style="text-align: center; width: 220pt;">Item Description</td>
+                    <td style="text-align: center; ">Quantity</td>
                     <td style="text-align: center;">Unit Cost</td>
                     <td style="text-align: center;">Total Cost</td>
                 </tr>
 
             </thead>
-            <tbody>
-               
-            </tbody>
-            <tbody>
-                @foreach($items['data'] as $key => $item)
-                <tr>
-                    <td style="text-align: center">{{ $item['item_code'] }}</td>
-                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
-                    <td style="text-align: center; height: 5">{!! nl2br(e($item['item_name'])) !!}</td>
-                    <!-- <td>{{ $item['item_name'] }}</td> -->
-                    <td style="text-align: center;">{{ $item['quantity'] }}</td>
-                    <td style="text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
-                    <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
-                </tr>
-                @endforeach
-                @for($i = 0; $i<=50; $i ++)
-                <tr>
-                    <td style="text-align: center">&nbsp;</td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: right;"></td>
-                    <td style="text-align: right;"></td>
-                </tr>
-                @endfor
+            <tfoot>
                 <tr>
                     <td></td>
                     <td></td>
@@ -105,13 +84,39 @@
                 <tr>
                     <td colspan="2" style="border-top: 0; border-bottom: 0">Printed Name:</td>
                     <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">MERLINDA A. PARAGAMAC</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">RONALD RYAN R. CUI</td>
+                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">RONALD RYAN R. CUI</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
                     <td style=" text-align: center; border-top: 0">OIC-ARD for Administration</td>
                     <td colspan="3" style=" text-align: center; border-top: 0">OIC - Regional Director</td>
                 </tr>
+                <tr>
+                    <td colspan="6" style="border: 0;"></td>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach($items['data'] as $key => $item)
+                <tr>
+                    <td style="text-align: center">{{ $item['item_code'] }}</td>
+                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td nowrap="nowrap">{!! nl2br(e($item['item_name'])) !!}</td>
+                    <!-- <td>{{ $item['item_name'] }}</td> -->
+                    <td style="text-align: center;">{{ $item['quantity'] }}</td>
+                    <td style="text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
+                    <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
+                </tr>
+                @endforeach
+                @for($i = 0; $i<=(32 - $count_items); $i ++)
+                <tr>
+                    <td style="text-align: center">&nbsp;</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                @endfor
             </tbody>
         </table>
 </div>
