@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Library;
-use App\Models\Item;
-use App\Repositories\ItemRepository;
-use App\Transformers\ItemTransformer;
-use App\Transformers\LibraryTransformer;
+use App\Models\Signatory;
 use Illuminate\Http\Request;
 
-class LibraryController extends Controller
+class SignatoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +14,7 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        $library = Library::all();
-        return fractal($library, new LibraryTransformer);
+        //
     }
 
     /**
@@ -46,27 +41,21 @@ class LibraryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Library  $library
+     * @param  \App\Models\Signatory  $signatory
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Library $library, $type)
+    public function show(Signatory $signatory)
     {
-        if($type == "items"){
-            $itemRepository = new ItemRepository(new Item);
-            $item = $itemRepository->getAll($request);
-            return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
-        }
-        $library = $library->orderBy('name')->whereType($type)->get();
-        return fractal($library, new LibraryTransformer);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Library  $library
+     * @param  \App\Models\Signatory  $signatory
      * @return \Illuminate\Http\Response
      */
-    public function edit(Library $library)
+    public function edit(Signatory $signatory)
     {
         //
     }
@@ -75,10 +64,10 @@ class LibraryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Library  $library
+     * @param  \App\Models\Signatory  $signatory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Library $library)
+    public function update(Request $request, Signatory $signatory)
     {
         //
     }
@@ -86,10 +75,10 @@ class LibraryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Library  $library
+     * @param  \App\Models\Signatory  $signatory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Library $library)
+    public function destroy(Signatory $signatory)
     {
         //
     }

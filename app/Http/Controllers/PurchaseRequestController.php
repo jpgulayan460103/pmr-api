@@ -105,7 +105,7 @@ class PurchaseRequestController extends Controller
         $pdf = PDF::setOptions(['dpi' => 1200, 'defaultFont' => 'Calibri']);
         $pdf->setPaper('folio', 'portrait');
         $pdf->loadView('pdf.purchase-request',$purchase_request);
-        return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        // return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
         return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
     }
 }

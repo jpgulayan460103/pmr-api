@@ -49,6 +49,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'mode_of_procurement' => $table->mode_of_procurement,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
+            'key' => $table->id,
         ];
     }
 

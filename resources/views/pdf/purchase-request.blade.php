@@ -52,7 +52,7 @@
                     <td colspan="2">Date: {{ $pr_date }}</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center;">Stock/ Property No.</td>
+                    <td style="text-align: center; width: 100pt;">Stock/ Property No.</td>
                     <td style="text-align: center; width: 30pt;">Unit</td>
                     <td style="text-align: center; width: 250pt;">Item Description</td>
                     <td style="text-align: center; width: 55pt;">Quantity</td>
@@ -67,15 +67,25 @@
             <tbody>
                 @foreach($items['data'] as $key => $item)
                 <tr>
-                    <td style="text-align: center;">{{ $item['item_code'] }}</td>
+                    <td style="text-align: center">{{ $item['item_code'] }}</td>
                     <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
-                    <td>{{ $item['item_name'] }}</td>
+                    <td style="text-align: center; height: 5">{!! nl2br(e($item['item_name'])) !!}</td>
+                    <!-- <td>{{ $item['item_name'] }}</td> -->
                     <td style="text-align: center;">{{ $item['quantity'] }}</td>
                     <td style="text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
                     <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
                 @endforeach
- 
+                @for($i = 0; $i<=50; $i ++)
+                <tr>
+                    <td style="text-align: center">&nbsp;</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                @endfor
                 <tr>
                     <td></td>
                     <td></td>
