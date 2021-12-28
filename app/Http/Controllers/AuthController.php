@@ -14,9 +14,10 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if (!Auth::attempt($request->only('username', 'password'))) {
-        return response()->json([
-                    'message' => 'Invalid login details'
-                ], 401);
+        return response()->json(
+            [
+                'message' => 'Invalid login details'
+            ], 401);
         }
 
         $user = User::where('username', $request['username'])->firstOrFail();
@@ -31,14 +32,16 @@ class AuthController extends Controller
         ]);
     }
 
-    public function ldap_auth()
+    public function ldap_auth(Request $request)
     {
         $adServer = config('services.ad.host');
 
         $ldap = ldap_connect($adServer);
-        $username = config('services.ad.user');
-        $password = config('services.ad.password');
-
+        // $username = config('services.ad.user');
+        // $password = config('services.ad.password');
+        $username = $request->username;
+        $password = $request->password;
+        
         $ldaprdn = config('services.ad.domain_1') . "\\" . $username;
 
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -66,7 +69,7 @@ class AuthController extends Controller
                             'firstname' => $firstname,
                             'middlename' => $middlename,
                             'lastname' => $lastname,
-                            'userDn' => $userDn,
+                            'user_dn' => $userDn,
                             'message' => "Successfully Logged in",
                         ]
                     ];

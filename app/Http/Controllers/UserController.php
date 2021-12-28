@@ -36,10 +36,8 @@ class UserController extends Controller
     public function create()
     {
         // return view('pdf.purchase-request');
-        $pdf = PDF::setOptions(['dpi' => 1200, 'defaultFont' => 'Calibri']);
-        $pdf->setPaper('folio', 'portrait');
-        $pdf->loadView('pdf.purchase-request');
-        return $pdf->stream('purchase-request.pdf');
+        $ou = "CN=Gracel Amor P. Torion,OU=Pantawid Pamilya Encoders,OU=Pantawid Provincial Office,OU=4Ps Division,OU=Clients,OU=FO11,DC=ENTDSWD,DC=LOCAL"; 
+        return explode(",",$ou);
     }
 
     /**
