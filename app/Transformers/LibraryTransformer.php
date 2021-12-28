@@ -12,7 +12,7 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $defaultIncludes = [
-        //
+        'parent'
     ];
     
     /**
@@ -34,8 +34,16 @@ class LibraryTransformer extends TransformerAbstract
         return [
             'id' => $table->id,
             'value' => $table->name,
+            'title' => $table->title,
             'name' => $table->name,
             'type' => $table->type,
         ];
+    }
+
+    public function includeParent($table)
+    {
+        if ($table->parent) {
+            return $this->item($table->parent, new LibraryTransformer);
+        }
     }
 }

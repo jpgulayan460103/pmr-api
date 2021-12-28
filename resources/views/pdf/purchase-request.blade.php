@@ -119,6 +119,11 @@
                 @endfor
             </tbody>
         </table>
+        @if($status == "approved")
+        Approved By: jpgulayan
+        @else
+        Status: {{ $status }}
+        @endif
 </div>
 </body>
 </html>

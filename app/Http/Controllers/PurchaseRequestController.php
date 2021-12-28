@@ -99,7 +99,7 @@ class PurchaseRequestController extends Controller
         //
     }
 
-    public function pdf($id)
+    public function pdf(Request $request, $id)
     {
         $purchase_request = $this->show($id);
         $count = 0;
@@ -114,7 +114,14 @@ class PurchaseRequestController extends Controller
         $pdf->use_kwt = true;
         // $pdf->setPaper('folio', 'portrait');
         // $pdf->loadView('pdf.purchase-request',$purchase_request);
-        // return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
-        return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        if($request->view){
+            return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        }
+        return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+    }
+
+    public function approve(Request $request, $id)
+    {
+        PurchaseRequest::find($id)->update(['status' => 'approved']);
     }
 }

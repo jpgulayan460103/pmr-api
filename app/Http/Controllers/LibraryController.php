@@ -18,8 +18,8 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        $library = Library::all();
-        return fractal($library, new LibraryTransformer);
+        $library = Library::orderBy('name')->get();
+        return fractal($library, new LibraryTransformer)->parseIncludes('parent.parent.parent');
     }
 
     /**

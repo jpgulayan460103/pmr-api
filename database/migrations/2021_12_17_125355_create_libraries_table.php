@@ -17,6 +17,7 @@ class CreateLibrariesTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('type')->nullable();
+            $table->string('title')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
             $table->foreign('parent_id')->references('id')->on('libraries')->onDelete('cascade');

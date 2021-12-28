@@ -36,6 +36,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
     public function transform($table)
     {
         return [
+            'id' => $table->id,
             'purchase_request_uuid' => $table->purchase_request_uuid,
             'code_uacs' => $table->code_uacs,
             'purchase_request_number' => $table->purchase_request_number,
@@ -46,6 +47,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'pr_dir' => $table->pr_dir,
             'end_user_id' => $table->end_user_id,
             'types' => $table->types,
+            'status' => $table->status,
             'mode_of_procurement' => $table->mode_of_procurement,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,

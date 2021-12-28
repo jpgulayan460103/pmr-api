@@ -24,6 +24,7 @@ class PurchaseRequest extends Model
         'pr_dir',
         'end_user_id',
         'types',
+        'status',
         'mode_of_procurement',
         'pr_date',
         'bac_task_id',    
@@ -33,6 +34,7 @@ class PurchaseRequest extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->purchase_request_uuid = (string) Str::uuid();
+            $model->status = 'unapproved';
         });
     }
 

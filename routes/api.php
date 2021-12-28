@@ -38,6 +38,7 @@ Route::middleware(['auth:api'])->group(function () {
 Route::get('/libraries', [LibraryController::class, 'index']);
 Route::get('/libraries/{type}', [LibraryController::class, 'show']);
 Route::get('/pdf/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf']);
+Route::post('/purchase-requests/{id}/approve', [PurchaseRequestController::class, 'approve']);
 
 
 Route::resources([

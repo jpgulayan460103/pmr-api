@@ -25,6 +25,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('pr_dir')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();
             $table->string('types')->nullable();
+            $table->string('status')->nullable();
             $table->string('mode_of_procurement')->nullable();
             $table->date('pr_date')->nullable();
             $table->timestamps();
