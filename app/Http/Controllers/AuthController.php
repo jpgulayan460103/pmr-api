@@ -21,6 +21,12 @@ class AuthController extends Controller
         }
 
         $user = User::where('username', $request['username'])->firstOrFail();
+        if($user->is_active != 1){
+            return response()->json(
+                [
+                    'message' => 'Account is disabled, please contact administrator.'
+                ], 401);
+        }
 
         // $token = $user->createToken('authToken'); //without refresh token
         Token::where('user_id', $user->id)->update(['revoked' => true]);

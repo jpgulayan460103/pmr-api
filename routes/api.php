@@ -26,6 +26,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
+Route::get('/register', [UserController::class, 'register']);
 Route::get('/active-directory/login', [AuthController::class, 'ldap_auth']);
 Route::post('/active-directory/login', [AuthController::class, 'ldap_auth']);
 Route::middleware(['auth:api'])->group(function () {
@@ -47,6 +48,6 @@ Route::resources([
     'purchase-requests' => PurchaseRequestController::class,
     // 'purchase-orders' => PurchaseOrderController::class,
     // 'items' => ItemController::class,
-    'users' => UserController::class,
+    // 'users' => UserController::class,
 ]);
 

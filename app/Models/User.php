@@ -14,6 +14,15 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->is_active = 0;
+        });
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *
