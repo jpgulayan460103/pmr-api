@@ -19,6 +19,7 @@ class UserInformation extends Model
         'middlename',
         'lastname',
         'user_dn',
+        'signatory_id',
     ];
 
     public function user()
