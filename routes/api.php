@@ -26,9 +26,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
-Route::get('/register', [UserController::class, 'register']);
-Route::get('/active-directory/login', [AuthController::class, 'ldap_auth']);
-Route::post('/active-directory/login', [AuthController::class, 'ldap_auth']);
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/active-directory/login', [AuthController::class, 'ad_login']);
 Route::middleware(['auth:api'])->group(function () {
     Route::resources([
         'purchase-requests' => PurchaseRequestController::class,

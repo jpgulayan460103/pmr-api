@@ -34,8 +34,7 @@ return [
         'host' => env('AD_HOST'),
         'domain_1' => env('AD_DOMAIN_1'),
         'domain_2' => env('AD_DOMAIN_2'),
-        'user' => env('AD_USER'),
-        'password' => env('AD_PASSWORD'),
+        'default_password' => env('AD_DEFAULT_PASSWORD'),
     ],
 
     'passport' => [

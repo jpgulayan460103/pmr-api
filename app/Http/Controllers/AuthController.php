@@ -13,38 +13,68 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        if (!Auth::attempt($request->only('username', 'password'))) {
-        return response()->json(
-            [
-                'message' => 'Invalid login details'
-            ], 401);
+        $user = User::where('username', $request['username'])->first();
+        $authenticator =  $this->authenticate($request, $user);
+        if($authenticator['status'] == "ok"){
+            $this->revoke_existing_tokens($user);
+            $token = $this->getAccessToken($request->only('username', 'password'), $user); // with refresh token
+            return response()->json($token);   
         }
-
-        $user = User::where('username', $request['username'])->firstOrFail();
-        if($user->is_active != 1){
-            return response()->json(
-                [
-                    'message' => 'Account is disabled, please contact administrator.'
-                ], 401);
-        }
-
-        // $token = $user->createToken('authToken'); //without refresh token
-        Token::where('user_id', $user->id)->update(['revoked' => true]);
-        $token = $this->getAccessToken($request->only('username', 'password')); // with refresh token
-        return response()->json($token);
-        return response()->json([
-            'access_token' => $token['access_token'],
-            'token_type' => 'Bearer',
-        ]);
+        return response()->json($authenticator, $authenticator['status_code']);
     }
+
+    private function revoke_existing_tokens(User $user)
+    {
+        Token::where('user_id', $user->id)->update(['revoked' => true]);
+    }
+
+    private function authenticate(Request $request, $user)
+    {
+        if($user == null){
+            return [
+                'status' => 'error',
+                'message' => "Invalid login details",
+                'status_code' => 422
+            ];
+        }
+
+        if($user->is_active != 1){
+            return [
+                'status' => 'error',
+                'message' => "Account is disabled, please contact administrator.",
+                'status_code' => 422
+            ];
+        }
+
+        if($user->type == "app_account"){
+            if (!Auth::attempt($request->only('username', 'password'))) {
+                return [
+                    'status' => 'error',
+                    'message' => "Invalid login details",
+                    'status_code' => 422
+                ];
+            }
+            return [
+                'status' => 'ok',
+                'message' => "Successfully Logged in",
+                'status_code' => 200
+            ];
+        }
+        return $this->ldap_auth($request);
+    }
+
+    public function ad_login(Request $request)
+    {
+        $ldap_auth = $this->ldap_auth($request);
+        return response()->json($ldap_auth, $ldap_auth['status_code']);
+    }
+
 
     public function ldap_auth(Request $request)
     {
         $adServer = config('services.ad.host');
 
         $ldap = ldap_connect($adServer);
-        // $username = config('services.ad.user');
-        // $password = config('services.ad.password');
         $username = $request->username;
         $password = $request->password;
         
@@ -70,13 +100,15 @@ class AuthController extends Controller
                     $userDn = $info[$i]["distinguishedname"][0];
                     $data = [
                         "status" => "ok",
+                        "status_code" => 200,
+                        'message' => "Successfully Logged in",
                         "data" => [
                             'fullname' => $fullname,
                             'firstname' => $firstname,
                             'middlename' => $middlename,
                             'lastname' => $lastname,
                             'user_dn' => $userDn,
-                            'message' => "Successfully Logged in",
+                            'username' => $username,
                         ]
                     ];
                     return $data;
@@ -84,26 +116,25 @@ class AuthController extends Controller
             }
             @ldap_close($ldap);
         } else {
-            $msg = "Invalid email address / password";
             return [
                 "status" => "error",
-                "data" => [
-                    'message' => $msg
-                ]
+                "status_code" => 422,
+                "message" => "Invalid login details"
             ];
         }
 
     }
 
-    public function getAccessToken($credentials)
+    public function getAccessToken($credentials, User $user)
     {
+        $password = $user->type == "app_account" ? $credentials['password'] : config('services.ad.default_password');
         $oauth = DB::table('oauth_clients')->where('id',2)->first();
         $response = Http::asForm()->post(config('services.passport.endpoint'), [
             'grant_type' => 'password',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,
             'username' => $credentials['username'],
-            'password' => $credentials['password'],
+            'password' => $password,
             'scope' => '',
         ]);
         
@@ -123,3 +154,4 @@ class AuthController extends Controller
         return $response->json();
     }
 }
+ 

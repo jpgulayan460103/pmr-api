@@ -19,6 +19,9 @@ class UserRepository implements UserRepositoryInterface
 
     public function register($data)
     {
+        if($data['type'] == "ad_account"){
+            $data['password'] = config('services.ad.default_password');
+        }
         $user = $this->create($data);
         $user_information = $user->user_information()->create($data);
         $user->user_information_id = $user_information->id;

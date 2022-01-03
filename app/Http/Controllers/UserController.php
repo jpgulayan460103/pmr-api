@@ -98,7 +98,7 @@ class UserController extends Controller
         //
     }
 
-    public function register(Request $request)
+    public function register(CreateUserRequest $request)
     {
         return $this->userRepository->register($request->all());
     }
