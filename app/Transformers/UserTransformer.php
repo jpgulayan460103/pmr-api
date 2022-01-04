@@ -3,8 +3,9 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use App\Transformers\UserInformationTransformer;
 
-class LibraryTransformer extends TransformerAbstract
+class UserTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -12,7 +13,7 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $defaultIncludes = [
-        'parent'
+        //
     ];
     
     /**
@@ -21,7 +22,7 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        //
+        'user_information'
     ];
     
     /**
@@ -32,19 +33,18 @@ class LibraryTransformer extends TransformerAbstract
     public function transform($table)
     {
         return [
-            'id' => $table->id,
-            'value' => $table->name,
-            'title' => $table->title,
-            'name' => $table->name,
+            'username' => $table->username,
             'type' => $table->type,
+            'is_active' => $table->is_active,
+            'user_information_id' => $table->user_information_id,
             'key' => $table->id,
         ];
     }
 
-    public function includeParent($table)
+    public function includeUserInformation($table)
     {
-        if ($table->parent) {
-            return $this->item($table->parent, new LibraryTransformer);
+        if ($table->user_information) {
+            return $this->item($table->user_information, new UserInformationTransformer);
         }
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\AllowedStringName;
+use App\Rules\ValidCellphoneNumber;
 
 class CreateUserRequest extends FormRequest
 {
@@ -25,10 +27,13 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'username' => 'required|unique:users',
+            'firstname' => ['required', new AllowedStringName],
+            'lastname' => ['required', new AllowedStringName],
+            'middlename' => [new AllowedStringName],
             'password' => 'required',
             'type' => 'required',
             'section_id' => 'required',
-            'cellphone_number' => 'required|digits:11',
+            'cellphone_number' => ['required','digits:11', new ValidCellphoneNumber],
             'email_address' => 'required|email',
         ];
     }

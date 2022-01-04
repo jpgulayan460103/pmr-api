@@ -23,6 +23,7 @@ class UserInformation extends Model
         'signatory_id',
         'cellphone_number',
         'email_address',
+        'section_id',
     ];
 
     public function user()
@@ -32,6 +33,11 @@ class UserInformation extends Model
 
 
     public function signatory()
+    {
+        return $this->belongsTo(Library::class);
+    }
+
+    public function section()
     {
         return $this->belongsTo(Library::class);
     }

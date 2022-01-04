@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
+use App\Transformers\UserTransformer;
 use PDF;
 
 class UserController extends Controller
@@ -24,8 +25,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = $this->userRepository->getAll($request);
-        return $users;
-        // return fractal($Users, new UserTransformer)->parseIncludes('unit_of_measure,User_category');
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section');
     }
 
     /**

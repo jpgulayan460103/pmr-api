@@ -44,7 +44,7 @@ Route::post('/purchase-requests/{id}/approve', [PurchaseRequestController::class
 
 
 Route::resources([
-    'purchase-requests' => PurchaseRequestController::class,
+    // 'purchase-requests' => PurchaseRequestController::class,
     // 'purchase-orders' => PurchaseOrderController::class,
     // 'items' => ItemController::class,
     // 'users' => UserController::class,

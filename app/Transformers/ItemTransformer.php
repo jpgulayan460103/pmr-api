@@ -38,6 +38,7 @@ class ItemTransformer extends TransformerAbstract
             'item_name' => $table->item_name,
             'item_code' => $table->item_code,
             'id' => $table->id,
+            'key' => $table->id,
             // 'item_category_id' => $table->item_category_id,
             // 'unit_of_measure_id' => $table->unit_of_measure_id,
         ];

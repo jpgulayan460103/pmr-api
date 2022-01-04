@@ -40,6 +40,7 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
             'unit_cost' => $table->unit_cost,
             'unit_of_measure_id' => $table->unit_of_measure_id,
             'total_unit_cost' => $table->total_unit_cost,
+            'key' => $table->id,
         ];
     }
 

@@ -14,7 +14,7 @@ class UserRepository implements UserRepositoryInterface
     {
         $this->model($user);
         $this->perPage(2);
-        $this->attach(['user_information']);
+        $this->attach(['user_information.section']);
     }
 
     public function register($data)
