@@ -18,7 +18,7 @@ class User extends Authenticatable
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->is_active = 0;
+            $model->is_active = 1;
         });
     }
 

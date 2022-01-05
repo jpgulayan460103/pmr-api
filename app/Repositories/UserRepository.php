@@ -19,7 +19,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function register($data)
     {
-        if($data['library_type'] == "ad_account"){
+        if($data['account_type'] == "ad_account"){
             $data['password'] = config('services.ad.default_password');
         }
         $user = $this->create($data);
