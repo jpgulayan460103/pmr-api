@@ -28,7 +28,7 @@ class PurchaseRequestController extends Controller
     public function index(Request $request)
     {
         $purchase_request = $this->purchaseRequestRepository->getAll($request);
-        return fractal($purchase_request, new PurchaseRequestTransformer);
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('end_user');
     }
 
     /**
@@ -60,6 +60,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
+        $this->purchaseRequestRepository->attach(['purchase_orders', 'items.unit_of_measure', 'end_user']);
         $purchase_request = $this->purchaseRequestRepository->getByUuid($id);
         // return $purchase_request;
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('items.unit_of_measure,end_user')->toArray();
