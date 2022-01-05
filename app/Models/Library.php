@@ -9,7 +9,7 @@ class Library extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
+        'library_type',
         'name',
         'title',
         'parent_id',

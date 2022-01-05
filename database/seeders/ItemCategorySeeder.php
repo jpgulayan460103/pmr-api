@@ -45,8 +45,8 @@ class ItemCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $lib = Library::create(['name' => $category, 'type' => 'item_category']);
-            echo $lib->type.": ".$lib->name."\n";
+            $lib = Library::create(['name' => $category, 'library_type' => 'item_category']);
+            echo $lib->library_type.": ".$lib->name."\n";
         }
     }
 }

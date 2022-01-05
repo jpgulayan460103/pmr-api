@@ -31,7 +31,7 @@ class CreateUserRequest extends FormRequest
             'lastname' => ['required', new AllowedStringName],
             'middlename' => [new AllowedStringName],
             'password' => 'required',
-            'type' => 'required',
+            'account_type' => 'required',
             'section_id' => 'required',
             'cellphone_number' => ['required','digits:11', new ValidCellphoneNumber],
             'email_address' => 'required|email',

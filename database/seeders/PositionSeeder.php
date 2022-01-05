@@ -114,8 +114,8 @@ class PositionSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $lib = Library::create(['name' => $category, 'type' => 'user_position']);
-            echo $lib->type.": ".$lib->name."\n";
+            $lib = Library::create(['name' => $category, 'library_type' => 'user_position']);
+            echo $lib->library_type.": ".$lib->name."\n";
         }
     }
 }

@@ -20,7 +20,7 @@ class FakerDataSeeders extends Seeder
     public function run()
     {
         User::create([
-            'type' => 'app_account',
+            'account_type' => 'app_account',
             'username' => 'jpgulayan',
             'password' => 'admin123',
         ]);

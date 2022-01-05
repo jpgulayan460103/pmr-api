@@ -36,7 +36,7 @@ class LibraryTransformer extends TransformerAbstract
             'value' => $table->name,
             'title' => $table->title,
             'name' => $table->name,
-            'type' => $table->type,
+            'library_type' => $table->library_type,
             'key' => $table->id,
         ];
     }

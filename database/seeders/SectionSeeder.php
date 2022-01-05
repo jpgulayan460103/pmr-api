@@ -319,9 +319,9 @@ class SectionSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $parent_lib = Library::where('type','user_division')->where('name', $category['division'])->first();
-            $lib = Library::create(['name' => $category['section'], 'title' => $category['title'], 'type' => 'user_section', 'parent_id' => $parent_lib->id]);
-            echo $lib->type.": ".$lib->name."\n";
+            $parent_lib = Library::where('library_type','user_division')->where('name', $category['division'])->first();
+            $lib = Library::create(['name' => $category['section'], 'title' => $category['title'], 'library_type' => 'user_section', 'parent_id' => $parent_lib->id]);
+            echo $lib->library_type.": ".$lib->name."\n";
         }
     }
 }

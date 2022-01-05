@@ -88,14 +88,14 @@ class DivisionSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            $parent_lib = Library::where('type','user_division')->where('name', $category['division'])->first();
+            $parent_lib = Library::where('library_type','user_division')->where('name', $category['division'])->first();
             $parent_id = null;
             if($parent_lib){
                 $parent_id = $parent_lib->id;
             }
-            $lib = Library::create(['name' => $category['name'], 'title' => $category['title'], 'type' => 'user_division', 'parent_id' => $parent_id]);
-            echo $lib->type.": ".$lib->name."\n";
-            // echo $lib->type.": ".$lib->name."\n";
+            $lib = Library::create(['name' => $category['name'], 'title' => $category['title'], 'library_type' => 'user_division', 'parent_id' => $parent_id]);
+            echo $lib->library_type.": ".$lib->name."\n";
+            // echo $lib->library_type.": ".$lib->name."\n";
         }
     }
 }

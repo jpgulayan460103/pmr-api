@@ -2000,8 +2000,8 @@ class ItemSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $item_category_library = Library::where('name',$item['item_category_id'])->where('type', 'item_category')->first();
-            $unit_of_measure_library = Library::where('name',$item['unit_of_measure_id'])->where('type', 'unit_of_measure')->first();
+            $item_category_library = Library::where('name',$item['item_category_id'])->where('library_type', 'item_category')->first();
+            $unit_of_measure_library = Library::where('name',$item['unit_of_measure_id'])->where('library_type', 'unit_of_measure')->first();
             $item['item_category_id'] = $item_category_library->id;
             $item['unit_of_measure_id'] = $unit_of_measure_library->id;
             $createdItem = Item::create($item);

@@ -23,7 +23,7 @@ class PurchaseRequest extends Model
         'total_cost',
         'pr_dir',
         'end_user_id',
-        'types',
+        'purchase_request_type',
         'status',
         'mode_of_procurement',
         'pr_date',

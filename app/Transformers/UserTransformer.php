@@ -34,7 +34,7 @@ class UserTransformer extends TransformerAbstract
     {
         return [
             'username' => $table->username,
-            'type' => $table->type,
+            'account_type' => $table->account_type,
             'is_active' => $table->is_active,
             'user_information_id' => $table->user_information_id,
             'key' => $table->id,

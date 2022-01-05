@@ -39,8 +39,8 @@ class UnitOfMeasureSeeder extends Seeder
         ];
 
         foreach ($unit_of_measures as $unit_of_measure) {
-            $lib = Library::create(['type' => 'unit_of_measure', 'name' => $unit_of_measure]);
-            echo $lib->type.": ".$lib->name."\n";
+            $lib = Library::create(['library_type' => 'unit_of_measure', 'name' => $unit_of_measure]);
+            echo $lib->library_type.": ".$lib->name."\n";
         }
     }
 }
