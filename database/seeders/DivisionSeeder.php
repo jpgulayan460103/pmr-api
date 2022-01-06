@@ -75,16 +75,6 @@ class DivisionSeeder extends Seeder
                 'title' => 'FMD',
                 'division' => 'Office of the Assistant Regional Director for Administration',  
             ],
-            [
-                'name' => 'Resource Management',
-                'title' => 'RM',
-                'division' => 'Office of the Regional Director',  
-            ],
-            [
-                'name' => 'Regional Juvenile Justice Welfare Council',
-                'title' => 'RJJWC',
-                'division' => 'Office of the Regional Director',  
-            ],
         ];
 
         foreach ($categories as $category) {
@@ -94,8 +84,7 @@ class DivisionSeeder extends Seeder
                 $parent_id = $parent_lib->id;
             }
             $lib = Library::create(['name' => $category['name'], 'title' => $category['title'], 'library_type' => 'user_division', 'parent_id' => $parent_id]);
-            echo $lib->library_type.": ".$lib->name."\n";
-            // echo $lib->library_type.": ".$lib->name."\n";
+            echo $lib->library_type.": ".$lib->name." ".$lib->title."\n";
         }
     }
 }

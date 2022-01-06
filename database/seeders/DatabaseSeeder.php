@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PositionSeeder::class);
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
-        $this->call(FakerDataSeeders::class);
+        // $this->call(UserSeeder::class);
+        // $this->call(FakerDataSeeders::class);
     }
 }

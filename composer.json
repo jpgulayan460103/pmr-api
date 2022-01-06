@@ -15,6 +15,7 @@
         "laravel/passport": "^10.2",
         "laravel/sanctum": "^2.12",
         "laravel/tinker": "^2.5",
+        "league/csv": "^9.8",
         "niklasravnsborg/laravel-pdf": "^4.1",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",

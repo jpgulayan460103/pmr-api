@@ -93,7 +93,7 @@ class SectionSeeder extends Seeder
             [
                 "section" => "Social Technology Unit",
                 "title" => "STU",
-                "division" => "Protective Services Division",
+                "division" => "Office of the Regional Director",
             ],
             [
                 "section" => "Crisis Intervention Section",
@@ -173,11 +173,6 @@ class SectionSeeder extends Seeder
             [
                 "section" => "Pantawid Pamilyang Pilipino Program - Provincial Operations Office",
                 "title" => "PPPPPOO",
-                "division" => "Pantawid Pamilyang Pilipino Program Management",
-            ],
-            [
-                "section" => "Pantawid Pamilyang Pilipino Progam - Regional Management Office",
-                "title" => "PPPPRMO",
                 "division" => "Pantawid Pamilyang Pilipino Program Management",
             ],
             [
@@ -275,53 +270,13 @@ class SectionSeeder extends Seeder
                 "title" => "CS",
                 "division" => "Financial Management Division",
             ],
-            [
-                "section" => "HRMDD",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "PPD",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "PROTECTIVE SERVICE",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "ADMINISTRATIVE DIVISION",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "FINANCE DIVISION",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "PROMOTIVE DIVISION",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "DRMD",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
-            [
-                "section" => "Office of The Division Chief",
-                "title" => "",
-                "division" => "Resource Management",
-            ],
 
         ];
 
         foreach ($categories as $category) {
             $parent_lib = Library::where('library_type','user_division')->where('name', $category['division'])->first();
             $lib = Library::create(['name' => $category['section'], 'title' => $category['title'], 'library_type' => 'user_section', 'parent_id' => $parent_lib->id]);
-            echo $lib->library_type.": ".$lib->name."\n";
+            echo $lib->library_type.": ".$lib->name." ".$lib->title."\n";
         }
     }
 }

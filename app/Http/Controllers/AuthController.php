@@ -46,7 +46,7 @@ class AuthController extends Controller
             ];
         }
 
-        if($user->type == "app_account"){
+        if($user->account_type == "app_account"){
             if (!Auth::attempt($request->only('username', 'password'))) {
                 return [
                     'status' => 'error',
@@ -93,11 +93,12 @@ class AuthController extends Controller
             {
                 if($info['count'] > 1)
                     break;
-                    $fullname = $info[$i]["cn"][0];
-                    $firstname = $info[$i]["givenname"][0];
-                    $middlename = $info[$i]["initials"][0];
-                    $lastname = $info[$i]["sn"][0];
-                    $userDn = $info[$i]["distinguishedname"][0];
+                    $fullname = isset($info[$i]["cn"][0]) ? ucwords($info[$i]["cn"][0]) : "";
+                    $firstname = isset($info[$i]["givenname"][0]) ? ucwords($info[$i]["givenname"][0]) : "";
+                    $middlename = isset($info[$i]["initials"][0]) ? ucwords($info[$i]["initials"][0]) : "";
+                    $lastname = isset($info[$i]["sn"][0]) ? ucwords($info[$i]["sn"][0]) : "";
+                    $userDn = isset($info[$i]["distinguishedname"][0]) ? $info[$i]["distinguishedname"][0] : "";
+                    $email_address = isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "";
                     $data = [
                         "status" => "ok",
                         "status_code" => 200,
@@ -109,6 +110,7 @@ class AuthController extends Controller
                             'lastname' => $lastname,
                             'user_dn' => $userDn,
                             'username' => $username,
+                            'email_address' => $email_address,
                         ]
                     ];
                     return $data;
