@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Signatory;
 class Library extends Model
 {
     use HasFactory;
@@ -20,5 +21,10 @@ class Library extends Model
     public function parent()
     {
         return $this->belongsTo(Library::class);
+    }
+
+    public function signatory()
+    {
+        return $this->hasOne(Signatory::class, 'office_id');
     }
 }

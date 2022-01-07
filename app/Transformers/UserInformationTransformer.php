@@ -34,7 +34,7 @@ class UserInformationTransformer extends TransformerAbstract
     {
         return [
             'user_id' => $table->user_id,
-            'fullname' => $table->fullname,
+            'fullname' => "$table->firstname $table->middlename $table->lastname",
             'firstname' => $table->firstname,
             'middlename' => $table->middlename,
             'lastname' => $table->lastname,

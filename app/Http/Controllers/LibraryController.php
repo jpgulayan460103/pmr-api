@@ -8,6 +8,7 @@ use App\Repositories\ItemRepository;
 use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LibraryController extends Controller
 {
@@ -18,7 +19,8 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        $library = Library::orderBy('name')->get();
+        DB::enableQueryLog();
+        $library = Library::orderBy('library_type')->orderBy('name')->get();
         return fractal($library, new LibraryTransformer)->parseIncludes('parent.parent.parent');
     }
 

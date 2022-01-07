@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Signatories;
+use App\Models\Signatory;
 use Illuminate\Http\Request;
+use App\Transformers\SignatoryTransformer;
 
-class SignatoriesController extends Controller
+class SignatoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,9 @@ class SignatoriesController extends Controller
      */
     public function index()
     {
-        //
+        $signatories =  Signatory::with('user.user_information','office')->get();
+        return fractal($signatories, new SignatoryTransformer)->parseIncludes('user.user_information,office');
+
     }
 
     /**
@@ -41,10 +44,10 @@ class SignatoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Signatories  $signatories
+     * @param  \App\Models\Signatory  $signatories
      * @return \Illuminate\Http\Response
      */
-    public function show(Signatories $signatories)
+    public function show(Signatory $signatories)
     {
         //
     }
@@ -52,10 +55,10 @@ class SignatoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Signatories  $signatories
+     * @param  \App\Models\Signatory  $signatories
      * @return \Illuminate\Http\Response
      */
-    public function edit(Signatories $signatories)
+    public function edit(Signatory $signatories)
     {
         //
     }
@@ -64,10 +67,10 @@ class SignatoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Signatories  $signatories
+     * @param  \App\Models\Signatory  $signatories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Signatories $signatories)
+    public function update(Request $request, Signatory $signatories)
     {
         //
     }
@@ -75,10 +78,10 @@ class SignatoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Signatories  $signatories
+     * @param  \App\Models\Signatory  $signatories
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Signatories $signatories)
+    public function destroy(Signatory $signatories)
     {
         //
     }

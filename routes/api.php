@@ -8,6 +8,7 @@ use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\SignatoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ Route::middleware(['auth:api'])->group(function () {
         'purchase-orders' => PurchaseOrderController::class,
         'items' => ItemController::class,
         'users' => UserController::class,
+        'signatories' => SignatoryController::class,
     ]);
     
 });
@@ -48,5 +50,6 @@ Route::resources([
     // 'purchase-orders' => PurchaseOrderController::class,
     // 'items' => ItemController::class,
     // 'users' => UserController::class,
+    'signatories' => SignatoryController::class,
 ]);
 

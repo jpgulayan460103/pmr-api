@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-
+use App\Transformers\SignatoryTransformer;
 class LibraryTransformer extends TransformerAbstract
 {
     /**
@@ -21,7 +21,7 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        //
+        'signatory'
     ];
     
     /**
@@ -45,6 +45,13 @@ class LibraryTransformer extends TransformerAbstract
     {
         if ($table->parent) {
             return $this->item($table->parent, new LibraryTransformer);
+        }
+    }
+
+    public function includeSignatory($table)
+    {
+        if ($table->signatory) {
+            return $this->item($table->signatory, new SignatoryTransformer);
         }
     }
 }
