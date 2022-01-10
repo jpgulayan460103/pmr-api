@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
 use App\Models\Library;
+use App\Models\Signatory;
 use Carbon\Carbon;
 
 class PurchaseRequest extends Model
@@ -28,6 +29,8 @@ class PurchaseRequest extends Model
         'mode_of_procurement',
         'pr_date',
         'bac_task_id',    
+        'requested_by_id',
+        'approved_by_id',
     ];
     public static function boot()
     {
@@ -36,7 +39,11 @@ class PurchaseRequest extends Model
             $model->purchase_request_uuid = (string) Str::uuid();
             $model->status = 'unapproved';
         });
+        self::updating(function($model) {
+
+        });
     }
+    
 
     public function purchase_orders()
     {
@@ -61,5 +68,15 @@ class PurchaseRequest extends Model
     public function setPrDateAttribute($value)
     {
         $this->attributes['pr_date'] = Carbon::parse($value);
+    }
+
+    public function requested_by()
+    {
+        return $this->belongsTo(Signatory::class);
+    }
+
+    public function approved_by()
+    {
+        return $this->belongsTo(Signatory::class);
     }
 }

@@ -16,11 +16,6 @@ Trait HasCrud {
         return $this->model = $model;
     }
     
-    public function modelQuery($model)
-    {
-        return $this->model = $model->query();
-    }
-
     public function modelAttach()
     {
         return $this->model = $this->model->with($this->attach);
@@ -31,9 +26,10 @@ Trait HasCrud {
      *
      * @return \Illuminate\Http\Response
      */
-    public function perPage($perPage) : int
+    public function perPage($perPage)
     {
-        return $this->perPage = $perPage;
+        $this->perPage = $perPage;
+        return $this;
     }
 
     /**
@@ -42,9 +38,10 @@ Trait HasCrud {
      * @param array $attach
      * @return \Illuminate\Http\Response
      */
-    public function attach($attach) : array
+    public function attach($attach)
     {
-        return $this->attach = $attach;
+        $this->attach = $attach;
+        return $this;
     }
 
     public function getAll($request) : object
@@ -66,6 +63,11 @@ Trait HasCrud {
     public function getByUuid($uuid) : object
     {
         return $this->modelAttach()->where($this->uuid,$uuid)->first();
+    }
+
+    public function getBy($field, $value) : object
+    {
+        return $this->modelAttach()->where($field, $value)->first();
     }
  
     public function create($data) : object
@@ -93,5 +95,4 @@ Trait HasCrud {
     {
 
     }
-
 }

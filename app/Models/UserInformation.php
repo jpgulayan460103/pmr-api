@@ -41,4 +41,22 @@ class UserInformation extends Model
     {
         return $this->belongsTo(Library::class);
     }
+
+    public function getFullnameAttribute()
+    {
+        return trim("{$this->firstname} {$this->middlename} {$this->lastname}");
+    }
+
+    public function setFirstnameAttribute($value)
+    {
+        $this->attributes['firstname'] = strtoupper($value);
+    }
+    public function setMiddlenameAttribute($value)
+    {
+        $this->attributes['middlename'] =  (strlen($value) == 1 ? strtoupper($value.".") : strtoupper($value));
+    }
+    public function setLastnameAttribute($value)
+    {
+        $this->attributes['lastname'] = strtoupper($value);
+    }
 }

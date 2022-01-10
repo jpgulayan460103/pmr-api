@@ -11,7 +11,13 @@
             /* padding: 10px 10px 10px 10px !important; */
             size: 8.5in 13in;
             font-size: 12pt;
-            margin: 5%
+            margin: 5%;
+            background-image-resize: 6;
+            opacity: 0.75;
+            @if(isset($view) && $view == "preview")
+            background: url("{{ public_path('images/watermark.png') }}") no-repeat 0 0;
+            @endif
+            
         }
         #pr-table{
             width: 98%;
@@ -31,6 +37,9 @@
     </style>
 </head>
 <body>
+<!-- <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; text-align: center;z-index: -1000; ">
+    <img src="{{ public_path('images/watermark.png') }}" style="width: 100%;">
+</div> -->
 <div id="pr-container">
         <table id="pr-table">
             <thead>
@@ -83,13 +92,13 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0; border-bottom: 0">Printed Name:</td>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">MERLINDA A. PARAGAMAC</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">RONALD RYAN R. CUI</td>
+                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['user']['user_information']['fullname'] }}</td>
+                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['user']['user_information']['fullname'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
-                    <td style=" text-align: center; border-top: 0">OIC-ARD for Administration</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0">OIC - Regional Director</td>
+                    <td style=" text-align: center; border-top: 0">{{ $requested_by['title'] }}{{ $requested_by['designation'] }}</td>
+                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['title'] }}{{ $approved_by['designation'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="6" style="border: 0;"></td>
@@ -119,11 +128,6 @@
                 @endfor
             </tbody>
         </table>
-        @if($status == "approved")
-        Approved By: jpgulayan
-        @else
-        Status: {{ $status }}
-        @endif
 </div>
 </body>
 </html>

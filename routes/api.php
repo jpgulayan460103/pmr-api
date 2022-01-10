@@ -42,14 +42,16 @@ Route::middleware(['auth:api'])->group(function () {
 Route::get('/libraries', [LibraryController::class, 'index']);
 Route::get('/libraries/{type}', [LibraryController::class, 'show']);
 Route::get('/pdf/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf']);
+Route::post('/pdf/preview/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview']);
+Route::get('/pdf/preview/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview']);
 Route::post('/purchase-requests/{id}/approve', [PurchaseRequestController::class, 'approve']);
 
 
 Route::resources([
-    // 'purchase-requests' => PurchaseRequestController::class,
-    // 'purchase-orders' => PurchaseOrderController::class,
-    // 'items' => ItemController::class,
-    // 'users' => UserController::class,
+    'purchase-requests' => PurchaseRequestController::class,
+    'purchase-orders' => PurchaseOrderController::class,
+    'items' => ItemController::class,
+    'users' => UserController::class,
     'signatories' => SignatoryController::class,
 ]);
 

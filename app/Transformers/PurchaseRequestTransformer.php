@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
+use App\Transformers\SignatoryTransformer;
 
 class PurchaseRequestTransformer extends TransformerAbstract
 {
@@ -26,6 +27,8 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'items',
         'bac_task',
         'end_user',
+        'requested_by',
+        'approved_by',
     ];
     
     /**
@@ -52,6 +55,8 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
             'key' => $table->id,
+            'requested_by_id' => $table->requested_by_id,
+            'approved_by_id' => $table->approved_by_id,
         ];
     }
 
@@ -80,6 +85,18 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->end_user) {
             return $this->item($table->end_user, new LibraryTransformer);
+        }
+    }
+    public function includeRequestedBy($table)
+    {
+        if ($table->requested_by) {
+            return $this->item($table->requested_by, new SignatoryTransformer);
+        }
+    }
+    public function includeApprovedBy($table)
+    {
+        if ($table->approved_by) {
+            return $this->item($table->approved_by, new SignatoryTransformer);
         }
     }
 }
