@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitOfMeasureSeeder::class);
         $this->call(ItemCategorySeeder::class);
         $this->call(ItemSeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(DivisionSeeder::class);
         $this->call(SectionSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(SignatorySeeder::class);
+        // $this->call(SignatorySeeder::class);
         // $this->call(FakerDataSeeders::class);
     }
 }

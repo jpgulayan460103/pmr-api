@@ -27,4 +27,9 @@ class Library extends Model
     {
         return $this->hasOne(Signatory::class, 'office_id');
     }
+
+    public function children()
+    {
+        return $this->hasMany(Library::class, 'parent_id')->where('library_type', '=', 'user_section');
+    }
 }

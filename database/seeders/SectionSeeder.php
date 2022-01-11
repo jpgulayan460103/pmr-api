@@ -3,7 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Library;
+use App\Models\User;
+use App\Models\Signatory;
 use Illuminate\Database\Seeder;
+use League\Csv\Reader;
 
 class SectionSeeder extends Seeder
 {
@@ -14,269 +17,89 @@ class SectionSeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
-            [
-                "section" => "Regional Sub-Committee for the Welfare of Children",
-                "title" => "RSCWC",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Legal Unit",
-                "title" => "LU",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Internal Audit Unit",
-                "title" => "IAU",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Social Marketing Unit",
-                "title" => "SMU",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Regional Juvenile Justice and Welfare Council",
-                "title" => "RJJWC",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Office of the Assistant Regional Director for Operations",
-                "title" => "OARDO",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Office of the Assistant Regional Director for Administration",
-                "title" => "OARDA",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Office of the Regional Director",
-                "title" => "ORD",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Secretary of the Director",
-                "title" => "SD",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Sustainable Livelihood Program Management Office",
-                "title" => "SLPMO",
-                "division" => "Promotive Services Division",
-            ],
-            [
-                "section" => "KALAHI CIDSS Program Management Office",
-                "title" => "KALAHI CIDSS",
-                "division" => "Promotive Services Division",
-            ],
-            [
-                "section" => "Enhanced Partnership Against Hunger and Poverty Program Management Office",
-                "title" => "EPHAP",
-                "division" => "Promotive Services Division",
-            ],
-            [
-                "section" => "Disaster Response and Rehabilitation Section",
-                "title" => "DRRS",
-                "division" => "Disaster Response Management Division",
-            ],
-            [
-                "section" => "Regional Resource Operations Section",
-                "title" => "RROS",
-                "division" => "Disaster Response Management Division",
-            ],
-            [
-                "section" => "Disaster Response Information Management Section",
-                "title" => "DRIMS",
-                "division" => "Disaster Response Management Division",
-            ],
-            [
-                "section" => "Social Technology Unit",
-                "title" => "STU",
-                "division" => "Office of the Regional Director",
-            ],
-            [
-                "section" => "Crisis Intervention Section",
-                "title" => "CIS",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Capability Building Section",
-                "title" => "CBS",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Technical Assistance and Resource Augmentation",
-                "title" => "TARA",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Community-Based Services Section",
-                "title" => "CBSS",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Social Pension Program Management Office",
-                "title" => "SPPMO",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Supplimentary Feeding Program Management Office",
-                "title" => "SFPMO",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Adoption Resource and Referral Section",
-                "title" => "ARRS",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Center Based Services",
-                "title" => "CBS",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Home for the Aged",
-                "title" => "HA",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Regional Rehabilitation Center for Youth",
-                "title" => "RRCY",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Center for Children with Special Needs",
-                "title" => "CCSN",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Reception and Study Center for Children",
-                "title" => "RSCC",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Home for Girls and Women",
-                "title" => "HGW",
-                "division" => "Protective Services Division",
-            ],
-            [
-                "section" => "Pantawid Pamilyang Pilipino Program Management Division",
-                "title" => "PPPPMD",
-                "division" => "Pantawid Pamilyang Pilipino Program Management",
-            ],
-            [
-                "section" => "Pantawid Pamilyang Pilipino Progam - City/Municipal Operations Office",
-                "title" => "PPPPCMOO",
-                "division" => "Pantawid Pamilyang Pilipino Program Management",
-            ],
-            [
-                "section" => "Pantawid Pamilyang Pilipino Program - Provincial Operations Office",
-                "title" => "PPPPPOO",
-                "division" => "Pantawid Pamilyang Pilipino Program Management",
-            ],
-            [
-                "section" => "Provincial Social Welfare and Development Office",
-                "title" => "PSWADO",
-                "division" => "Pantawid Pamilyang Pilipino Program Management",
-            ],
-            [
-                "section" => "Policy Development and Planning Section",
-                "title" => "PDPS",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "Anti-Red Tape Unit",
-                "title" => "ARTU",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "Standards Section",
-                "title" => "SS",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "Information and Communications Technology Management Section",
-                "title" => "ICTMS",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "National Households Targeting System Program Management Office",
-                "title" => "NHTSPMO",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "Unconditional Cash Transfer Program Management Office",
-                "title" => "UCTPMO",
-                "division" => "Policy and Plans Division",
-            ],
-            [
-                "section" => "Property Supply and Asset Management Section",
-                "title" => "PSAMS",
-                "division" => "Administrative Division",
-            ],
-            [
-                "section" => "Procurement Section",
-                "title" => "PS",
-                "division" => "Administrative Division",
-            ],
-            [
-                "section" => "Records and Archives Management Section",
-                "title" => "RAMS",
-                "division" => "Administrative Division",
-            ],
-            [
-                "section" => "General Services Section",
-                "title" => "GSS",
-                "division" => "Administrative Division",
-            ],
-            [
-                "section" => "Bids and Awards Committee Secretariat",
-                "title" => "BACS",
-                "division" => "Administrative Division",
-            ],
-            [
-                "section" => "Human Resource Planning and Performance Management Section",
-                "title" => "HRPPMS",
-                "division" => "Human Resource Management and Development Division",
-            ],
-            [
-                "section" => "Personnel Administration Section",
-                "title" => "PAS",
-                "division" => "Human Resource Management and Development Division",
-            ],
-            [
-                "section" => "Learning Development Section",
-                "title" => "LDS",
-                "division" => "Human Resource Management and Development Division",
-            ],
-            [
-                "section" => "Welfare Section",
-                "title" => "WS",
-                "division" => "Human Resource Management and Development Division",
-            ],
-            [
-                "section" => "Accounting Section",
-                "title" => "AS",
-                "division" => "Financial Management Division",
-            ],
-            [
-                "section" => "Budget Section",
-                "title" => "BS",
-                "division" => "Financial Management Division",
-            ],
-            [
-                "section" => "Cash Section",
-                "title" => "CS",
-                "division" => "Financial Management Division",
-            ],
+        $json = $this->json();
+        $json = json_decode($this->json(), true);
+        $i = 0;
 
-        ];
-
-        foreach ($categories as $category) {
+        foreach ($json as $key => $res) {
+            $data = [];
+            if($i == 0){
+                // var_dump($psgc_data);
+                $i++;
+                continue;
+            }
+            $category = [];
+            $category['name'] = isset($res[0]) ? $res[0] : "";
+            $category['title'] = isset($res[1]) ? $res[1] : "";
+            $category['division'] = isset($res[2]) ? $res[2] : "";
+            
+            
             $parent_lib = Library::where('library_type','user_division')->where('name', $category['division'])->first();
-            $lib = Library::create(['name' => $category['section'], 'title' => $category['title'], 'library_type' => 'user_section', 'parent_id' => $parent_lib->id]);
+            $lib = Library::create(['name' => $category['name'], 'title' => $category['title'], 'library_type' => 'user_section', 'parent_id' => $parent_lib->id]);
             echo $lib->library_type.": ".$lib->name." ".$lib->title."\n";
+
+            $username = isset($res[3]) ? $res[3] : "";
+            $user = User::where('username', $username)->first();
+            if($user && $username != ""){
+                $title = isset($res[4]) ? $res[4] : "";
+                $designation = isset($res[5]) ? $res[5] : "";
+                $signatory_type = isset($res[6]) ? $res[6] : "";
+                Signatory::create([
+                    'office_id' => $lib->id,
+                    'user_id' => $user->id,
+                    'designation' => $designation,
+                    'title' => $title,
+                    'signatory_type' => $signatory_type,
+                ]);
+            }
         }
     }
+
+
+
+    public function json()
+    {
+        $reader = Reader::createFromPath(public_path('/files/sections.csv'), 'r');
+        $results = $reader->getRecords();
+        $data = array();
+       
+        foreach ($results as $key => $row) {
+            $data[] = $row;
+        }
+
+        return $this->safe_json_encode($data);
+    }
+
+    private function safe_json_encode($value, $options = 0, $depth = 512){
+		$encoded = json_encode($value, $options, $depth);
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				return $encoded;
+			case JSON_ERROR_DEPTH:
+				return 'Maximum stack depth exceeded'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_STATE_MISMATCH:
+				return 'Underflow or the modes mismatch'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_CTRL_CHAR:
+				return 'Unexpected control character found';
+			case JSON_ERROR_SYNTAX:
+				return 'Syntax error, malformed JSON'; // or trigger_error() or throw new Exception()
+			case JSON_ERROR_UTF8:
+				$clean = $this->utf8ize($value);
+				return $this->safe_json_encode($clean, $options, $depth);
+			default:
+				return 'Unknown error'; // or trigger_error() or throw new Exception()
+
+		}
+    }
+    
+    private function utf8ize($d) {
+		if (is_array($d)) {
+			foreach ($d as $k => $v) {
+				$d[$k] = $this->utf8ize($v);
+			}
+		} else if (is_string ($d)) {
+			return utf8_encode($d);
+		}
+		return $d;
+	}
 }

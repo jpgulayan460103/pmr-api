@@ -16,11 +16,13 @@ class CreateFormProcessesTable extends Migration
         Schema::create('form_processes', function (Blueprint $table) {
             $table->id();
             $table->string('process_description')->nullable();
+            $table->text('form_routes')->nullable();
+            $table->string('form_type')->nullable();
             $table->unsignedBigInteger('office_id')->nullable();
             $table->string('office_type')->nullable();
-            $table->unsignedBigInteger('form_processable_id')->nullable();
-            $table->string('form_processable_type')->nullable();
             $table->timestamps();
+
+            $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
         });
     }
 

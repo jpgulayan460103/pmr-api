@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Library;
 use League\Csv\Reader;
 
 class UserSeeder extends Seeder
@@ -45,6 +46,9 @@ class UserSeeder extends Seeder
                 $data['firstname'] = isset($res[2]) ? $res[2] : "";
                 $data['middlename'] = isset($res[3]) ? $res[3] : "";
                 $data['lastname'] = isset($res[4]) ? $res[4] : "";
+                $office_title = isset($res[5]) ? $res[5] : "";
+
+                // $office = Library::
             }
             $user_information = $user->user_information()->create($data);
             echo "hhid: $user->username count: ".$i.config('services.ad.default_password')."\n";
