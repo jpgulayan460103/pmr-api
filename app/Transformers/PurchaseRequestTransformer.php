@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
 use App\Transformers\SignatoryTransformer;
+use App\Transformers\FormProccessTransformer;
 
 class PurchaseRequestTransformer extends TransformerAbstract
 {
@@ -29,6 +30,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'end_user',
         'requested_by',
         'approved_by',
+        'form_proccess',
     ];
     
     /**
@@ -97,6 +99,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->approved_by) {
             return $this->item($table->approved_by, new SignatoryTransformer);
+        }
+    }
+    public function includeFormProccess($table)
+    {
+        if ($table->form_proccess) {
+            return $this->item($table->form_proccess, new FormProccessTransformer);
         }
     }
 }

@@ -16,7 +16,6 @@ class SignatoryRepository implements SignatoryRepositoryInterface
         }
         $this->model($signatory);
         $this->perPage(200);
-        // $this->attach(['Signatory_category','unit_of_measure']);
     }
     
 }

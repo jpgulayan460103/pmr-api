@@ -15,7 +15,6 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         $this->model($purchaseRequest);
         $this->perPage(2);
-        $this->attach(['end_user']);
         $this->uuid = "purchase_request_uuid";
     }
 

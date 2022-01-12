@@ -13,10 +13,21 @@ class FormProcess extends Model
         'form_routes',
         'form_type',
         'office_id',
-        'office_type',
+        'form_processable_id',
+        'form_processable_type',
     ];
 
     protected $casts = [
         'form_routes' => 'array',
     ];
+
+    public function form_processable()
+    {
+        return $this->morphTo();
+    }
+
+    public function getFormRoutesAttribute($value)
+    {
+        return json_decode(json_decode($value));
+    }
 }

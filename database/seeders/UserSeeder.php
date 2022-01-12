@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Library;
 use League\Csv\Reader;
+use Spatie\Permission\Models\Permission;
 
 class UserSeeder extends Seeder
 {
@@ -16,16 +17,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // User::create([
-        //     'account_type' => 'app_account',
-        //     'username' => 'jpgulayan',
-        //     'password' => 'admin123',
-        // ]);
-
-
         $json = $this->json();
         $json = json_decode($this->json(), true);
         $i = 0;
+
+        $permissions = Permission::pluck('name');
 
         foreach ($json as $key => $res) {
             $data = [];
@@ -47,6 +43,7 @@ class UserSeeder extends Seeder
                 $data['middlename'] = isset($res[3]) ? $res[3] : "";
                 $data['lastname'] = isset($res[4]) ? $res[4] : "";
                 $office_title = isset($res[5]) ? $res[5] : "";
+                $user->givePermissionTo($permissions);
 
                 // $office = Library::
             }

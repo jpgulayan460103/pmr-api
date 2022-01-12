@@ -79,4 +79,13 @@ class PurchaseRequest extends Model
     {
         return $this->belongsTo(Signatory::class);
     }
+
+    public function form_proccess()
+    {
+        return $this->morphOne(FormProcess::class, 'form_processable');
+    }
+    public function form_routes()
+    {
+        return $this->morphOne(FormRoute::class, 'form_routable');
+    }
 }

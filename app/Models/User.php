@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\UserInformation;
+use App\Models\Signatory;
 
 class User extends Authenticatable
 {
@@ -65,5 +66,10 @@ class User extends Authenticatable
     public function findForPassport($username)
     {
         return $this->where('username', $username)->first();
+    }
+
+    public function signatories()
+    {
+        return $this->hasMany(Signatory::class);
     }
 }

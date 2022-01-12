@@ -16,7 +16,7 @@ Trait HasCrud {
         return $this->model = $model;
     }
     
-    public function modelAttach()
+    public function modelQuery()
     {
         return $this->model = $this->model->with($this->attach);
     }
@@ -46,28 +46,28 @@ Trait HasCrud {
 
     public function getAll($request) : object
     {
-        return $this->modelAttach()->get();
+        return $this->modelQuery()->get();
     }
 
 
     public function getAllPaginated($request) : object
     {
-        return $this->modelAttach()->paginate($this->perPage);
+        return $this->modelQuery()->paginate($this->perPage);
     }
  
     public function getById($id) : object
     {
-        return $this->modelAttach()->find($id);
+        return $this->modelQuery()->where('id',$id)->first();
     }
 
     public function getByUuid($uuid) : object
     {
-        return $this->modelAttach()->where($this->uuid,$uuid)->first();
+        return $this->modelQuery()->where($this->uuid,$uuid)->first();
     }
 
     public function getBy($field, $value) : object
     {
-        return $this->modelAttach()->where($field, $value)->first();
+        return $this->modelQuery()->where($field, $value)->first();
     }
  
     public function create($data) : object

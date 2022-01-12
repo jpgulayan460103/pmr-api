@@ -29,7 +29,6 @@ class FormProcessSeeder extends Seeder
             ]),
             'form_type' => 'purchase_request',
             'office_id' => $office->id,
-            'office_type' => $office->library_type,
         ];
         FormProcess::create($data);
     }

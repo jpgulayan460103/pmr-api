@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePurchaseRequest;
 use App\Models\PurchaseRequest;
+use App\Repositories\FormProcessRepository;
+use App\Repositories\FormRouteRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Transformers\PurchaseRequestTransformer;
+use App\Transformers\FormProccessTransformer;
 use App\Repositories\LibraryRepository;
 use App\Repositories\SignatoryRepository;
 use Illuminate\Http\Request;
+use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 use PDF;
 
 class PurchaseRequestController extends Controller
@@ -29,8 +33,10 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
+        $this->purchaseRequestRepository->attach(['form_proccess','end_user']);
         $purchase_request = $this->purchaseRequestRepository->getAll($request);
-        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('end_user');
+        // return $purchase_request;
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_proccess, end_user');
     }
 
     /**
@@ -51,7 +57,12 @@ class PurchaseRequestController extends Controller
      */
     public function store(CreatePurchaseRequest $request)
     {
-        return $this->purchaseRequestRepository->createWithItems($request);
+        $created_purchase_request =  $this->purchaseRequestRepository->createWithItems($request);
+        $formProcess = (new FormProcessRepository)->purchaseRequest($created_purchase_request);
+        $formProcessArray = fractal($formProcess, new FormProccessTransformer)->toArray();
+        $formRoute = (new FormRouteRepository)->purchaseRequest($created_purchase_request, $formProcessArray);
+        return $created_purchase_request;
+        
     }
 
     /**
@@ -148,7 +159,7 @@ class PurchaseRequestController extends Controller
         $purchase_request_preview['requested_by'] = (new SignatoryRepository)->attach(['user.user_information'])->getBy('signatory_type', $purchase_request_preview['requestedBy']);
         $purchase_request_preview['approved_by'] = (new SignatoryRepository)->attach(['user.user_information'])->getBy('signatory_type', $purchase_request_preview['approvedBy']);
         $purchase_request_preview['count_items'] = $count;
-        $pdf = PDF::loadView('pdf.purchase-request',$purchase_request_preview);
+        $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request_preview);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         return $pdf->stream('purchase-request-preview.pdf');

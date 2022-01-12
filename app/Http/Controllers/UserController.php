@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
 use App\Transformers\UserTransformer;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class UserController extends Controller
@@ -59,9 +60,17 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->getById($id);
+        $user = $this->userRepository->attach(['user_information','signatories','permissions'])->getById($id);
         return $user;
         // return fractal($User, new UserTransformer)->parseIncludes('unit_of_measure,User_category');
+    }
+
+    public function auth()
+    {
+        $auth_user = Auth::user();
+        $user = $this->userRepository->attach(['user_information','signatories','permissions'])->getById($auth_user->id);
+        // sleep(5);
+        return $user;
     }
 
     /**

@@ -14,7 +14,6 @@ class UserRepository implements UserRepositoryInterface
     {
         $this->model($user);
         $this->perPage(2);
-        $this->attach(['user_information.section']);
     }
 
     public function register($data)
@@ -24,6 +23,9 @@ class UserRepository implements UserRepositoryInterface
         }
         $user = $this->create($data);
         $user_information = $user->user_information()->create($data);
+        $data['office_id'] = $data['section_id'];
+        $data['signatory_type'] = "Personnel";
+        $user_information = $user->signatories()->create($data);
         $user->user_information_id = $user_information->id;
         $user->save();
         return $user;
