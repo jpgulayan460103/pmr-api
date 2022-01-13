@@ -62,14 +62,10 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => $approved_by->designation,
             "office_name" => $approved_by_office->name,
         ];
-        // $routes[] = $bacs_office->id;
-        // $routes[] = $budget_office->id;
-        // $routes[] = $approved_by->office_id;
         
         $data = [
             'process_description' => "Purchase Request Routing",
             'form_type' => "purchase_request",
-            // 'form_routes' => json_encode($routes),
             'office_id' => $origin_office->id
         ];
         
