@@ -24,7 +24,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "status" => "pending",
             "remarks" => "For Approval",
             "from_office_id" => $created_purchase_request->end_user_id,
-            "to_office_id" => $formProcess['form_routes'][0]->office_id,
+            "to_office_id" => $formProcess['form_routes'][0]['office_id'],
             "form_process_id" => $formProcess['id'],
         ];
         $created_route = $created_purchase_request->form_routes()->create($data);

@@ -69,11 +69,13 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $data = [
             'process_description' => "Purchase Request Routing",
             'form_type' => "purchase_request",
-            'form_routes' => json_encode($routes),
+            // 'form_routes' => json_encode($routes),
             'office_id' => $origin_office->id
         ];
         
         $created_process = $created_purchase_request->form_proccess()->create($data);
+        $created_process->form_routes = $routes;
+        $created_process->save();
         return $created_process;
     }
 }

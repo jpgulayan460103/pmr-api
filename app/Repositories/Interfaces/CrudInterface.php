@@ -12,6 +12,8 @@ interface CrudInterface {
 
     public function getByUuid($uuid);
  
+    public function getBy($field, $value);
+    
     public function create(array $data);
 
     public function createOrUpdate($id = null);
@@ -22,6 +24,5 @@ interface CrudInterface {
 
     public function showDeleted($id = null);
 
-    public function getBy($field, $value);
 
 }

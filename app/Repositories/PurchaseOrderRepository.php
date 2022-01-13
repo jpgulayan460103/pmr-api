@@ -13,7 +13,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
     {
         $this->model($purchaseOrder);
         $this->perPage(2);
-        $this->attach(['purchase_request']);
+        $this->attach('purchase_request');
     }
     
 }

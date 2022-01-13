@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\DB;
 class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 {
     use HasCrud;
-    public function __construct(PurchaseRequest $purchaseRequest)
+    public function __construct(PurchaseRequest $purchaseRequest = null)
     {
+        if(!($purchaseRequest instanceof PurchaseRequest)){
+            $purchaseRequest = new PurchaseRequest;
+        }
         $this->model($purchaseRequest);
         $this->perPage(2);
         $this->uuid = "purchase_request_uuid";
@@ -35,14 +38,5 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             throw $th;
         }
     }
-
-    // public function create($data): object
-    // {
-    //     $requested_by = (new SignatoryRepository)->getBy('signatory_type', $data['requestedBy']);
-    //     $approved_by = (new SignatoryRepository)->getBy('signatory_type', $data['approvedBy']);
-    //     $data['requested_by_id'] = $requested_by;
-    //     $data['approved_by_id'] = $approved_by;
-    //     return $this->model->create($data);
-    // }
 }
 

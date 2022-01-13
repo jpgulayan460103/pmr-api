@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->attach(['user_information','signatories','permissions'])->getById($id);
+        $user = $this->userRepository->attach('user_information,signatories,permissions')->getById($id);
         return $user;
         // return fractal($User, new UserTransformer)->parseIncludes('unit_of_measure,User_category');
     }
@@ -68,7 +68,7 @@ class UserController extends Controller
     public function auth()
     {
         $auth_user = Auth::user();
-        $user = $this->userRepository->attach(['user_information','signatories','permissions'])->getById($auth_user->id);
+        $user = $this->userRepository->attach('user_information,signatories,permissions')->getById($auth_user->id);
         // sleep(5);
         return $user;
     }

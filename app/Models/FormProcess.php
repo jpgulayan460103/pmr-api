@@ -25,9 +25,5 @@ class FormProcess extends Model
     {
         return $this->morphTo();
     }
-
-    public function getFormRoutesAttribute($value)
-    {
-        return json_decode(json_decode($value));
-    }
+    
 }

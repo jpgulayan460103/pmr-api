@@ -40,7 +40,7 @@ Trait HasCrud {
      */
     public function attach($attach)
     {
-        $this->attach = $attach;
+        $this->attach = explode(',',preg_replace('/\s+/', '', $attach));
         return $this;
     }
 
@@ -69,7 +69,7 @@ Trait HasCrud {
     {
         return $this->modelQuery()->where($field, $value)->first();
     }
- 
+
     public function create($data) : object
     {
         return $this->model->create($data);

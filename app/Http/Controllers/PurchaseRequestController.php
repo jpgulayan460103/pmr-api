@@ -33,7 +33,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $this->purchaseRequestRepository->attach(['form_proccess','end_user']);
+        $this->purchaseRequestRepository->attach('form_proccess,end_user');
         $purchase_request = $this->purchaseRequestRepository->getAll($request);
         // return $purchase_request;
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_proccess, end_user');
@@ -73,10 +73,11 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $this->purchaseRequestRepository->attach(['purchase_orders', 'items.unit_of_measure', 'end_user','requested_by.user.user_information', 'approved_by.user.user_information']);
-        $purchase_request = $this->purchaseRequestRepository->getByUuid($id);
-        // return $purchase_request;
-        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('items.unit_of_measure,end_user,requested_by.user.user_information, approved_by.user.user_information')->toArray();
+        $attach = "form_proccess,purchase_orders,items.unit_of_measure,end_user,requested_by.user.user_information,approved_by.user.user_information";
+        $this->purchaseRequestRepository->attach($attach);
+        $purchase_request = $this->purchaseRequestRepository->getById($id);
+        return $purchase_request;
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();
     }
 
     /**
@@ -156,8 +157,8 @@ class PurchaseRequestController extends Controller
             $purchase_request_preview['items']['data'][$key]['unit_of_measure'] = (new LibraryRepository)->getById($purchase_request_preview['items']['data'][$key]['unit_of_measure_id']);
         }
         
-        $purchase_request_preview['requested_by'] = (new SignatoryRepository)->attach(['user.user_information'])->getBy('signatory_type', $purchase_request_preview['requestedBy']);
-        $purchase_request_preview['approved_by'] = (new SignatoryRepository)->attach(['user.user_information'])->getBy('signatory_type', $purchase_request_preview['approvedBy']);
+        $purchase_request_preview['requested_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['requestedBy']);
+        $purchase_request_preview['approved_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['approvedBy']);
         $purchase_request_preview['count_items'] = $count;
         $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request_preview);
         $pdf->shrink_tables_to_fit = 1.4;

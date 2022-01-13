@@ -13,6 +13,6 @@ class ItemRepository implements ItemRepositoryInterface
     {
         $this->model($item);
         $this->perPage(200);
-        $this->attach(['item_category','unit_of_measure']);
+        $this->attach('item_category,unit_of_measure');
     }
 }
