@@ -26,11 +26,6 @@ class CreateUserInformationTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
-
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_information_id')->nullable();
-            $table->foreign('user_information_id')->references('id')->on('user_informations')->onDelete('cascade');
-        });
         
     }
 
@@ -41,10 +36,6 @@ class CreateUserInformationTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['user_information_id']);
-            $table->dropColumn('user_information_id');
-        });
         Schema::dropIfExists('user_informations');
     }
 }

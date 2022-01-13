@@ -121,7 +121,7 @@ class AuthController extends Controller
             return [
                 "status" => "error",
                 "status_code" => 422,
-                "message" => "Invalid login details"
+                "message" => "Invalid AD login details"
             ];
         }
 

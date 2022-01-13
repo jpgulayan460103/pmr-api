@@ -20,10 +20,8 @@ class UserInformation extends Model
         'middlename',
         'lastname',
         'user_dn',
-        'signatory_id',
         'cellphone_number',
         'email_address',
-        'section_id',
     ];
 
     public function user()

@@ -34,7 +34,6 @@ class User extends Authenticatable
         'password',
         'account_type',
         'is_active',
-        'user_information_id',
     ];
 
     /**

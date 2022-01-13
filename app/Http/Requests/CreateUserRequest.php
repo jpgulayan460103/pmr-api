@@ -32,7 +32,7 @@ class CreateUserRequest extends FormRequest
             'middlename' => [new AllowedStringName],
             'password' => 'required',
             'account_type' => 'required',
-            'section_id' => 'required',
+            'office_id' => 'required',
             'cellphone_number' => ['required','digits:11', new ValidCellphoneNumber],
             'email_address' => 'required|email',
         ];

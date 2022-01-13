@@ -28,4 +28,9 @@ class Signatory extends Model
     {
         return $this->belongsTo(Library::class);
     }
+
+    public function setSignatoryTypeAttribute($value)
+    {
+        $this->attributes['signatory_type'] = ( isset($value) && trim($value) != "") ? $value: "Personnel";
+    }
 }

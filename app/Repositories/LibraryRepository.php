@@ -16,7 +16,6 @@ class LibraryRepository implements LibraryRepositoryInterface
         }
         $this->model($library);
         $this->perPage(200);
-        // $this->attach('Library_category,unit_of_measure');
     }
     
 }

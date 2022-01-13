@@ -4,6 +4,10 @@ namespace App\Repositories\Interfaces;
 
 interface CrudInterface {
     
+    public function model($model);
+
+    public function modelQuery();
+    
     public function getAll($request);
 
     public function getAllPaginated($request);

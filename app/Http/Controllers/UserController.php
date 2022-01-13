@@ -61,8 +61,8 @@ class UserController extends Controller
     public function show($id)
     {
         $user = $this->userRepository->attach('user_information,signatories,permissions')->getById($id);
-        return $user;
-        // return fractal($User, new UserTransformer)->parseIncludes('unit_of_measure,User_category');
+        // return $user;
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,signatories,permissions');
     }
 
     public function auth()

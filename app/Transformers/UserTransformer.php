@@ -4,6 +4,8 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\UserInformationTransformer;
+use App\Transformers\SignatoryTransformer;
+use App\Transformers\PermissionTransformer;
 
 class UserTransformer extends TransformerAbstract
 {
@@ -22,7 +24,9 @@ class UserTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'user_information'
+        'user_information',
+        'signatories',
+        'permissions',
     ];
     
     /**
@@ -45,6 +49,18 @@ class UserTransformer extends TransformerAbstract
     {
         if ($table->user_information) {
             return $this->item($table->user_information, new UserInformationTransformer);
+        }
+    }
+    public function includeSignatories($table)
+    {
+        if ($table->signatories) {
+            return $this->collection($table->signatories, new SignatoryTransformer);
+        }
+    }
+    public function includePermissions($table)
+    {
+        if ($table->permissions) {
+            return $this->collection($table->permissions, new PermissionTransformer);
         }
     }
 }

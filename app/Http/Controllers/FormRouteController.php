@@ -3,18 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\FormRoute;
+use App\Repositories\FormRouteRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FormRouteController extends Controller
 {
+
+    private $formRouteRepository;
+
+    public function __construct(FormRouteRepository $formRouteRepository)
+    {
+        $this->formRouteRepository = $formRouteRepository;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    // public function index()
+    // {
+    //     //
+    // }
+
+    public function index(Request $request)
     {
-        //
+        $user = Auth::user();
+        $offices_ids = $user->signatories->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
+
+        return $this->formRouteRepository->modelQuery();
+        return $this->modelQuery()->get();
     }
 
     /**

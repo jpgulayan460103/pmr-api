@@ -62,10 +62,10 @@ class PurchaseRequestTransformer extends TransformerAbstract
         ];
     }
 
-    public function includePurchaseOrder($table)
+    public function includePurchaseOrders($table)
     {
-        if ($table->purchase_order) {
-            return $this->item($table->purchase_order, new LibraryTransformer);
+        if ($table->purchase_orders) {
+            return $this->item($table->purchase_orders, new LibraryTransformer);
         }
     }
 
@@ -101,7 +101,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             return $this->item($table->approved_by, new SignatoryTransformer);
         }
     }
-    public function includeFormProccess($table)
+    public function includeFormProcess($table)
     {
         if ($table->form_process) {
             return $this->item($table->form_process, new FormProcessTransformer);

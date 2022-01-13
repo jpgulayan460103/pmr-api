@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePurchaseRequest;
 use App\Models\PurchaseRequest;
-use App\Repositories\PurchaseRequestRepository;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Repositories\LibraryRepository;
 use App\Repositories\SignatoryRepository;
+use App\Repositories\PurchaseRequestRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 use PDF;
 
@@ -30,8 +32,12 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
+        $filters = [];
+        $user = Auth::user();
+        $offices_ids = $user->signatories->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
         $this->purchaseRequestRepository->attach('form_process,end_user');
-        $purchase_request = $this->purchaseRequestRepository->getAll($request);
+        $purchase_request = $this->purchaseRequestRepository->search($request, $filters);
         // return $purchase_request;
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_process, end_user');
     }
@@ -67,10 +73,9 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process, purchase_orders, items.unit_of_measure, end_user, requested_by.user.user_information, approved_by.user.user_information";
+        $attach = "form_process, items.unit_of_measure, end_user, requested_by.user.user_information, approved_by.user.user_information";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
-        // return $purchase_request;
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();
     }
 
@@ -108,9 +113,10 @@ class PurchaseRequestController extends Controller
         //
     }
 
-    public function pdf(Request $request, $id)
+    public function pdf(Request $request, $uuid)
     {
-        $purchase_request = $this->show($id);
+        $purchase_request = $this->purchaseRequestRepository->getByUuid($uuid);
+        $purchase_request = $this->show($purchase_request->id);
         $count = 0;
         foreach ($purchase_request['items']['data'] as $key => $item) {
             $count++;

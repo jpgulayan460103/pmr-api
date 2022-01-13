@@ -24,6 +24,12 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $this->uuid = "purchase_request_uuid";
     }
 
+    public function search($request, $filters)
+    {
+        $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
+        return $this->modelQuery()->get();
+    }
+
     public function createPurchaseRequest($request)
     {
         DB::beginTransaction();
