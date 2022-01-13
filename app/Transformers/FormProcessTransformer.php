@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-class FormProccessTransformer extends TransformerAbstract
+class FormProcessTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include

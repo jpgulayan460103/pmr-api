@@ -73,7 +73,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             'office_id' => $origin_office->id
         ];
         
-        $created_process = $created_purchase_request->form_proccess()->create($data);
+        $created_process = $created_purchase_request->form_process()->create($data);
         $created_process->form_routes = $routes;
         $created_process->save();
         return $created_process;

@@ -8,7 +8,7 @@ use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Transformers\PurchaseRequestTransformer;
-use App\Transformers\FormProccessTransformer;
+use App\Transformers\FormProcessTransformer;
 use App\Repositories\LibraryRepository;
 use App\Repositories\SignatoryRepository;
 use Illuminate\Http\Request;
@@ -33,10 +33,10 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $this->purchaseRequestRepository->attach('form_proccess,end_user');
+        $this->purchaseRequestRepository->attach('form_process,end_user');
         $purchase_request = $this->purchaseRequestRepository->getAll($request);
         // return $purchase_request;
-        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_proccess, end_user');
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_process, end_user');
     }
 
     /**
@@ -59,7 +59,7 @@ class PurchaseRequestController extends Controller
     {
         $created_purchase_request =  $this->purchaseRequestRepository->createWithItems($request);
         $formProcess = (new FormProcessRepository)->purchaseRequest($created_purchase_request);
-        $formProcessArray = fractal($formProcess, new FormProccessTransformer)->toArray();
+        $formProcessArray = fractal($formProcess, new FormProcessTransformer)->toArray();
         $formRoute = (new FormRouteRepository)->purchaseRequest($created_purchase_request, $formProcessArray);
         return $created_purchase_request;
         
@@ -73,7 +73,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_proccess,purchase_orders,items.unit_of_measure,end_user,requested_by.user.user_information,approved_by.user.user_information";
+        $attach = "form_process,purchase_orders,items.unit_of_measure,end_user,requested_by.user.user_information,approved_by.user.user_information";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return $purchase_request;
