@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\SignatoryTransformer;
+use App\Models\Library;
 class LibraryTransformer extends TransformerAbstract
 {
     /**
@@ -29,7 +30,7 @@ class LibraryTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(Library $table)
     {
         return [
             'id' => $table->id,
@@ -41,14 +42,14 @@ class LibraryTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeParent($table)
+    public function includeParent(Library $table)
     {
         if ($table->parent) {
             return $this->item($table->parent, new LibraryTransformer);
         }
     }
 
-    public function includeSignatory($table)
+    public function includeSignatory(Library $table)
     {
         if ($table->signatory) {
             return $this->item($table->signatory, new SignatoryTransformer);

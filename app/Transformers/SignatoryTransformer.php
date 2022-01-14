@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\UserProtectedTransformer;
+use App\Models\Signatory;
 
 class SignatoryTransformer extends TransformerAbstract
 {
@@ -30,7 +31,7 @@ class SignatoryTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(Signatory $table)
     {
         return [
             'id' => $table->id,
@@ -43,7 +44,7 @@ class SignatoryTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeUser($table)
+    public function includeUser(Signatory $table)
     {
         if ($table->user) {
             return $this->item($table->user, new UserProtectedTransformer);

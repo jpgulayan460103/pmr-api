@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Library;
 
 class FormRoute extends Model
 {
@@ -13,6 +14,8 @@ class FormRoute extends Model
         'route_type',
         'status',
         'remarks',
+        'remarks_by_id',
+        'origin_office_id',
         'from_office_id',
         'to_office_id',
         'form_routable_id',
@@ -23,5 +26,15 @@ class FormRoute extends Model
     public function form_routable()
     {
         return $this->morphTo();
+    }
+
+    public function end_user()
+    {
+        return $this->belongsTo(Library::class, 'origin_office_id');
+    }
+
+    public function form_process()
+    {
+        return $this->belongsTo(FormProcess::class);
     }
 }

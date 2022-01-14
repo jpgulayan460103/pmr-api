@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\LibraryTransformer;
+use App\Models\PurchaseRequestItem;
 
 class PurchaseRequestItemTransformer extends TransformerAbstract
 {
@@ -30,7 +31,7 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(PurchaseRequestItem $table)
     {
         return [
             'item_name' => $table->item_name,
@@ -44,7 +45,7 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeUnitOfMeasure($table)
+    public function includeUnitOfMeasure(PurchaseRequestItem $table)
     {
         if ($table->unit_of_measure) {
             return $this->item($table->unit_of_measure, new LibraryTransformer);

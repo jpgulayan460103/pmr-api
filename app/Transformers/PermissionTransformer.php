@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use Spatie\Permission\Models\Permission;
 
 class PermissionTransformer extends TransformerAbstract
 {
@@ -29,7 +30,7 @@ class PermissionTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(Permission $table)
     {
         return [
             'id' => $table->id,

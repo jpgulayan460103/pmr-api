@@ -18,16 +18,28 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $this->perPage(200);
     }
 
-    public function purchaseRequest($created_purchase_request, $formProcess){
+    public function purchaseRequest($purchase_request, $formProcess, $step = 0){
         $data = [
             "route_type" => "purchase_request",
             "status" => "pending",
             "remarks" => "For Approval",
-            "from_office_id" => $created_purchase_request->end_user_id,
-            "to_office_id" => $formProcess['form_routes'][0]['office_id'],
+            "origin_office_id" => $purchase_request->end_user_id,
+            "from_office_id" => $purchase_request->end_user_id,
+            "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
             "form_process_id" => $formProcess['id'],
         ];
-        $created_route = $created_purchase_request->form_routes()->create($data);
+        $created_route = $purchase_request->form_routes()->create($data);
         return $created_route;
+    }
+
+    public function approve()
+    {
+        # code...
+    }
+
+
+    public function getForApproval($request, $filters)
+    {
+        return $this->modelQuery()->where('status','pending')->whereIn('to_office_id',$filters['offices_ids'])->get();
     }
 }

@@ -35,7 +35,7 @@ Route::middleware(['auth:api'])->group(function () {
         'items' => ItemController::class,
         'users' => UserController::class,
         'signatories' => SignatoryController::class,
-        // 'form-routes' => FormRouteController::class,
+        'form-routes' => FormRouteController::class,
     ]);
 });
 
@@ -46,18 +46,27 @@ Route::group(['prefix' => '/libraries'], function () {
 
 Route::group(['prefix' => '/pdf'], function () {
     Route::group(['prefix' => '/preview'], function () {
-        Route::get('/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview']);
-        Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview']);
+        Route::get('/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview'])->name('api.purchase-requests.pdf.preview');
+        Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview'])->name('api.purchase-requests.pdf.validate');
     });
 
     Route::group(['prefix' => '/purchase-requests'], function () {
-        Route::get('/{id}', [PurchaseRequestController::class, 'pdf']);
+        Route::get('/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
     });
 });
 
 
 Route::group(['prefix' => '/purchase-requests'], function () {
     Route::post('/{id}/approve', [PurchaseRequestController::class, 'approve']);
+});
+
+Route::group(['prefix' => '/form', 'middleware' => 'auth:api'], function () {
+    Route::group(['prefix' => '/routes'], function () {
+        Route::get('/requests/pending', [FormRouteController::class, 'forApproval']);
+        Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
+        Route::get('/requests/rejected', [FormRouteController::class, 'forApproval']);
+        Route::get('/requests/approved', [FormRouteController::class, 'forApproval']);
+    }); 
 });
 
 Route::resources([

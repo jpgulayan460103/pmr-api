@@ -134,7 +134,9 @@ class PurchaseRequestController extends Controller
 
     public function validatePdfPreview(CreatePurchaseRequest $request)
     {
-        # code...
+        return [
+            'url' => route('api.purchase-requests.pdf.preview')
+        ];
     }
 
 

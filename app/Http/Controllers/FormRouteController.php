@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\FormRoute;
+use App\Models\User;
 use App\Repositories\FormRouteRepository;
+use App\Transformers\FormRouteTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,12 +30,7 @@ class FormRouteController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
-        $offices_ids = $user->signatories->pluck('office_id');
-        $filters['offices_ids'] = $offices_ids;
 
-        return $this->formRouteRepository->modelQuery();
-        return $this->modelQuery()->get();
     }
 
     /**
@@ -100,5 +97,35 @@ class FormRouteController extends Controller
     public function destroy(FormRoute $formRoute)
     {
         //
+    }
+
+    public function forApproval(Request $request)
+    {
+        $user = Auth::user();
+        // $user = User::find(3);
+        $offices_ids = $user->signatories->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
+        $routes = $this->formRouteRepository->attach('form_routable,end_user')->getForApproval($request, $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user');
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+        $formProcess = $formRoute->form_process;
+        $formRoutes = $formProcess->form_routes;
+        $step = 0;
+        foreach ($formRoutes as $key => $route) {
+            if($formRoute->from_office_id == $route['office_id']){
+                $formRoutes[$key]['status'] = "approve";
+            }else{
+                $step++;
+            }
+        }
+        $formRoute->form_process->form_routes = $formRoutes;
+        $formRoute->form_process->save();
+        // $test = $formRoute->replicate();
+        // $test->origin_office_id = 1;
+        return $formRoute;
     }
 }

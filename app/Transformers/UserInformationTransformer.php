@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\LibraryTransformer;
+use App\Models\UserInformation;
 
 class UserInformationTransformer extends TransformerAbstract
 {
@@ -30,7 +31,7 @@ class UserInformationTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(UserInformation $table)
     {
         return [
             'user_id' => $table->user_id,
@@ -47,7 +48,7 @@ class UserInformationTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeSection($table)
+    public function includeSection(UserInformation $table)
     {
         if ($table->section) {
             return $this->item($table->section, new LibraryTransformer);

@@ -27,46 +27,60 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $requested_by_office = (new LibraryRepository)->getById($requested_by->office_id);
         $approved_by = (new SignatoryRepository)->getById($created_purchase_request->approved_by_id);
         $approved_by_office = (new LibraryRepository)->getById($approved_by->office_id);
-        $bacs_office = (new LibraryRepository)->getBy('title','BACS');
-        $budget_office = (new LibraryRepository)->getBy('title','BS');
+        $bacs_office = (new LibraryRepository)->getUserSectionBy('title','BACS');
+        $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
         $routes = [];
+
+        $routes[] = [
+            "office_id" => $origin_office->id,
+            "office_name" => $origin_office->name,
+            "label" => $origin_office->name,
+            "status" => "pending",
+        ];
 
         //skip division chief if parent is ORD, OARDA and OARDO
         if($origin_office->parent->title != "ORD" && $origin_office->parent->title != "OARDA" && $origin_office->parent->title != "OARDO"){
+            $division = (new LibraryRepository)->getUserSectionBy('title',$origin_office->parent->title);
             $routes[] = [
-                "office_id" => $origin_office->parent->id,
-                "office_name" => $origin_office->parent->name,
-                "label" => "Division Chief"
+                "office_id" => $division->id,
+                "office_name" => $division->name,
+                "label" => $division->name,
+                "status" => "pending",
             ];
         }
         $routes[] = [
             "office_id" => $requested_by->office_id,
             "label" => $requested_by->designation,
             "office_name" => $requested_by_office->name,
+            "status" => "pending",
         ];
 
         $routes[] = [
             "office_id" => $bacs_office->id,
             "label" => $bacs_office->name,
             "office_name" => $bacs_office->name,
+            "status" => "pending",
         ];
 
         $routes[] = [
             "office_id" => $budget_office->id,
             "label" => $budget_office->name,
             "office_name" => $budget_office->name,
+            "status" => "pending",
         ];
 
         $routes[] = [
             "office_id" => $approved_by->office_id,
             "label" => $approved_by->designation,
             "office_name" => $approved_by_office->name,
+            "status" => "pending",
         ];
         
         $data = [
             'process_description' => "Purchase Request Routing",
             'form_type' => "purchase_request",
-            'office_id' => $origin_office->id
+            'office_id' => $origin_office->id,
+            "status" => "pending",
         ];
         
         $created_process = $created_purchase_request->form_process()->create($data);

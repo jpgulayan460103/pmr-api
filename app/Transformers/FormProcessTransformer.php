@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
+use App\Models\FormProcess;
 
 class FormProcessTransformer extends TransformerAbstract
 {
@@ -29,7 +30,7 @@ class FormProcessTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(FormProcess $table)
     {
         return [
             'id' => $table->id,

@@ -59,6 +59,8 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'key' => $table->id,
             'requested_by_id' => $table->requested_by_id,
             'approved_by_id' => $table->approved_by_id,
+            'file' => route('api.purchase-requests.pdf', ['id' => $table->purchase_request_uuid]),
+            'particulars' => $table->purpose."\r\n"."amounting to ".number_format($table->total_cost, 2), // set common field for all forms
         ];
     }
 

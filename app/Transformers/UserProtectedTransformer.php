@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\UserInformationTransformer;
+use App\Models\User;
 
 
 class UserProtectedTransformer extends TransformerAbstract
@@ -31,7 +32,7 @@ class UserProtectedTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(User $table)
     {
         return [
             // 'account_type' => $table->account_type,
@@ -41,7 +42,7 @@ class UserProtectedTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeUserInformation($table)
+    public function includeUserInformation(User $table)
     {
         if ($table->user_information) {
             return $this->item($table->user_information, new UserInformationTransformer);

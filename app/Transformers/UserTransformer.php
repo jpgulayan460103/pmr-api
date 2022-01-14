@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Transformers\UserInformationTransformer;
 use App\Transformers\SignatoryTransformer;
 use App\Transformers\PermissionTransformer;
+use App\Models\User;
 
 class UserTransformer extends TransformerAbstract
 {
@@ -34,7 +35,7 @@ class UserTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform($table)
+    public function transform(User $table)
     {
         return [
             'username' => $table->username,
@@ -45,19 +46,19 @@ class UserTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeUserInformation($table)
+    public function includeUserInformation(User $table)
     {
         if ($table->user_information) {
             return $this->item($table->user_information, new UserInformationTransformer);
         }
     }
-    public function includeSignatories($table)
+    public function includeSignatories(User $table)
     {
         if ($table->signatories) {
             return $this->collection($table->signatories, new SignatoryTransformer);
         }
     }
-    public function includePermissions($table)
+    public function includePermissions(User $table)
     {
         if ($table->permissions) {
             return $this->collection($table->permissions, new PermissionTransformer);
