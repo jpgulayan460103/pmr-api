@@ -36,10 +36,10 @@ class PurchaseRequestController extends Controller
         $user = Auth::user();
         $offices_ids = $user->signatories->pluck('office_id');
         $filters['offices_ids'] = $offices_ids;
-        $this->purchaseRequestRepository->attach('form_process,end_user');
+        $this->purchaseRequestRepository->attach('form_process,end_user,form_routes.to_office');
         $purchase_request = $this->purchaseRequestRepository->search($request, $filters);
         // return $purchase_request;
-        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_process, end_user');
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_process, end_user,form_routes.to_office');
     }
 
     /**

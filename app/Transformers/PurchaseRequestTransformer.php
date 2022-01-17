@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
 use App\Transformers\SignatoryTransformer;
 use App\Transformers\FormProcessTransformer;
+use App\Transformers\FormRouteTransformer;
 
 class PurchaseRequestTransformer extends TransformerAbstract
 {
@@ -31,6 +32,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'requested_by',
         'approved_by',
         'form_process',
+        'form_routes',
     ];
     
     /**
@@ -61,6 +63,8 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'approved_by_id' => $table->approved_by_id,
             'file' => route('api.purchase-requests.pdf', ['id' => $table->purchase_request_uuid]),
             'particulars' => $table->purpose."\r\n"."amounting to ".number_format($table->total_cost, 2), // set common field for all forms
+            'process_complete_status' => $table->process_complete_status == 1,
+            'process_complete_date' => $table->process_complete_date,
         ];
     }
 
@@ -107,6 +111,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->form_process) {
             return $this->item($table->form_process, new FormProcessTransformer);
+        }
+    }
+    public function includeFormRoutes($table)
+    {
+        if ($table->form_routes) {
+            return $this->collection($table->form_routes, new FormRouteTransformer);
         }
     }
 }

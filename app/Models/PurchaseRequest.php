@@ -31,6 +31,8 @@ class PurchaseRequest extends Model
         'bac_task_id',    
         'requested_by_id',
         'approved_by_id',
+        'process_complete_status',
+        'process_complete_date',
     ];
     public static function boot()
     {
@@ -86,6 +88,6 @@ class PurchaseRequest extends Model
     }
     public function form_routes()
     {
-        return $this->morphOne(FormRoute::class, 'form_routable');
+        return $this->morphMany(FormRoute::class, 'form_routable');
     }
 }

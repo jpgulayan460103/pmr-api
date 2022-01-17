@@ -33,6 +33,16 @@ class FormRoute extends Model
         return $this->belongsTo(Library::class, 'origin_office_id');
     }
 
+    public function to_office()
+    {
+        return $this->belongsTo(Library::class, 'to_office_id');
+    }
+
+    public function from_office()
+    {
+        return $this->belongsTo(Library::class, 'from_office_id');
+    }
+
     public function form_process()
     {
         return $this->belongsTo(FormProcess::class);

@@ -40,7 +40,7 @@ class ItemController extends Controller
         // $office = Library::where('library_type','user_section')->where('title','ICTMS')->get();
         // return $office;
 
-        $process = FormProcess::all();
+        $process = FormProcess::with('routes')->get();
         return $process;
     }
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\FormRoute;
 
 class FormProcess extends Model
 {
@@ -24,6 +25,11 @@ class FormProcess extends Model
     public function form_processable()
     {
         return $this->morphTo();
+    }
+
+    public function routes()
+    {
+        return $this->hasMany(FormRoute::class);
     }
     
 }

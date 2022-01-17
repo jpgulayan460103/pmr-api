@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Models\FormRoute;
 use Illuminate\Support\Str;
 use App\Transformers\LibraryTransformer;
+use App\Transformers\FormProcessTransformer;
 
 class FormRouteTransformer extends TransformerAbstract
 {
@@ -15,8 +16,7 @@ class FormRouteTransformer extends TransformerAbstract
      * @var array
      */
     protected $defaultIncludes = [
-        'form_routable',
-        'end_user'
+
     ];
     
     /**
@@ -25,7 +25,10 @@ class FormRouteTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        //
+        'form_routable',
+        'end_user',
+        'to_office',
+        'form_process',
     ];
     
     /**
@@ -40,6 +43,7 @@ class FormRouteTransformer extends TransformerAbstract
             'key' => $table->id,
             'route_type' => Str::headline($table->route_type),
             'status' => $table->status,
+            'status_str' => Str::headline($table->status),
             'remarks' => $table->remarks,
             'remarks_by_id' => $table->remarks_by_id,
             'origin_office_id' => $table->origin_office_id,
@@ -48,6 +52,8 @@ class FormRouteTransformer extends TransformerAbstract
             'form_routable_id' => $table->form_routable_id,
             'form_routable_type' => $table->form_routable_type,
             'form_process_id' => $table->form_process_id,
+            'created_at' => $table->created_at->toDayDateTimeString(),
+            'updated_at' => $table->updated_at->toDayDateTimeString(),
         ];
     }
 
@@ -61,6 +67,18 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->end_user) {
             return $this->item($table->end_user, new LibraryTransformer);
+        }
+    }
+    public function includeToOffice(FormRoute $table)
+    {
+        if ($table->to_office) {
+            return $this->item($table->to_office, new LibraryTransformer);
+        }
+    }
+    public function includeFormProcess(FormRoute $table)
+    {
+        if ($table->form_process) {
+            return $this->item($table->form_process, new FormProcessTransformer);
         }
     }
 }

@@ -105,8 +105,8 @@ class FormRouteController extends Controller
         // $user = User::find(3);
         $offices_ids = $user->signatories->pluck('office_id');
         $filters['offices_ids'] = $offices_ids;
-        $routes = $this->formRouteRepository->attach('form_routable,end_user')->getForApproval($request, $filters);
-        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user');
+        $routes = $this->formRouteRepository->attach('form_routable,end_user,form_process')->getForApproval($request, $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user,form_process');
     }
 
     public function approve(Request $request, $id)
@@ -116,16 +116,27 @@ class FormRouteController extends Controller
         $formRoutes = $formProcess->form_routes;
         $step = 0;
         foreach ($formRoutes as $key => $route) {
-            if($formRoute->from_office_id == $route['office_id']){
+            $step++;
+            if($formRoute->to_office_id == $route['office_id']){
                 $formRoutes[$key]['status'] = "approve";
-            }else{
-                $step++;
+                $latestRoute = $this->formRouteRepository->approveLatestRoute($formProcess['id']);
+                break;
             }
+        }
+        if($step < count($formRoutes)){
+            $nextRoute = $formRoutes[$step];
+            $createdNextRoute = $this->formRouteRepository-> createNextRoute($latestRoute, $nextRoute);
+        }else{
+            $form = $formRoute->form_routable;
+            $this->formRouteRepository->completeForm($form);
         }
         $formRoute->form_process->form_routes = $formRoutes;
         $formRoute->form_process->save();
-        // $test = $formRoute->replicate();
-        // $test->origin_office_id = 1;
         return $formRoute;
+    }
+
+    public function reject(Request $request, $id)
+    {
+        # code...
     }
 }

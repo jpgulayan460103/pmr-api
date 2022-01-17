@@ -28,6 +28,8 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('status')->nullable();
             $table->string('mode_of_procurement')->nullable();
             $table->date('pr_date')->nullable();
+            $table->boolean('process_complete_status')->nullable();
+            $table->date('process_complete_date')->nullable();
             $table->timestamps();
         });
     }
