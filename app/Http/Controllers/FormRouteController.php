@@ -8,6 +8,7 @@ use App\Repositories\FormRouteRepository;
 use App\Transformers\FormRouteTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FormRouteController extends Controller
 {
@@ -111,32 +112,53 @@ class FormRouteController extends Controller
 
     public function approve(Request $request, $id)
     {
+        DB::beginTransaction();
         $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
         $formProcess = $formRoute->form_process;
         $formRoutes = $formProcess->form_routes;
         $step = 0;
         foreach ($formRoutes as $key => $route) {
-            $step++;
-            if($formRoute->to_office_id == $route['office_id']){
-                $formRoutes[$key]['status'] = "approve";
-                $latestRoute = $this->formRouteRepository->approveLatestRoute($formProcess['id']);
-                break;
+            if($formRoute->status == "pending"){
+                if($route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
+                    $formRoutes[$key]['status'] = "approved";
+                    $this->formRouteRepository->updateRoute($formRoute->id, 'approved');
+                    break;
+                }else{
+                    $step++;
+                }
+            }else{
+                if($route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
+                    $this->formRouteRepository->updateRoute($formRoute->id, 'approved');
+                    break;
+                }else{
+                    $step++;
+                }
             }
         }
         if($step < count($formRoutes)){
-            $nextRoute = $formRoutes[$step];
-            $createdNextRoute = $this->formRouteRepository-> createNextRoute($latestRoute, $nextRoute);
+            $currentRoute = $formRoutes[$step];
+            if($formRoute->to_office_id == $currentRoute['office_id']){
+                $nextRoute = $formRoutes[$step + 1];
+            }else{
+                $nextRoute = $currentRoute;
+            }
+            // return $nextRoute;
+            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute);
         }else{
             $form = $formRoute->form_routable;
             $this->formRouteRepository->completeForm($form);
         }
         $formRoute->form_process->form_routes = $formRoutes;
         $formRoute->form_process->save();
+        DB::commit();
         return $formRoute;
     }
 
     public function reject(Request $request, $id)
     {
-        # code...
+        $this->formRouteRepository->updateRoute($id, 'rejected');
+        $data = $request->all();
+        $data['status'] = "pending_rejected";
+        $this->formRouteRepository->create($data);
     }
 }

@@ -41,7 +41,8 @@ class FormRouteTransformer extends TransformerAbstract
         return [
             'id' => $table->id,
             'key' => $table->id,
-            'route_type' => Str::headline($table->route_type),
+            'route_type' => $table->route_type,
+            'route_type_str' => Str::headline($table->route_type),
             'status' => $table->status,
             'status_str' => Str::headline($table->status),
             'remarks' => $table->remarks,
