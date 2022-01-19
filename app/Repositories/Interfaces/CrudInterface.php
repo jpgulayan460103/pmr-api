@@ -22,7 +22,7 @@ interface CrudInterface {
 
     public function createOrUpdate($id = null);
     
-    public function update(array $data, $id = null);
+    public function update($id, array $data);
     
     public function delete($id = null);
 

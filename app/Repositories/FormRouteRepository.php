@@ -21,10 +21,12 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     }
 
     public function purchaseRequest($purchase_request, $formProcess, $step = 0){
+        $user = Auth::user();
         $data = [
             "route_type" => "purchase_request",
             "status" => "pending",
-            "remarks" => "For Approval",
+            "remarks" => "For approval",
+            "remarks_by_id" => $user->id,
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
@@ -49,22 +51,21 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     }
 
 
-    public function updateRoute($id, $status)
+    public function updateRoute($id, $data)
     {
         $user = Auth::user();
-        $formRoute = $this->getById($id);
-        $formRoute->status = $status;
-        $formRoute->remarks_by_id = $user->id;
-        $formRoute->save();
-        return $formRoute;
+        $data['remarks_by_id'] = $user->id;
+        return $this->update($id, $data);
     }
 
-    public function proceedNextRoute($formRoute, $nextRoute)
+    public function proceedNextRoute($formRoute, $nextRoute, $remarks)
     {
+        $user = Auth::user();
         $data = [
             "route_type" => $formRoute->route_type,
             "status" => "pending",
-            "remarks" => $formRoute->remarks,
+            "remarks" => (isset($remarks) || $remarks != "") ? $remarks : "For approval",
+            "remarks_by_id" => $user->id,
             "origin_office_id" => $formRoute->origin_office_id,
             "from_office_id" => $formRoute->to_office_id,
             "to_office_id" => $nextRoute['office_id'],

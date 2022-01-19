@@ -7,6 +7,7 @@ use App\Models\FormRoute;
 use Illuminate\Support\Str;
 use App\Transformers\LibraryTransformer;
 use App\Transformers\FormProcessTransformer;
+use App\Transformers\UserTransformer;
 
 class FormRouteTransformer extends TransformerAbstract
 {
@@ -29,6 +30,7 @@ class FormRouteTransformer extends TransformerAbstract
         'end_user',
         'to_office',
         'form_process',
+        'user',
     ];
     
     /**
@@ -80,6 +82,12 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->form_process) {
             return $this->item($table->form_process, new FormProcessTransformer);
+        }
+    }
+    public function includeUser(FormRoute $table)
+    {
+        if ($table->user) {
+            return $this->item($table->user, new UserTransformer);
         }
     }
 }

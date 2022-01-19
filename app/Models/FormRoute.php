@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
+use App\Models\User;
 
 class FormRoute extends Model
 {
@@ -46,5 +47,10 @@ class FormRoute extends Model
     public function form_process()
     {
         return $this->belongsTo(FormProcess::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'remarks_by_id');
     }
 }

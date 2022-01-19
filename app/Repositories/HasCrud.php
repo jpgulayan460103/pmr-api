@@ -80,10 +80,11 @@ Trait HasCrud {
 
     }
     
-    public function update(array $data, $id = null) : object
+    public function update($id, array $data) : object
     {
         $model = $this->getById($id);
-        return $model->update($data);
+        $model->update($data);
+        return $model;
     }
     
     public function delete($id = null)
