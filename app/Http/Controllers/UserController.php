@@ -6,6 +6,7 @@ use App\Http\Requests\CreateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
+use App\Repositories\AuthRepository;
 use App\Transformers\UserTransformer;
 use Illuminate\Support\Facades\Auth;
 use PDF;
@@ -109,6 +110,8 @@ class UserController extends Controller
 
     public function register(CreateUserRequest $request)
     {
-        return $this->userRepository->register($request->all());
+        $user = $this->userRepository->register($request->all());
+        $token = (new AuthRepository)->getAccessToken(['username' => $user->username, 'password' => ''], $user); // with refresh token
+        return response()->json($token);  
     }
 }

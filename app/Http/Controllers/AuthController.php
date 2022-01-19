@@ -5,10 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Repositories\AuthRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
-use Laravel\Passport\Token;
 
 class AuthController extends Controller
 {
