@@ -46,7 +46,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     {
         return $this->modelQuery()->where(function($query) {
             $query->where('status','pending')
-                  ->orWhere('status','pending_rejected');
+                  ->orWhere('status','with_issues');
             })->whereIn('to_office_id',$filters['offices_ids'])->get();
     }
 

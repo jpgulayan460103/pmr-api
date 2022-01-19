@@ -28,6 +28,7 @@ class FormRouteTransformer extends TransformerAbstract
     protected $availableIncludes = [
         'form_routable',
         'end_user',
+        'from_office',
         'to_office',
         'form_process',
         'user',
@@ -76,6 +77,12 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->to_office) {
             return $this->item($table->to_office, new LibraryTransformer);
+        }
+    }
+    public function includeFromOffice(FormRoute $table)
+    {
+        if ($table->from_office) {
+            return $this->item($table->from_office, new LibraryTransformer);
         }
     }
     public function includeFormProcess(FormRoute $table)

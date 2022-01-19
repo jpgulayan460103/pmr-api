@@ -106,9 +106,9 @@ class FormRouteController extends Controller
         // $user = User::find(3);
         $offices_ids = $user->signatories->pluck('office_id');
         $filters['offices_ids'] = $offices_ids;
-        $routes = $this->formRouteRepository->attach('form_routable,end_user,form_process,user.user_information')->getForApproval($request, $filters);
+        $routes = $this->formRouteRepository->attach('form_routable,end_user,to_office,from_office,form_process,user.user_information')->getForApproval($request, $filters);
         // return $routes;
-        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user,form_process,user.user_information');
+        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user,to_office,from_office,form_process,user.user_information');
     }
 
     public function approve(Request $request, $id)
@@ -123,8 +123,8 @@ class FormRouteController extends Controller
                 $formRoutes[$key]['status'] = "approved";
                 $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
                 break;
-            }elseif($formRoute->status == "pending_rejected" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'returned_to_rejecter']);
+            }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
+                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => $request->remarks]);
                 break;
             }
             $step++;
@@ -155,8 +155,8 @@ class FormRouteController extends Controller
         $user = Auth::user();
         $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request->remarks]);
         $data = $request->all();
-        $data['status'] = "pending_rejected";
-        $data['remarks_by_id '] = $user->id;
+        $data['status'] = "with_issues";
+        $data['remarks_by_id'] = $user->id;
         $this->formRouteRepository->create($data);
     }
 }
