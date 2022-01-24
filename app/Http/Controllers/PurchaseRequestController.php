@@ -12,7 +12,6 @@ use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
-use PDF;
 
 class PurchaseRequestController extends Controller
 {
@@ -97,9 +96,9 @@ class PurchaseRequestController extends Controller
      * @param  \App\Models\PurchaseRequest  $purchaseRequest
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PurchaseRequest $purchaseRequest)
+    public function update(Request $request, $id)
     {
-        //
+        return $this->purchaseRequestRepository->updatePurchaseRequest($request, $id);
     }
 
     /**
@@ -123,7 +122,7 @@ class PurchaseRequestController extends Controller
             $count += substr_count($item['item_name'],"\n");
         }
         $purchase_request['count_items'] = $count;
-        $pdf = PDF::loadView('pdf.purchase-request',$purchase_request);
+        $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         if($request->view){

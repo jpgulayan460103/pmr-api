@@ -34,7 +34,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $items = $this->createItems($request);
+            $items = $this->addItems($request);
             $purchase_request = $this->create($request->all());
             $purchase_request->items()->saveMany($items);
             $formProcess = (new FormProcessRepository)->purchaseRequest($purchase_request);
@@ -46,7 +46,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         }
     }
 
-    public function createItems($request)
+    public function addItems($request)
     {
         $items = array();
         foreach ($request->items as $key => $item) {
@@ -54,6 +54,47 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $items[$key] = new PurchaseRequestItem($item);
         }
         return $items;
+    }
+
+    public function updatePurchaseRequest($request, $id)
+    {
+
+        DB::beginTransaction();
+        try {
+            $items = $this->updateItems($request, $id);
+            $purchase_request = $this->update($id, $request->all());
+            $purchase_request->items()->saveMany($items);
+            DB::commit();
+            return $items;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+    }
+
+    public function updateItems($request, $id)
+    {
+        $item_ids_form = array();
+        $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
+        $items = array();
+        foreach ($request->items as $key => $item) {
+            $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+            if(isset($item['id'])){
+                PurchaseRequestItem::find($item['id'])->update($item);
+                $item_ids_form[] = $item['id']; 
+            }else{
+                $items[$key] = new PurchaseRequestItem($item);
+                $items[$key]->save();
+            }
+        }
+        $this->removeItems($item_ids,$item_ids_form);
+        return $items;
+    }
+
+    public function removeItems($item_ids,$item_ids_form)
+    {
+        $removed_item_ids = array_diff($item_ids,$item_ids_form);
+        PurchaseRequestItem::whereIn('id', $removed_item_ids)->delete();
     }
 }
 

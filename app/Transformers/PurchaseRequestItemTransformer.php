@@ -42,6 +42,8 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
             'unit_of_measure_id' => $table->unit_of_measure_id,
             'total_unit_cost' => $table->total_unit_cost,
             'key' => $table->id,
+            'id' => $table->id,
+            'is_ppmp' => $table->id != null,
         ];
     }
 

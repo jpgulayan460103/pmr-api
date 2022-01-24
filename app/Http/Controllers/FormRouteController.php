@@ -146,7 +146,7 @@ class FormRouteController extends Controller
         }
         $formRoute->form_process->form_routes = $formRoutes;
         $formRoute->form_process->save();
-        event(new NewMessage(['test' => 'asdasd']));
+        // event(new NewMessage(['test' => 'asdasd']));
         DB::commit();
         return $formRoute;
     }
@@ -159,6 +159,6 @@ class FormRouteController extends Controller
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $this->formRouteRepository->create($data);
-        event(new NewMessage(['test' => 'asdasd']));
+        // event(new NewMessage(['test' => 'asdasd']));
     }
 }
