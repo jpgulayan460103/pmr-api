@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\AuthRepository;
+use App\Repositories\Interfaces\AuthRepositoryInterface;
 use App\Repositories\Interfaces\PurchaseRequestRepositoryInterface;
 use App\Repositories\PurchaseRequestRepository;
 use Illuminate\Support\ServiceProvider;
@@ -16,6 +18,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             PurchaseRequestRepositoryInterface::class,
             PurchaseRequestRepository::class,
+        );
+        $this->app->bind(
+            AuthRepositoryInterface::class,
+            AuthRepository::class,
         );
     }
 }
