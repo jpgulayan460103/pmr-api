@@ -58,7 +58,7 @@ class LibraryController extends Controller
             $item = $itemRepository->getAll($request);
             return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
         }
-        $library = $library->orderBy('name')->whereType($type)->get();
+        $library = $library->orderBy('name')->whereLibraryType($type)->get();
         return fractal($library, new LibraryTransformer);
     }
 
