@@ -61,11 +61,11 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
         DB::beginTransaction();
         try {
-            $items = $this->updateItems($request, $id);
+            $new_items = $this->updateItems($request, $id);
             $purchase_request = $this->update($id, $request->all());
-            $purchase_request->items()->saveMany($items);
+            $purchase_request->items()->saveMany($new_items);
             DB::commit();
-            return $items;
+            return $purchase_request;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -76,19 +76,19 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         $item_ids_form = array();
         $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
-        $items = array();
+        $new_items = array();
         foreach ($request->items as $key => $item) {
             $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
             if(isset($item['id'])){
                 PurchaseRequestItem::find($item['id'])->update($item);
                 $item_ids_form[] = $item['id']; 
             }else{
-                $items[$key] = new PurchaseRequestItem($item);
-                $items[$key]->save();
+                $new_items[$key] = new PurchaseRequestItem($item);
+                $new_items[$key]->save();
             }
         }
         $this->removeItems($item_ids,$item_ids_form);
-        return $items;
+        return $new_items;
     }
 
     public function removeItems($item_ids,$item_ids_form)

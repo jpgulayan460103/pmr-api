@@ -48,17 +48,19 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 "status" => "pending",
             ];
         }
-        $routes[] = [
-            "office_id" => $requested_by->office_id,
-            "label" => $requested_by->designation,
-            "office_name" => $requested_by_office->name,
-            "status" => "pending",
-        ];
 
         $routes[] = [
             "office_id" => $bacs_office->id,
             "label" => $bacs_office->name,
             "office_name" => $bacs_office->name,
+            "status" => "pending",
+        ];
+
+        
+        $routes[] = [
+            "office_id" => $requested_by->office_id,
+            "label" => $requested_by->designation,
+            "office_name" => $requested_by_office->name,
             "status" => "pending",
         ];
 
