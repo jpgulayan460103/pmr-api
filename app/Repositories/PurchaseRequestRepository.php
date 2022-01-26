@@ -77,17 +77,19 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $item_ids_form = array();
         $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
         $new_items = array();
-        foreach ($request->items as $key => $item) {
-            $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
-            if(isset($item['id'])){
-                PurchaseRequestItem::find($item['id'])->update($item);
-                $item_ids_form[] = $item['id']; 
-            }else{
-                $new_items[$key] = new PurchaseRequestItem($item);
-                $new_items[$key]->save();
+        if($request->items != array()){
+            foreach ($request->items as $key => $item) {
+                $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+                if(isset($item['id'])){
+                    PurchaseRequestItem::find($item['id'])->update($item);
+                    $item_ids_form[] = $item['id']; 
+                }else{
+                    $new_items[$key] = new PurchaseRequestItem($item);
+                    $new_items[$key]->save();
+                }
             }
+            $this->removeItems($item_ids,$item_ids_form);
         }
-        $this->removeItems($item_ids,$item_ids_form);
         return $new_items;
     }
 

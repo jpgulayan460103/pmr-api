@@ -97,8 +97,8 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
-                    <td style=" text-align: center; border-top: 0">{{ $requested_by['title'] }}{{ $requested_by['designation'] }}</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['title'] }}{{ $approved_by['designation'] }}</td>
+                    <td style=" text-align: center; border-top: 0">{{ $requested_by['title'] }} {{ $requested_by['designation'] }}</td>
+                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['title'] }} {{ $approved_by['designation'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="6" style="border: 0;"></td>
@@ -128,6 +128,29 @@
                 @endfor
             </tbody>
         </table>
+        {{ $form_process['process_description'] }}:<br>
+        <ul>
+            @php
+            $i = 0;
+            @endphp
+            @foreach($form_process['form_routes'] as $key => $route)
+                @if($i != 0 && $route['status'] == "approved")
+                    <li><b>({{ $route['status'] }})</b> {{ $route['office_name'] }}</li>
+                    @if($route['office_name'] == "Budget Section")
+                    <ul>
+                        <li><b>Charge To:</b> {{ $charge_to }}</li>
+                        <li><b>Amount:</b> {{ number_format($alloted_amount, 2) }}</li>
+                        <li><b>UACS Code:</b> {{ $uacs_code }}</li>
+                        <li><b>SA/OR:</b> {{ $sa_or }}</li>
+                    </ul>
+                    @endif
+                @endif
+                
+                @php
+                $i++;
+                @endphp
+            @endforeach
+        </ul>
 </div>
 </body>
 </html>

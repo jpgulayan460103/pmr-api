@@ -16,7 +16,6 @@ class PurchaseRequest extends Model
     use HasFactory;
     protected $fillable = [
         'purchase_request_uuid',
-        'code_uacs',
         'purchase_request_number',
         'purpose',
         'fund_cluster',
@@ -26,8 +25,12 @@ class PurchaseRequest extends Model
         'end_user_id',
         'purchase_request_type',
         'status',
-        'mode_of_procurement',
         'pr_date',
+        'mode_of_procurement',
+        'uacs_code',
+        'charge_to',
+        'alloted_amount',
+        'sa_or',
         'bac_task_id',    
         'requested_by_id',
         'approved_by_id',

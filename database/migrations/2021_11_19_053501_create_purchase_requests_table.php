@@ -16,7 +16,6 @@ class CreatePurchaseRequestsTable extends Migration
         Schema::create('purchase_requests', function (Blueprint $table) {
             $table->id();
             $table->string('purchase_request_uuid')->nullable();
-            $table->string('code_uacs')->nullable();
             $table->string('purchase_request_number')->nullable();
             $table->string('purpose')->nullable();
             $table->string('fund_cluster')->nullable();
@@ -26,8 +25,12 @@ class CreatePurchaseRequestsTable extends Migration
             $table->unsignedBigInteger('end_user_id')->nullable();
             $table->string('purchase_request_type')->nullable();
             $table->string('status')->nullable();
-            $table->string('mode_of_procurement')->nullable();
             $table->date('pr_date')->nullable();
+            $table->string('uacs_code')->nullable();
+            $table->string('mode_of_procurement')->nullable();
+            $table->string('charge_to')->nullable();
+            $table->float('alloted_amount',15,2)->nullable();
+            $table->string('sa_or')->nullable();
             $table->boolean('process_complete_status')->nullable();
             $table->date('process_complete_date')->nullable();
             $table->timestamps();
