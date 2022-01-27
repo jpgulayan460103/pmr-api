@@ -42,7 +42,7 @@ class PurchaseRequest extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->purchase_request_uuid = (string) Str::uuid();
-            $model->status = 'unapproved';
+            $model->status = 'Pending';
         });
         self::updating(function($model) {
 

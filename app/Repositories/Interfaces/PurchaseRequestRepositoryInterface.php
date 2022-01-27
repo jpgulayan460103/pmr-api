@@ -6,7 +6,7 @@ use App\Repositories\Interfaces\CrudInterface;
 
 interface PurchaseRequestRepositoryInterface extends  CrudInterface{
     
-    public function search($request, $filters);
+    public function search($filters);
     public function createPurchaseRequest($request);
     public function addItems($request);
     public function updatePurchaseRequest($request, $id);

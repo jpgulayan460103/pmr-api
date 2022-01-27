@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Transformers\FormProcessTransformer;
+use Carbon\Carbon;
 
 class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 {
@@ -24,10 +25,26 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $this->uuid = "purchase_request_uuid";
     }
 
-    public function search($request, $filters)
+    public function search($filters)
     {
-        $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
-        return $this->modelQuery()->get();
+        if(isset($filters['purpose'])){
+            $this->modelQuery()->where('purpose', 'like', "%".$filters['purpose']."%");
+        }
+        if(isset($filters['total_cost'])){
+            $this->modelQuery()->where('total_cost', $filters['total_cost']);
+        }
+        if(isset($filters['status'])){
+            $this->modelQuery()->whereIn('status', $filters['status']);
+        }
+        if(isset($filters['offices_ids'])){
+            $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
+        }
+        if(isset($filters['pr_date'])){
+            $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();
+            $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();
+            $this->modelQuery()->whereBetween('pr_date', $pr_date);
+        }
+        return $this->modelQuery()->paginate($this->perPage);
     }
 
     public function createPurchaseRequest($request)

@@ -9,6 +9,7 @@ use App\Repositories\LibraryRepository;
 use App\Repositories\SignatoryRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
@@ -31,14 +32,23 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
+        $attach = 'form_process,end_user,form_routes.to_office,form_routes.from_office';
         $filters = [];
-        $user = Auth::user();
-        $offices_ids = $user->signatories->pluck('office_id');
-        $filters['offices_ids'] = $offices_ids;
-        $this->purchaseRequestRepository->attach('form_process,end_user,form_routes.to_office,form_routes.from_office');
-        $purchase_request = $this->purchaseRequestRepository->search($request, $filters);
+        if($request->type == "all"){
+        }else{
+            $user = Auth::user();
+            $offices_ids = $user->signatories->pluck('office_id');
+            $filters['offices_ids'] = $offices_ids;
+        }
+        isset($request->purpose) ? $filters['purpose'] = $request->purpose : "";
+        isset($request->total_cost) ? $filters['total_cost'] = $request->total_cost : "";
+        isset($request->status) ? $filters['status'] = $request->status : "";
+        isset($request->pr_date) ? $filters['pr_date'] = $request->pr_date : "";
+
+        $this->purchaseRequestRepository->attach($attach);
+        $purchase_request = $this->purchaseRequestRepository->search($filters);
         // return $purchase_request;
-        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes('form_process, end_user,form_routes.to_office,form_routes.from_office');
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach);
     }
 
     /**
