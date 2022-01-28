@@ -39,6 +39,15 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(isset($filters['offices_ids'])){
             $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
         }
+        if(isset($filters['sa_or'])){
+            $this->modelQuery()->where('sa_or', 'like', "%".$filters['sa_or']."%");
+        }
+        if(isset($filters['purchase_request_number'])){
+            $this->modelQuery()->where('purchase_request_number', 'like', "%".$filters['purchase_request_number']."%");
+        }
+        if(isset($filters['end_user_id'])){
+            $this->modelQuery()->whereIn('end_user_id', $filters['end_user_id']);
+        }
         if(isset($filters['pr_date'])){
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();

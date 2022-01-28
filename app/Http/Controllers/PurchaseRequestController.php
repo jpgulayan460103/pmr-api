@@ -44,6 +44,10 @@ class PurchaseRequestController extends Controller
         isset($request->total_cost) ? $filters['total_cost'] = $request->total_cost : "";
         isset($request->status) ? $filters['status'] = $request->status : "";
         isset($request->pr_date) ? $filters['pr_date'] = $request->pr_date : "";
+        isset($request->sa_or) ? $filters['sa_or'] = $request->sa_or : "";
+        isset($request->purchase_request_number) ? $filters['purchase_request_number'] = $request->purchase_request_number : "";
+        isset($request->end_user_id) ? $filters['end_user_id'] = $request->end_user_id : "";
+        // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->search($filters);
