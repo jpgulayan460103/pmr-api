@@ -58,10 +58,11 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
     public function createPurchaseRequest($request)
     {
+        // return $request->all();
         DB::beginTransaction();
         try {
             $items = $this->addItems($request);
-            $purchase_request = $this->create($request->all());
+            $purchase_request = $this->create($request);
             $purchase_request->items()->saveMany($items);
             $formProcess = (new FormProcessRepository)->purchaseRequest($purchase_request);
             $formRoute = (new FormRouteRepository)->purchaseRequest($purchase_request, $formProcess);
@@ -75,7 +76,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     public function addItems($request)
     {
         $items = array();
-        foreach ($request->items as $key => $item) {
+        foreach ($request['items'] as $key => $item) {
             $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
             $items[$key] = new PurchaseRequestItem($item);
         }
@@ -103,8 +104,8 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $item_ids_form = array();
         $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
         $new_items = array();
-        if($request->items != array()){
-            foreach ($request->items as $key => $item) {
+        if($request['items'] != array()){
+            foreach ($request['items'] as $key => $item) {
                 $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
                 if(isset($item['id'])){
                     PurchaseRequestItem::find($item['id'])->update($item);

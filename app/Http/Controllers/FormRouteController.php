@@ -124,7 +124,7 @@ class FormRouteController extends Controller
                 $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
                 break;
             }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => $request->remarks]);
+                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => $request['remarks']]);
                 break;
             }
             $step++;
@@ -142,7 +142,7 @@ class FormRouteController extends Controller
                 $nextRoute = $currentRoute;
             }
             // return $nextRoute;
-            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, $request->remarks);
+            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, $request['remarks']);
         }
         $formRoute->form_process->form_routes = $formRoutes;
         $formRoute->form_process->save();
@@ -154,7 +154,7 @@ class FormRouteController extends Controller
     public function reject(Request $request, $id)
     {
         $user = Auth::user();
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request->remarks]);
+        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request['remarks']]);
         $data = $request->all();
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;

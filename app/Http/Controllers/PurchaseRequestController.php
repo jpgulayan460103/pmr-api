@@ -34,19 +34,19 @@ class PurchaseRequestController extends Controller
     {
         $attach = 'form_process,end_user,form_routes.to_office,form_routes.from_office';
         $filters = [];
-        if($request->type == "all"){
+        if($request['type'] == "all"){
         }else{
             $user = Auth::user();
             $offices_ids = $user->signatories->pluck('office_id');
             $filters['offices_ids'] = $offices_ids;
         }
-        isset($request->purpose) ? $filters['purpose'] = $request->purpose : "";
-        isset($request->total_cost) ? $filters['total_cost'] = $request->total_cost : "";
-        isset($request->status) ? $filters['status'] = $request->status : "";
-        isset($request->pr_date) ? $filters['pr_date'] = $request->pr_date : "";
-        isset($request->sa_or) ? $filters['sa_or'] = $request->sa_or : "";
-        isset($request->purchase_request_number) ? $filters['purchase_request_number'] = $request->purchase_request_number : "";
-        isset($request->end_user_id) ? $filters['end_user_id'] = $request->end_user_id : "";
+        isset($request['purpose']) ? $filters['purpose'] = $request['purpose'] : "";
+        isset($request['total_cost']) ? $filters['total_cost'] = $request['total_cost'] : "";
+        isset($request['status']) ? $filters['status'] = $request['status'] : "";
+        isset($request['pr_date']) ? $filters['pr_date'] = $request['pr_date'] : "";
+        isset($request['sa_or']) ? $filters['sa_or'] = $request['sa_or'] : "";
+        isset($request['purchase_request_number']) ? $filters['purchase_request_number'] = $request['purchase_request_number'] : "";
+        isset($request['end_user_id']) ? $filters['end_user_id'] = $request['end_user_id'] : "";
         // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);
@@ -73,7 +73,7 @@ class PurchaseRequestController extends Controller
      */
     public function store(CreatePurchaseRequest $request)
     {
-        $created_purchase_request = $this->purchaseRequestRepository->createPurchaseRequest($request);
+        $created_purchase_request = $this->purchaseRequestRepository->createPurchaseRequest($request->all());
         return $created_purchase_request;
         
     }
@@ -140,7 +140,7 @@ class PurchaseRequestController extends Controller
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         // return $purchase_request;
-        if($request->view){
+        if($request['view']){
             return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
         }
         return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
@@ -156,7 +156,7 @@ class PurchaseRequestController extends Controller
 
     public function generatePdfPreview(Request $request)
     {
-        $json = $request->json;
+        $json = $request['json'];
         $purchase_request_preview = json_decode($json, true);
         $purchase_request_preview['end_user'] = (new LibraryRepository)->getById($purchase_request_preview['end_user_id']);
         $purchase_request_preview['view'] = "preview";

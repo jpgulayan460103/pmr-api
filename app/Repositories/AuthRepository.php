@@ -64,8 +64,8 @@ class AuthRepository implements AuthRepositoryInterface
         $adServer = config('services.ad.host');
 
         $ldap = ldap_connect($adServer);
-        $username = $request->username;
-        $password = $request->password;
+        $username = $request['username'];
+        $password = $request['password'];
         
         $ldaprdn = config('services.ad.domain_1') . "\\" . $username;
 
@@ -141,7 +141,7 @@ class AuthRepository implements AuthRepositoryInterface
             'grant_type' => 'refresh_token',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,
-            'refresh_token' => $request->refresh_token,
+            'refresh_token' => $request['refresh_token'],
         ]);
         
         return $response->json();
