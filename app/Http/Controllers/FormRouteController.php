@@ -154,8 +154,9 @@ class FormRouteController extends Controller
     public function reject(Request $request, $id)
     {
         $user = Auth::user();
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request['remarks']]);
         $data = $request->all();
+        $data = $this->formRouteRepository->returnToRejecter($id, $data);
+        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request['remarks']]);
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $this->formRouteRepository->create($data);

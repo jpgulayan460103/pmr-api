@@ -84,4 +84,21 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form->process_complete_date = Carbon::now();
         $form->save();
     }
+
+    public function returnToRejecter($id, $data)
+    {
+        
+        $form_route = $this->getById($id);
+        $data = [
+            'from_office_id'=> $form_route->to_office_id,
+            'route_type'=> $form_route->route_type,
+            'rejected_route_id'=> $form_route->id,
+            'origin_office_id'=> $form_route->origin_office_id,
+            'form_routable_id'=> $form_route->form_routable_id,
+            'form_routable_type'=> $form_route->form_routable_type,
+            'form_process_id'=> $form_route->form_process_id,
+            'to_office_id'=> isset($data['to_office_id']) ? $data['to_office_id'] : $form_route->origin_office_id,
+        ];
+        return $data;
+    }
 }
