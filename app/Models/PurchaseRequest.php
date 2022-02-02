@@ -9,6 +9,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
 use App\Models\Library;
 use App\Models\Signatory;
+use App\Models\Quotation;
 use Carbon\Carbon;
 
 class PurchaseRequest extends Model
@@ -92,5 +93,10 @@ class PurchaseRequest extends Model
     public function form_routes()
     {
         return $this->morphMany(FormRoute::class, 'form_routable');
+    }
+
+    public function quotations()
+    {
+        return $this->hasMany(Quotation::class);
     }
 }
