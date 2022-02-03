@@ -73,7 +73,7 @@ class PurchaseRequestController extends Controller
      */
     public function store(CreatePurchaseRequest $request)
     {
-        $created_purchase_request = $this->purchaseRequestRepository->createPurchaseRequest($request->all());
+        $created_purchase_request = $this->purchaseRequestRepository->create($request->all());
         return $created_purchase_request;
         
     }
@@ -112,7 +112,7 @@ class PurchaseRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->purchaseRequestRepository->updatePurchaseRequest($request, $id);
+        return $this->purchaseRequestRepository->update($request, $id);
     }
 
     /**

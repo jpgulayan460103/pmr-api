@@ -9,7 +9,9 @@ use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\SignatoryController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,8 @@ Route::middleware(['auth:api'])->group(function () {
         'users' => UserController::class,
         'signatories' => SignatoryController::class,
         'form-routes' => FormRouteController::class,
+        'suppliers' => SupplierController::class,
+        'qoutations' => QuotationController::class,
     ]);
 });
 

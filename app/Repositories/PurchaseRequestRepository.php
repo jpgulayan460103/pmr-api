@@ -14,7 +14,10 @@ use Carbon\Carbon;
 
 class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 {
-    use HasCrud;
+    use HasCrud {
+        create as mCreate;
+        update as mUpdate;
+    }
     public function __construct(PurchaseRequest $purchaseRequest = null)
     {
         if(!($purchaseRequest instanceof PurchaseRequest)){
@@ -56,13 +59,13 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         return $this->modelQuery()->paginate($this->perPage);
     }
 
-    public function createPurchaseRequest($request)
+    public function create($request)
     {
         // return $request->all();
         DB::beginTransaction();
         try {
             $items = $this->addItems($request);
-            $purchase_request = $this->create($request);
+            $purchase_request = $this->mCreate($request);
             $purchase_request->items()->saveMany($items);
             $formProcess = (new FormProcessRepository)->purchaseRequest($purchase_request);
             $formRoute = (new FormRouteRepository)->purchaseRequest($purchase_request, $formProcess);
@@ -83,13 +86,12 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         return $items;
     }
 
-    public function updatePurchaseRequest($request, $id)
+    public function update($request, $id)
     {
-
         DB::beginTransaction();
         try {
             $new_items = $this->updateItems($request, $id);
-            $purchase_request = $this->update($id, $request->all());
+            $purchase_request = $this->mUpdate($id, $request->all());
             $purchase_request->items()->saveMany($new_items);
             DB::commit();
             return $purchase_request;

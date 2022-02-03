@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Repositories\SupplierRepository;
 
 class SupplierController extends Controller
 {
+
+    private $supplierRepository;
+
+    public function __construct(SupplierRepository $supplierRepository)
+    {
+        $this->supplierRepository = $supplierRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +43,7 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->supplierRepository->create($request->all());
     }
 
     /**
@@ -67,9 +75,9 @@ class SupplierController extends Controller
      * @param  \App\Models\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Supplier $supplier)
+    public function update(Request $request, $id)
     {
-        //
+        return $this->supplierRepository->update($request, $id);
     }
 
     /**
