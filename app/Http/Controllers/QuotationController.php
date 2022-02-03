@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateQuotationRequest;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
+use App\Repositories\QuotationRepository;
 
 class QuotationController extends Controller
 {
+    private $quotationRepository;
+
+    public function __construct(QuotationRepository $quotationRepository)
+    {
+        $this->quotationRepository = $quotationRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -33,9 +41,9 @@ class QuotationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateQuotationRequest $request)
     {
-        //
+        return $this->quotationRepository->create($request->all());
     }
 
     /**
@@ -67,9 +75,9 @@ class QuotationController extends Controller
      * @param  \App\Models\Quotation  $quotation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Quotation $quotation)
+    public function update(Request $request, $id)
     {
-        //
+        return $this->quotationRepository->update($request, $id);
     }
 
     /**

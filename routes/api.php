@@ -39,7 +39,7 @@ Route::middleware(['auth:api'])->group(function () {
         'signatories' => SignatoryController::class,
         'form-routes' => FormRouteController::class,
         'suppliers' => SupplierController::class,
-        'qoutations' => QuotationController::class,
+        'quotations' => QuotationController::class,
     ]);
 });
 

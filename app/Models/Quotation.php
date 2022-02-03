@@ -9,6 +9,7 @@ use App\Models\SupplierContact;
 use App\Models\Users;
 use App\Models\PurchaseRequest;
 use App\Models\QuotationItem;
+use Illuminate\Support\Str;
 
 class Quotation extends Model
 {
@@ -23,6 +24,17 @@ class Quotation extends Model
         'prepared_by_id',
         'total_amount',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->rfq_uuid = (string) Str::uuid();
+        });
+        self::updating(function($model) {
+
+        });
+    }
 
     public function items()
     {

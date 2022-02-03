@@ -49,14 +49,14 @@ class PurchaseRequestTest extends TestCase
                 [
                     'item_name' => "Item Test 1",
                     'unit_of_measure_id' => 1,
-                    'quantity' => $this->faker->randomDigit,
+                    'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 1,
                 ],
                 [
                     'item_name' => "Item Test 2",
                     'unit_of_measure_id' => 1,
-                    'quantity' => $this->faker->randomDigit,
+                    'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 2,
                 ],
@@ -85,7 +85,7 @@ class PurchaseRequestTest extends TestCase
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $item_1 = PurchaseRequestItem::where('purchase_request_id', PurchaseRequestTest::$purchase_request_id)->first()->toArray();
-        $item_1['quantity'] = $this->faker->randomDigit;
+        $item_1['quantity'] = $this->faker->numberBetween(1, 100);
         $item_1['unit_cost'] = $this->faker->randomFloat(2, 0, 10000);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'items' => [
@@ -93,7 +93,7 @@ class PurchaseRequestTest extends TestCase
                 [
                     'item_name' => "New Item Test 1",
                     'unit_of_measure_id' => 1,
-                    'quantity' => $this->faker->randomDigit,
+                    'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 2,
                 ]
@@ -193,14 +193,14 @@ class PurchaseRequestTest extends TestCase
                 [
                     'item_name' => "Item Test 1",
                     'unit_of_measure_id' => 1,
-                    'quantity' => $this->faker->randomDigit,
+                    'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 1,
                 ],
                 [
                     'item_name' => "Item Test 2",
                     'unit_of_measure_id' => 1,
-                    'quantity' => $this->faker->randomDigit,
+                    'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 2,
                 ],
