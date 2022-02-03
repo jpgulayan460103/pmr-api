@@ -15,6 +15,8 @@ class AddEndUserReference extends Migration
     {
         Schema::table('purchase_requests', function (Blueprint $table) {
             $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('purchase_request_type_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('mode_of_procurement_id')->references('id')->on('libraries')->onDelete('cascade');
         });
     }
 
@@ -27,6 +29,8 @@ class AddEndUserReference extends Migration
     {
         Schema::table('purchase_requests', function (Blueprint $table) {
             $table->dropForeign(['end_user_id']);
+            $table->dropForeign(['purchase_request_type_id']);
+            $table->dropForeign(['mode_of_procurement_id']);
         });
     }
 }

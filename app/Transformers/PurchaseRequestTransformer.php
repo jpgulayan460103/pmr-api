@@ -33,6 +33,8 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'approved_by',
         'form_process',
         'form_routes',
+        'purchase_request_type',
+        'mode_of_procurement',
     ];
     
     /**
@@ -50,17 +52,18 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'fund_cluster' => $table->fund_cluster,
             'center_code' => $table->center_code,
             'total_cost' => $table->total_cost,
+            'total_cost_formatted' => number_format($table->total_cost, 2),
             'common_amount' => $table->total_cost,
             'pr_dir' => $table->pr_dir,
             'end_user_id' => $table->end_user_id,
-            'purchase_request_type' => $table->purchase_request_type,
+            'purchase_request_type_id' => $table->purchase_request_type_id,
             'status' => $table->status,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
             'key' => $table->id,
             'requested_by_id' => $table->requested_by_id,
             'approved_by_id' => $table->approved_by_id,
-            'mode_of_procurement' => $table->mode_of_procurement,
+            'mode_of_procurement_id' => $table->mode_of_procurement_id,
             'uacs_code' => $table->uacs_code,
             'charge_to' => $table->charge_to,
             'alloted_amount' => $table->alloted_amount,
@@ -93,6 +96,18 @@ class PurchaseRequestTransformer extends TransformerAbstract
         }
     }
 
+    public function includePurchaseRequestType($table)
+    {
+        if ($table->purchase_request_type) {
+            return $this->item($table->purchase_request_type, new LibraryTransformer);
+        }
+    }
+    public function includeModeOfProcurement($table)
+    {
+        if ($table->mode_of_procurement) {
+            return $this->item($table->mode_of_procurement, new LibraryTransformer);
+        }
+    }
     public function includeEndUser($table)
     {
         if ($table->end_user) {

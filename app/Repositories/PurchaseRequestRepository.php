@@ -24,7 +24,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $purchaseRequest = new PurchaseRequest;
         }
         $this->model($purchaseRequest);
-        $this->perPage(2);
+        $this->perPage(3);
         $this->uuid = "purchase_request_uuid";
     }
 
@@ -51,6 +51,12 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(isset($filters['end_user_id'])){
             $this->modelQuery()->whereIn('end_user_id', $filters['end_user_id']);
         }
+        if(isset($filters['purchase_request_type_id'])){
+            $this->modelQuery()->whereIn('purchase_request_type_id', $filters['purchase_request_type_id']);
+        }
+        if(isset($filters['mode_of_procurement_id'])){
+            $this->modelQuery()->whereIn('mode_of_procurement_id', $filters['mode_of_procurement_id']);
+        }
         if(isset($filters['pr_date'])){
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();
@@ -69,6 +75,13 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $purchase_request->items()->saveMany($items);
             $formProcess = (new FormProcessRepository)->purchaseRequest($purchase_request);
             $formRoute = (new FormRouteRepository)->purchaseRequest($purchase_request, $formProcess);
+            $purchase_request->total_cost = array_reduce($items,function($v1, $v2)
+                {
+                    return $v1 + $v2['total_unit_cost'];
+                },
+                0
+            );
+            $purchase_request->save();
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {
@@ -93,6 +106,12 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $new_items = $this->updateItems($request, $id);
             $purchase_request = $this->mUpdate($id, $request->all());
             $purchase_request->items()->saveMany($new_items);
+            $purchase_request->total_cost = array_reduce($new_items,function($v1, $v2)
+            {
+                return $v1 + $v2['total_unit_cost'];
+            },
+            0
+        );
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {

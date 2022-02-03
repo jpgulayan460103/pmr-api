@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
         $this->call(SignatorySampleSeeder::class);
+        $this->call(ProcurementTypeSeeder::class);
+        $this->call(ProcurementModeOfPaymentSeeder::class);
         // $this->call(SignatorySeeder::class);
         // $this->call(FakerDataSeeders::class);
     }

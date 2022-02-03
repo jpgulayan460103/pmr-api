@@ -32,7 +32,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $attach = 'form_process,end_user,form_routes.to_office,form_routes.from_office';
+        $attach = 'form_process,end_user,form_routes.to_office,form_routes.from_office,purchase_request_type, mode_of_procurement';
         $filters = [];
         if($request['type'] == "all"){
         }else{
@@ -47,6 +47,8 @@ class PurchaseRequestController extends Controller
         isset($request['sa_or']) ? $filters['sa_or'] = $request['sa_or'] : "";
         isset($request['purchase_request_number']) ? $filters['purchase_request_number'] = $request['purchase_request_number'] : "";
         isset($request['end_user_id']) ? $filters['end_user_id'] = $request['end_user_id'] : "";
+        isset($request['purchase_request_type_id']) ? $filters['purchase_request_type_id'] = $request['purchase_request_type_id'] : "";
+        isset($request['mode_of_procurement_id']) ? $filters['mode_of_procurement_id'] = $request['mode_of_procurement_id'] : "";
         // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);
@@ -86,7 +88,8 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process, items.unit_of_measure, end_user, requested_by.user.user_information, approved_by.user.user_information";
+
+        $attach = "form_process, items.unit_of_measure, end_user, requested_by.user.user_information, approved_by.user.user_information, purchase_request_type, mode_of_procurement";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();

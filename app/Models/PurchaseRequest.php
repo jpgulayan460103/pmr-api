@@ -24,10 +24,10 @@ class PurchaseRequest extends Model
         'total_cost',
         'pr_dir',
         'end_user_id',
-        'purchase_request_type',
+        'purchase_request_type_id',
         'status',
         'pr_date',
-        'mode_of_procurement',
+        'mode_of_procurement_id',
         'uacs_code',
         'charge_to',
         'alloted_amount',
@@ -67,6 +67,14 @@ class PurchaseRequest extends Model
     }
 
     public function end_user()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    public function purchase_request_type()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    public function mode_of_procurement()
     {
         return $this->belongsTo(Library::class);
     }
