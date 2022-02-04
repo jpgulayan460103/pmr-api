@@ -65,22 +65,16 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         return $this->modelQuery()->paginate($this->perPage);
     }
 
-    public function create($request)
+    public function create($data)
     {
-        // return $request->all();
         DB::beginTransaction();
         try {
-            $items = $this->addItems($request);
-            $purchase_request = $this->mCreate($request);
-            $purchase_request->items()->saveMany($items);
+            $items = $this->addItems();
+            $data['total_cost'] = $items['total_cost'];
+            $purchase_request = $this->mCreate($data);
+            $purchase_request->items()->saveMany($items['items']);
             $formProcess = (new FormProcessRepository)->purchaseRequest($purchase_request);
             $formRoute = (new FormRouteRepository)->purchaseRequest($purchase_request, $formProcess);
-            $purchase_request->total_cost = array_reduce($items,function($v1, $v2)
-                {
-                    return $v1 + $v2['total_unit_cost'];
-                },
-                0
-            );
             $purchase_request->save();
             DB::commit();
             return $purchase_request;
@@ -89,29 +83,31 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         }
     }
 
-    public function addItems($request)
+    public function addItems()
     {
-        $items = array();
-        foreach ($request['items'] as $key => $item) {
-            $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
-            $items[$key] = new PurchaseRequestItem($item);
+        $total_cost = 0;
+        $new_items = array();
+        if(request()->has('items') && request('items') != array()){
+            foreach (request('items') as $key => $item) {
+                $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+                $total_cost += $item['total_unit_cost'];
+                $new_items[$key] = new PurchaseRequestItem($item);
+            }
         }
-        return $items;
+        return [
+            'items' => $new_items,
+            'total_cost' => $total_cost,
+        ];
     }
 
-    public function update($request, $id)
+    public function update($data, $id)
     {
         DB::beginTransaction();
         try {
-            $new_items = $this->updateItems($request, $id);
-            $purchase_request = $this->mUpdate($id, $request->all());
-            $purchase_request->items()->saveMany($new_items);
-            $purchase_request->total_cost = array_reduce($new_items,function($v1, $v2)
-            {
-                return $v1 + $v2['total_unit_cost'];
-            },
-            0
-        );
+            $items = $this->updateItems($id);
+            $data['total_cost'] = $items['total_cost'];
+            $purchase_request = $this->mUpdate($id, $data);
+            $purchase_request->items()->saveMany($items['items']);
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {
@@ -120,14 +116,16 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
     }
 
-    public function updateItems($request, $id)
+    public function updateItems($id)
     {
+        $total_cost = 0;
         $item_ids_form = array();
         $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
         $new_items = array();
-        if($request['items'] != array()){
-            foreach ($request['items'] as $key => $item) {
+        if(request()->has('items') && request('items') != array()){
+            foreach (request('items') as $key => $item) {
                 $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+                $total_cost += $item['total_unit_cost'];
                 if(isset($item['id'])){
                     PurchaseRequestItem::find($item['id'])->update($item);
                     $item_ids_form[] = $item['id']; 
@@ -138,7 +136,10 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             }
             $this->removeItems($item_ids,$item_ids_form);
         }
-        return $new_items;
+        return [
+            'items' => $new_items,
+            'total_cost' => $total_cost,
+        ];
     }
 
     public function removeItems($item_ids,$item_ids_form)

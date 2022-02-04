@@ -115,7 +115,7 @@ class PurchaseRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->purchaseRequestRepository->update($request, $id);
+        return $this->purchaseRequestRepository->update($request->all(), $id);
     }
 
     /**

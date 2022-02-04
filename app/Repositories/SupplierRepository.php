@@ -26,26 +26,28 @@ class SupplierRepository implements SupplierRepositoryInterface
     public function create($data)
     {
         $created_supplier = $this->mCreate($data);
-        $contacts = $this->createContacts($data);
+        $contacts = $this->createContacts();
         $created_supplier->contacts()->saveMany($contacts);
         return $created_supplier;
     }
 
-    public function createContacts($data)
+    public function createContacts()
     {
         $contacts = array();
-        foreach ($data['contacts'] as $key => $contact) {
-            $contacts[$key] = new SupplierContact($contact);
+        if(request()->has('contacts') && request('contacts') != array()){
+            foreach (request('contacts') as $key => $contact) {
+                $contacts[$key] = new SupplierContact($contact);
+            }
         }
         return $contacts;
     }
 
-    public function update($request, $id)
+    public function update($data, $id)
     {
         DB::beginTransaction();
         try {
-            $new_contacts = $this->updateContacts($request, $id);
-            $supplier = $this->mUpdate($id, $request->all());
+            $new_contacts = $this->updateContacts($id);
+            $supplier = $this->mUpdate($id, $data);
             $supplier->contacts()->saveMany($new_contacts);
             DB::commit();
             return $supplier;
@@ -55,13 +57,13 @@ class SupplierRepository implements SupplierRepositoryInterface
 
     }
 
-    public function updateContacts($request, $id)
+    public function updateContacts($id)
     {
         $contact_ids_form = array();
         $contact_ids = SupplierContact::where('supplier_id',$id)->pluck('id')->toArray();
         $new_contacts = array();
-        if($request['contacts'] != array()){
-            foreach ($request['contacts'] as $key => $contact) {
+        if(request()->has('contacts') && request('contacts') != array()){
+            foreach (request('contacts') as $key => $contact) {
                 if(isset($contact['id'])){
                     SupplierContact::find($contact['id'])->update($contact);
                     $contact_ids_form[] = $contact['id']; 

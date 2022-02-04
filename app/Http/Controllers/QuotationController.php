@@ -77,7 +77,7 @@ class QuotationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->quotationRepository->update($request, $id);
+        return $this->quotationRepository->update($request->all(), $id);
     }
 
     /**

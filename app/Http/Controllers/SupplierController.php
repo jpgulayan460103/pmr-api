@@ -77,7 +77,7 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->supplierRepository->update($request, $id);
+        return $this->supplierRepository->update($request->all(), $id);
     }
 
     /**
