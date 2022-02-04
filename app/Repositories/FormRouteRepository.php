@@ -79,6 +79,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function completeForm($form)
     {
+        $form->disableLogging();
         $form->process_complete_status = 1;
         $form->status = "Approved";
         $form->process_complete_date = Carbon::now();

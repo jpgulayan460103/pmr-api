@@ -59,8 +59,10 @@ class QuotationRepository implements QuotationRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $items = $this->updateItems($data, $id);
-            $data['total_amount'] = $items['total_amount'];
+            $items = $this->updateItems($id);
+            if(request()->has('items') && request('items') != array()){
+                $data['total_amount'] = $items['total_amount'];
+            }
             $quotation = $this->mUpdate($id, $data);
             $quotation->items()->saveMany($items['items']);
             DB::commit();
@@ -71,7 +73,7 @@ class QuotationRepository implements QuotationRepositoryInterface
 
     }
 
-    public function updateItems($data, $id)
+    public function updateItems($id)
     {
         $total_amount = 0;
         $item_ids_form = array();
@@ -86,7 +88,6 @@ class QuotationRepository implements QuotationRepositoryInterface
                     $item_ids_form[] = $item['id']; 
                 }else{
                     $new_items[$key] = new QuotationItem($item);
-                    $new_items[$key]->save();
                 }
             }
             $this->removeItems($item_ids,$item_ids_form);

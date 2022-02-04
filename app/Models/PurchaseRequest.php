@@ -11,10 +11,11 @@ use App\Models\Library;
 use App\Models\Signatory;
 use App\Models\Quotation;
 use Carbon\Carbon;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class PurchaseRequest extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
     protected $fillable = [
         'purchase_request_uuid',
         'purchase_request_number',
@@ -38,6 +39,24 @@ class PurchaseRequest extends Model
         'process_complete_status',
         'process_complete_date',
     ];
+
+    protected static $logAttributes = [
+        '*',
+        'approved_by.office.name',
+        'requested_by.office.name',
+        'end_user.name',
+        'mode_of_procurement.name',
+        'purchase_request_type.name',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'created_at',
+        'updated_at'
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
     public static function boot()
     {
         parent::boot();

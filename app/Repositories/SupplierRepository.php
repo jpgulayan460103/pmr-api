@@ -69,7 +69,6 @@ class SupplierRepository implements SupplierRepositoryInterface
                     $contact_ids_form[] = $contact['id']; 
                 }else{
                     $new_contacts[$key] = new SupplierContact($contact);
-                    $new_contacts[$key]->save();
                 }
             }
             $this->removeContacts($contact_ids,$contact_ids_form);

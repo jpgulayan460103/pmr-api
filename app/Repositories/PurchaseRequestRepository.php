@@ -105,7 +105,9 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         DB::beginTransaction();
         try {
             $items = $this->updateItems($id);
-            $data['total_cost'] = $items['total_cost'];
+            if(request()->has('items') && request('items') != array()){
+                $data['total_cost'] = $items['total_cost'];
+            }
             $purchase_request = $this->mUpdate($id, $data);
             $purchase_request->items()->saveMany($items['items']);
             DB::commit();
@@ -131,7 +133,6 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
                     $item_ids_form[] = $item['id']; 
                 }else{
                     $new_items[$key] = new PurchaseRequestItem($item);
-                    $new_items[$key]->save();
                 }
             }
             $this->removeItems($item_ids,$item_ids_form);
@@ -145,7 +146,9 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     public function removeItems($item_ids,$item_ids_form)
     {
         $removed_item_ids = array_diff($item_ids,$item_ids_form);
-        PurchaseRequestItem::whereIn('id', $removed_item_ids)->delete();
+        foreach ($removed_item_ids as $removed_item_id) {
+            PurchaseRequestItem::where('id', $removed_item_id)->first()->delete();
+        }
     }
 }
 
