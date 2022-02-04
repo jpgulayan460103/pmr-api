@@ -34,12 +34,12 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $office = $user->signatories;
         $response = $this->post('/api/purchase-requests',[
-            'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
+            // 'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
             'purpose' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('cc-####-####-###'),
-            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
-            'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
+            // 'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            // 'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Signatory::where('signatory_type','OARDA')->first()->id,
@@ -173,12 +173,12 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $office = $user->signatories;
         $response = $this->post('/api/purchase-requests',[
-            'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
+            // 'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
             'purpose' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('cc-####-####-###'),
-            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
-            'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
+            // 'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            // 'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Signatory::where('signatory_type','OARDA')->first()->id,
