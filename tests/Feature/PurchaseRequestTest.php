@@ -34,12 +34,9 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $office = $user->signatories;
         $response = $this->post('/api/purchase-requests',[
-            // 'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
             'purpose' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('cc-####-####-###'),
-            // 'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
-            // 'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Signatory::where('signatory_type','OARDA')->first()->id,
@@ -64,19 +61,6 @@ class PurchaseRequestTest extends TestCase
         $purchase_request = $response->decodeResponseJson();
         PurchaseRequestTest::$purchase_request_id = $purchase_request['id'];
         $response->assertStatus(201);
-    }
-
-    public function test_update_purchase_request()
-    {
-        $user = User::with('signatories.office')->where('username','ict')->first();
-        Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
-            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
-            'charge_to' => $this->faker->name,
-            'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
-            'sa_or' => $this->faker->numerify('sa-####-####-###'),
-        ]);
-        $response->assertStatus(200);
     }
 
     public function test_update_purchase_request_items()
@@ -108,6 +92,28 @@ class PurchaseRequestTest extends TestCase
         $form_route = FormRoute::where('status','pending')->first();
         $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
             'remarks' => "Test Approve ICT",
+        ]);
+        $response->assertStatus(200);
+    }
+
+    public function test_approve_purchase_request_procurement()
+    {
+        $user = User::with('signatories.office')->where('username','procurement')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->first();
+        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
+            'remarks' => "Test Approve PROCUREMENT",
+        ]);
+        $response->assertStatus(200);
+    }
+
+    public function test_update_purchase_request_procurement()
+    {
+        $user = User::with('signatories.office')->where('username','procurement')->first();
+        Passport::actingAs($user);
+        $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
+            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
         ]);
         $response->assertStatus(200);
     }
@@ -152,6 +158,19 @@ class PurchaseRequestTest extends TestCase
         $form_route = FormRoute::where('status','pending')->first();
         $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
             'remarks' => "Test Approve BUDGET",
+        ]);
+        $response->assertStatus(200);
+    }
+    public function test_update_purchase_request_budget()
+    {
+        $user = User::with('signatories.office')->where('username','budget')->first();
+        Passport::actingAs($user);
+        $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
+            'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
+            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
+            'charge_to' => $this->faker->name,
+            'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
+            'sa_or' => $this->faker->numerify('sa-####-####-###'),
         ]);
         $response->assertStatus(200);
     }
@@ -221,9 +240,9 @@ class PurchaseRequestTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_disapprove_purchase_request_ppd()
+    public function test_disapprove_purchase_request_procurement()
     {
-        $user = User::with('signatories.office')->where('username','ppd')->first();
+        $user = User::with('signatories.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->first();
         $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/reject',[
@@ -239,6 +258,17 @@ class PurchaseRequestTest extends TestCase
         $form_route = FormRoute::where('status','with_issues')->first();
         $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
             'remarks' => "Resolve Issues",
+        ]);
+        $response->assertStatus(200);
+    }
+
+    public function test_new_approve_purchase_request_procurement()
+    {
+        $user = User::with('signatories.office')->where('username','procurement')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->first();
+        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
+            'remarks' => "NEW Test Approve PROCUREMENT",
         ]);
         $response->assertStatus(200);
     }

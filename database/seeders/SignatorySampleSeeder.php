@@ -38,6 +38,30 @@ class SignatorySampleSeeder extends Seeder
             'email_address' => '',
         ]);
 
+
+        $office = Library::where('library_type','user_section')->whereTitle('PS')->first();
+        $user = User::create([
+            "username" => "procurement",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        Signatory::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+            "signatory_type" => "Personnel",
+        ]);
+
+        $user->user_information()->create([
+            'firstname' => 'proc_f',
+            'middlename' => 'proc_m',
+            'lastname' => 'proc_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+        ]);
+
+
         $office = Library::where('library_type','user_section')->whereTitle('PPD')->first();
         $user = User::create([
             "username" => "ppd",

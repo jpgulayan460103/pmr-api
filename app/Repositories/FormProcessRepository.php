@@ -29,12 +29,20 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $approved_by_office = (new LibraryRepository)->getById($approved_by->office_id);
         $bacs_office = (new LibraryRepository)->getUserSectionBy('title','BACS');
         $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
+        $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
         $routes = [];
 
         $routes[] = [
             "office_id" => $origin_office->id,
             "office_name" => $origin_office->name,
             "label" => $origin_office->name,
+            "status" => "pending",
+        ];
+
+        $routes[] = [
+            "office_id" => $procurement_office->id,
+            "label" => $procurement_office->name,
+            "office_name" => $procurement_office->name,
             "status" => "pending",
         ];
 

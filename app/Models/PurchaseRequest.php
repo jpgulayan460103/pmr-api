@@ -59,6 +59,7 @@ class PurchaseRequest extends Model
         'approved_by_id',
         'mode_of_procurement_id',
         'id',
+        'pending',
         'created_at',
         'updated_at',
     ];
@@ -71,6 +72,7 @@ class PurchaseRequest extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->purchase_request_uuid = (string) Str::uuid();
+            // $model->purchase_request_number = "BUDRP-PR-2022-01-00071";
             $model->status = 'Pending';
         });
         self::updating(function($model) {
