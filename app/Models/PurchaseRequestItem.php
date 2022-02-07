@@ -27,6 +27,7 @@ class PurchaseRequestItem extends Model
     ];
 
     protected static $logAttributesToIgnore = [
+        'id',
         'created_at',
         'updated_at'
     ];

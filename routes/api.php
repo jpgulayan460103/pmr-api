@@ -12,6 +12,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\SignatoryController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AuditTrailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/active-directory/login', [AuthController::class, 'ad_login']);
+Route::get('/logger/purchase-request/{id}', [AuditTrailController::class, 'purchase_request']);
 Route::middleware(['auth:api'])->group(function () {
     Route::resources([
         'purchase-requests' => PurchaseRequestController::class,

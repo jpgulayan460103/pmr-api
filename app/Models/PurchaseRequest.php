@@ -50,8 +50,17 @@ class PurchaseRequest extends Model
     ];
 
     protected static $logAttributesToIgnore = [
+        'purchase_request_type_id',
+        'process_complete_date',
+        'process_complete_status',
+        'bac_task_id',
+        'end_user_id',
+        'requested_by_id',
+        'approved_by_id',
+        'mode_of_procurement_id',
+        'id',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     protected static $logOnlyDirty = true;

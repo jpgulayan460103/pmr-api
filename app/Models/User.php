@@ -56,6 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserInformation::class);
     }
+    public function information()
+    {
+        return $this->hasOne(UserInformation::class);
+    }
 
     public function setPasswordAttribute($value)
     {
