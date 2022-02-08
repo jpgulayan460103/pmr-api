@@ -13,6 +13,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\SignatoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
+use App\Http\Controllers\FormProcessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +67,8 @@ Route::group(['prefix' => '/purchase-requests'], function () {
     Route::post('/{id}/approve', [PurchaseRequestController::class, 'approve']);
 });
 
-Route::group(['prefix' => '/form', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
+    Route::put('/process/{id}', [FormProcessController::class, 'update']);
     Route::group(['prefix' => '/routes'], function () {
         Route::get('/requests/pending', [FormRouteController::class, 'forApproval']);
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);

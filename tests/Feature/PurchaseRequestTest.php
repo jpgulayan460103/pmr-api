@@ -89,10 +89,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve ICT",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
@@ -100,10 +98,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve PROCUREMENT",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
@@ -122,10 +118,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','ppd')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve PPD",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
@@ -133,10 +127,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','bacs')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve BACS",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
@@ -144,10 +136,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','oarda')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve ORDA",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
@@ -155,10 +145,8 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve BUDGET",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
     public function test_update_purchase_request_budget()
@@ -179,14 +167,12 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','ord')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "Test Approve ORD",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
-    public function test_new_create_purchase_request()
+    public function test_new_purchase_request_for_rejection()
     {
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
@@ -229,104 +215,44 @@ class PurchaseRequestTest extends TestCase
     }
 
 
-    public function test_new_approve_purchase_request_ict()
+    public function test_approve_purchase_request_ict_for_rejection()
     {
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve ICT",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
 
-    public function test_disapprove_purchase_request_procurement()
+    public function test_reject_purchase_request_procurement()
     {
         $user = User::with('signatories.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/reject',[
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/reject',[
             'remarks' => "With Issues",
         ]);
         $response->assertStatus(200);
     }
 
-    public function test_resolve_purchase_request_ict()
+    public function test_resolve_purchase_request_from_procurement()
     {
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','with_issues')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
+        $form_route = FormRoute::where('status','with_issues')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve',[
             'remarks' => "Resolve Issues",
         ]);
         $response->assertStatus(200);
     }
 
-    public function test_new_approve_purchase_request_procurement()
+    public function test_approve_rejected_purchase_request_procurement()
     {
         $user = User::with('signatories.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve PROCUREMENT",
-        ]);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
-
-    public function test_new_approve_purchase_request_ppd()
-    {
-        $user = User::with('signatories.office')->where('username','ppd')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve PPD",
-        ]);
-        $response->assertStatus(200);
-    }
-
-    public function test_new_approve_purchase_request_bacs()
-    {
-        $user = User::with('signatories.office')->where('username','bacs')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve BACS",
-        ]);
-        $response->assertStatus(200);
-    }
-
-    public function test_new_approve_purchase_request_oarda()
-    {
-        $user = User::with('signatories.office')->where('username','oarda')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve OARDA",
-        ]);
-        $response->assertStatus(200);
-    }
-
-    public function test_new_approve_purchase_request_budget()
-    {
-        $user = User::with('signatories.office')->where('username','budget')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve BUDGET",
-        ]);
-        $response->assertStatus(200);
-    }
-
-    public function test_new_approve_purchase_request_ord()
-    {
-        $user = User::with('signatories.office')->where('username','ord')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->first();
-        $response = $this->post('api/form/routes/requests/pending/'.$form_route->id.'/approve',[
-            'remarks' => "NEW Test Approve ORD",
-        ]);
-        $response->assertStatus(200);
-    }
-
 
 }

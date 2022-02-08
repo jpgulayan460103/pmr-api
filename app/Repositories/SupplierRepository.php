@@ -46,9 +46,11 @@ class SupplierRepository implements SupplierRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $new_contacts = $this->updateContacts($id);
             $supplier = $this->mUpdate($id, $data);
-            $supplier->contacts()->saveMany($new_contacts);
+            if(request()->has('contacts') && request('contacts') != array()){
+                $new_contacts = $this->updateContacts($id);
+                $supplier->contacts()->saveMany($new_contacts);
+            }
             DB::commit();
             return $supplier;
         } catch (\Throwable $th) {
@@ -61,18 +63,16 @@ class SupplierRepository implements SupplierRepositoryInterface
     {
         $contact_ids_form = array();
         $contact_ids = SupplierContact::where('supplier_id',$id)->pluck('id')->toArray();
-        $new_contacts = array();
-        if(request()->has('contacts') && request('contacts') != array()){
-            foreach (request('contacts') as $key => $contact) {
-                if(isset($contact['id'])){
-                    SupplierContact::find($contact['id'])->update($contact);
-                    $contact_ids_form[] = $contact['id']; 
-                }else{
-                    $new_contacts[$key] = new SupplierContact($contact);
-                }
+        $new_contacts = array();  
+        foreach (request('contacts') as $key => $contact) {
+            if(isset($contact['id'])){
+                SupplierContact::find($contact['id'])->update($contact);
+                $contact_ids_form[] = $contact['id']; 
+            }else{
+                $new_contacts[$key] = new SupplierContact($contact);
             }
-            $this->removeContacts($contact_ids,$contact_ids_form);
         }
+        $this->removeContacts($contact_ids,$contact_ids_form);
         return $new_contacts;
     }
 

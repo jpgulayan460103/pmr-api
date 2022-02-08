@@ -104,12 +104,14 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $items = $this->updateItems($id);
             if(request()->has('items') && request('items') != array()){
+                $items = $this->updateItems($id);
                 $data['total_cost'] = $items['total_cost'];
             }
             $purchase_request = $this->mUpdate($id, $data);
-            $purchase_request->items()->saveMany($items['items']);
+            if(request()->has('items') && request('items') != array()){
+                $purchase_request->items()->saveMany($items['items']);
+            }
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {
@@ -124,19 +126,17 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $item_ids_form = array();
         $item_ids = PurchaseRequestItem::where('purchase_request_id',$id)->pluck('id')->toArray();
         $new_items = array();
-        if(request()->has('items') && request('items') != array()){
-            foreach (request('items') as $key => $item) {
-                $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
-                $total_cost += $item['total_unit_cost'];
-                if(isset($item['id'])){
-                    PurchaseRequestItem::find($item['id'])->update($item);
-                    $item_ids_form[] = $item['id']; 
-                }else{
-                    $new_items[$key] = new PurchaseRequestItem($item);
-                }
+        foreach (request('items') as $key => $item) {
+            $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+            $total_cost += $item['total_unit_cost'];
+            if(isset($item['id'])){
+                PurchaseRequestItem::find($item['id'])->update($item);
+                $item_ids_form[] = $item['id']; 
+            }else{
+                $new_items[$key] = new PurchaseRequestItem($item);
             }
-            $this->removeItems($item_ids,$item_ids_form);
         }
+        $this->removeItems($item_ids,$item_ids_form);
         return [
             'items' => $new_items,
             'total_cost' => $total_cost,

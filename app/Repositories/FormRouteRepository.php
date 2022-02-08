@@ -25,7 +25,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $data = [
             "route_type" => "purchase_request",
             "status" => "pending",
-            "remarks" => "For approval",
+            "remarks" => "Finilization from the end user.",
             "remarks_by_id" => $user->id,
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,
@@ -64,7 +64,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $data = [
             "route_type" => $formRoute->route_type,
             "status" => "pending",
-            "remarks" => (isset($remarks) || $remarks != "") ? $remarks : "For approval",
+            "remarks" => (isset($remarks) && $remarks != "") ? $remarks : $nextRoute['description'],
             "remarks_by_id" => $user->id,
             "origin_office_id" => $formRoute->origin_office_id,
             "from_office_id" => $formRoute->to_office_id,

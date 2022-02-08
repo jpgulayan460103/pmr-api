@@ -103,12 +103,13 @@ class FormRouteController extends Controller
     public function forApproval(Request $request)
     {
         $user = Auth::user();
+        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
         // $user = User::find(3);
         $offices_ids = $user->signatories->pluck('office_id');
         $filters['offices_ids'] = $offices_ids;
-        $routes = $this->formRouteRepository->attach('form_routable,end_user,to_office,from_office,form_process,user.user_information')->getForApproval($request, $filters);
+        $routes = $this->formRouteRepository->attach($attach)->getForApproval($request, $filters);
         // return $routes;
-        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user,to_office,from_office,form_process,user.user_information');
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
     }
 
     public function approve(Request $request, $id)
@@ -124,12 +125,11 @@ class FormRouteController extends Controller
                 $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
                 break;
             }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => $request['remarks']]);
+                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => request('remarks')]);
                 break;
             }
             $step++;
         }
-        // return $step;
         $lastRoute = $formRoutes[count($formRoutes) - 1];
         if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
             $form = $formRoute->form_routable;
@@ -141,8 +141,7 @@ class FormRouteController extends Controller
             }else{
                 $nextRoute = $currentRoute;
             }
-            // return $nextRoute;
-            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, $request['remarks']);
+            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
         }
         $formRoute->form_process->form_routes = $formRoutes;
         $formRoute->form_process->save();
@@ -156,7 +155,7 @@ class FormRouteController extends Controller
         $user = Auth::user();
         $data = $request->all();
         $data = $this->formRouteRepository->returnToRejecter($id, $data);
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request['remarks']]);
+        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks')]);
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $this->formRouteRepository->create($data);
