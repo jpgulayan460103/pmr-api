@@ -21,13 +21,13 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(DivisionSeeder::class);
         $this->call(SectionSeeder::class);
+        $this->call(TechnicalWorkingGroupSeeder::class);
+        $this->call(ProcurementTypeSeeder::class);
+        $this->call(ProcurementModeOfPaymentSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
         $this->call(SignatorySampleSeeder::class);
-        $this->call(ProcurementTypeSeeder::class);
-        $this->call(ProcurementModeOfPaymentSeeder::class);
-        $this->call(TechnicalWorkingGroupSeeder::class);
         // $this->call(SignatorySeeder::class);
         // $this->call(FakerDataSeeders::class);
     }

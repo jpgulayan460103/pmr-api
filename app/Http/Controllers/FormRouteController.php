@@ -105,8 +105,9 @@ class FormRouteController extends Controller
         $user = Auth::user();
         $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
         // $user = User::find(3);
-        $offices_ids = $user->signatories->pluck('office_id');
-        $filters['offices_ids'] = $offices_ids;
+        $offices_ids = $user->signatories->pluck('office_id')->toArray();
+        $groups_ids = $user->groups->pluck('group_id')->toArray();
+        $filters['offices_ids'] = array_merge($groups_ids, $offices_ids);
         $routes = $this->formRouteRepository->attach($attach)->getForApproval($request, $filters);
         // return $routes;
         return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);

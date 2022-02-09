@@ -10,6 +10,7 @@ use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\UserInformation;
 use App\Models\Signatory;
+use App\Models\UserGroup;
 
 class User extends Authenticatable
 {
@@ -56,6 +57,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserInformation::class);
     }
+
     public function information()
     {
         return $this->hasOne(UserInformation::class);
@@ -74,5 +76,10 @@ class User extends Authenticatable
     public function signatories()
     {
         return $this->hasMany(Signatory::class);
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(UserGroup::class);
     }
 }
