@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateFormProcessRequest;
 use App\Models\FormProcess;
 use Illuminate\Http\Request;
 use App\Repositories\FormProcessRepository;
@@ -75,7 +76,7 @@ class FormProcessController extends Controller
      * @param  \App\Models\FormProcess  $formProcess
      * @return \Illuminate\Http\Response
      */
-    public function update($id)
+    public function update(UpdateFormProcessRequest $request, $id)
     {
         return $this->formProcessRepository->updateRouting($id);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePurchaseRequest;
+use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\PurchaseRequest;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Repositories\LibraryRepository;
@@ -114,7 +115,7 @@ class PurchaseRequestController extends Controller
      * @param  \App\Models\PurchaseRequest  $purchaseRequest
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePurchaseRequest $request, $id)
     {
         $this->purchaseRequestRepository->update($request->all(), $id);
         return $this->show($id);

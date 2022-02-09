@@ -61,9 +61,10 @@ class FormRouteController extends Controller
      * @param  \App\Models\FormRoute  $formRoute
      * @return \Illuminate\Http\Response
      */
-    public function show(FormRoute $formRoute)
+    public function show($id)
     {
-        //
+        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+        return fractal($formRoute, new FormRouteTransformer);
     }
 
     /**
@@ -116,43 +117,48 @@ class FormRouteController extends Controller
     public function approve(Request $request, $id)
     {
         DB::beginTransaction();
-        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
-        $formProcess = $formRoute->form_process;
-        $formRoutes = $formProcess->form_routes;
-        $step = 0;
-        foreach ($formRoutes as $key => $route) {
-            if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
-                $formRoutes[$key]['status'] = "approved";
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
-                break;
-            }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => request('remarks')]);
-                break;
+        try {
+            $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+            $formProcess = $formRoute->form_process;
+            $formRoutes = $formProcess->form_routes;
+            $step = 0;
+            foreach ($formRoutes as $key => $route) {
+                if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
+                    $formRoutes[$key]['status'] = "approved";
+                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
+                    break;
+                }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
+                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => request('remarks')]);
+                    break;
+                }
+                $step++;
             }
-            $step++;
-        }
-        $lastRoute = $formRoutes[count($formRoutes) - 1];
-        if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
-            $form = $formRoute->form_routable;
-            $this->formRouteRepository->completeForm($form);
-        }else{
-            $currentRoute = $formRoutes[$step];
-            if($formRoute->to_office_id == $currentRoute['office_id']){
-                $nextRoute = $formRoutes[$step + 1];
+            $lastRoute = $formRoutes[count($formRoutes) - 1];
+            if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
+                $form = $formRoute->form_routable;
+                $this->formRouteRepository->completeForm($form);
             }else{
-                $nextRoute = $currentRoute;
+                $currentRoute = $formRoutes[$step];
+                if($formRoute->to_office_id == $currentRoute['office_id']){
+                    $nextRoute = $formRoutes[$step + 1];
+                }else{
+                    $nextRoute = $currentRoute;
+                }
+                $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
             }
-            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
+            $formRoute->form_process->form_routes = $formRoutes;
+            $formRoute->form_process->save();
+            // event(new NewMessage(['test' => 'asdasd']));
+            DB::commit();
+            return $formRoute;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        $formRoute->form_process->form_routes = $formRoutes;
-        $formRoute->form_process->save();
-        // event(new NewMessage(['test' => 'asdasd']));
-        DB::commit();
-        return $formRoute;
     }
 
     public function reject(Request $request, $id)
     {
+        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
         $user = Auth::user();
         $data = $request->all();
         $data = $this->formRouteRepository->returnToRejecter($id, $data);
