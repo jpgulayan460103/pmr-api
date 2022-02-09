@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LibraryExistRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePurchaseRequest extends FormRequest
@@ -24,7 +25,7 @@ class CreatePurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'end_user_id' => 'required', 
+            'end_user_id' => ['required', new LibraryExistRule('user_section')], 
             'pr_date' => 'date|required',
             'purpose' => 'required',
             'items.*.item_name' => 'required',

@@ -66,10 +66,14 @@ class PurchaseRequestTest extends TestCase
     {
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
+        $purchase_request = PurchaseRequest::find(PurchaseRequestTest::$purchase_request_id)->toArray();
         $item_1 = PurchaseRequestItem::where('purchase_request_id', PurchaseRequestTest::$purchase_request_id)->first()->toArray();
         $item_1['quantity'] = $this->faker->numberBetween(1, 100);
         $item_1['unit_cost'] = $this->faker->randomFloat(2, 0, 10000);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
+            'end_user_id' => $purchase_request['end_user_id'],
+            'pr_date' => $purchase_request['pr_date'],
+            'purpose' => $purchase_request['purpose'],
             'items' => [
                 $item_1,
                 [
@@ -109,6 +113,7 @@ class PurchaseRequestTest extends TestCase
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
+            'updater' => 'procurement',
         ]);
         $response->assertStatus(200);
     }
@@ -153,11 +158,15 @@ class PurchaseRequestTest extends TestCase
         $user = User::with('signatories.office')->where('username','budget')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
-            'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,1000),
+            'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
             'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
             'sa_or' => $this->faker->numerify('sa-####-####-###'),
+            'updater' => 'budget',
+            'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
+            'center_code' => $this->faker->numerify('rcc-####-####-###'),
+            'purchase_request_number_last' => str_pad($this->faker->numberBetween(1,99999),5,"0",STR_PAD_LEFT),
         ]);
         $response->assertStatus(200);
     }
@@ -177,12 +186,9 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $office = $user->signatories;
         $response = $this->post('/api/purchase-requests',[
-            // 'purchase_request_number' => Carbon::now()->format('Y')."-".$this->faker->numberBetween(1,1000),
             'purpose' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('cc-####-####-###'),
-            // 'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
-            // 'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
