@@ -117,13 +117,13 @@ class PurchaseRequestTransformer extends TransformerAbstract
     public function includeRequestedBy($table)
     {
         if ($table->requested_by) {
-            return $this->item($table->requested_by, new SignatoryTransformer);
+            return $this->item($table->requested_by, new LibraryTransformer);
         }
     }
     public function includeApprovedBy($table)
     {
         if ($table->approved_by) {
-            return $this->item($table->approved_by, new SignatoryTransformer);
+            return $this->item($table->approved_by, new LibraryTransformer);
         }
     }
     public function includeFormProcess($table)

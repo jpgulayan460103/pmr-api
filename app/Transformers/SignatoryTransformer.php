@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Transformers\UserProtectedTransformer;
+use App\Transformers\LibraryTransformer;
 use App\Models\Signatory;
 
 class SignatoryTransformer extends TransformerAbstract
@@ -23,7 +23,7 @@ class SignatoryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'user'
+        'office'
     ];
     
     /**
@@ -41,13 +41,15 @@ class SignatoryTransformer extends TransformerAbstract
             'designation' => $table->designation,
             'title' => $table->title,
             'signatory_type' => $table->signatory_type,
+            'signatory_name' => $table->signatory_name,
+            'position' => $table->position,
         ];
     }
 
-    public function includeUser(Signatory $table)
+    public function includeOffice(Signatory $table)
     {
-        if ($table->user) {
-            return $this->item($table->user, new UserProtectedTransformer);
+        if ($table->office) {
+            return $this->item($table->office, new LibraryTransformer);
         }
     }
 }

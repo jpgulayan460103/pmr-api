@@ -92,13 +92,13 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0; border-bottom: 0">Printed Name:</td>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['user']['user_information']['fullname'] }}</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['user']['user_information']['fullname'] }}</td>
+                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['name'] }}</td>
+                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['name'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
-                    <td style=" text-align: center; border-top: 0">{{ $requested_by['title'] }} {{ $requested_by['designation'] }}</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['title'] }} {{ $approved_by['designation'] }}</td>
+                    <td style=" text-align: center; border-top: 0">{{ $requested_by['parent']['name'] }}</td>
+                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['parent']['name'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="6" style="border: 0;"></td>

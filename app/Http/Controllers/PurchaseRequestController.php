@@ -90,7 +90,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process, end_user, form_routes.to_office, form_routes.from_office, purchase_request_type, mode_of_procurement, items.unit_of_measure, requested_by.user.user_information, approved_by.user.user_information";
+        $attach = "form_process, end_user, form_routes.to_office, form_routes.from_office, purchase_request_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();

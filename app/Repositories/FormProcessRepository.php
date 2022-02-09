@@ -24,10 +24,10 @@ class FormProcessRepository implements FormProcessRepositoryInterface
     public function purchaseRequest($created_purchase_request)
     {
         $origin_office = (new LibraryRepository)->getById($created_purchase_request->end_user_id);
-        $requested_by = (new SignatoryRepository)->getById($created_purchase_request->requested_by_id);
-        $requested_by_office = (new LibraryRepository)->getById($requested_by->office_id);
-        $approved_by = (new SignatoryRepository)->getById($created_purchase_request->approved_by_id);
-        $approved_by_office = (new LibraryRepository)->getById($approved_by->office_id);
+        $requested_by = (new LibraryRepository)->getById($created_purchase_request->requested_by_id);
+        $requested_by_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by->title);
+        $approved_by = (new LibraryRepository)->getById($created_purchase_request->approved_by_id);
+        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title',$approved_by->title);
         $bacs_office = (new LibraryRepository)->getUserSectionBy('title','BACS');
         $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
         $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
@@ -78,11 +78,11 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
         
         $routes[] = [
-            "office_id" => $requested_by->office_id,
-            "label" => $requested_by->designation,
+            "office_id" => $requested_by_office->id,
+            "label" => $requested_by_office->name,
             "office_name" => $requested_by_office->name,
             "status" => "pending",
-            "description" => "Approval from the OARD",
+            "description" => "Approval from the ".$requested_by_office->title,
             "description_code" => "aprroval_from_oard",
         ];
 
@@ -96,11 +96,11 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         ];
 
         $routes[] = [
-            "office_id" => $approved_by->office_id,
-            "label" => $approved_by->designation,
+            "office_id" => $approved_by_office->id,
+            "label" => $approved_by_office->name,
             "office_name" => $approved_by_office->name,
             "status" => "pending",
-            "description" => "Approval from the ORD",
+            "description" => "Approval from the ".$requested_by_office->title,
             "description_code" => "aprroval_from_ord",
         ];
         

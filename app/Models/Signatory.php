@@ -15,8 +15,10 @@ class Signatory extends Model
         'office_id',
         'user_id',
         'designation',
+        'position',
         'title',
         'signatory_type',
+        'signatory_name',
     ];
 
     public function user()

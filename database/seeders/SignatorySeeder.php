@@ -16,56 +16,52 @@ class SignatorySeeder extends Seeder
      */
     public function run()
     {
-        $ord = Library::where('library_type',"user_division")->where('title',"ord")->first();
-        $oarda = Library::where('library_type',"user_division")->where('title',"oarda")->first();
-        $oardo = Library::where('library_type',"user_division")->where('title',"oardo")->first();
-        $ppd = Library::where('library_type',"user_division")->where('title',"ppd")->first();
-        $ictms = Library::where('library_type',"user_section")->where('title',"ictms")->first();
+        $ord = Library::where('library_type',"user_section")->where('title',"ord")->first();
+        $oarda = Library::where('library_type',"user_section")->where('title',"oarda")->first();
+        $oardo = Library::where('library_type',"user_section")->where('title',"oardo")->first();
 
-        $ord_head = User::where('username',"rrrcui")->first();
-        $oarda_head = User::where('username',"maparagamac")->first();
-        $oardo_head = User::where('username',"etdegorio")->first();
-        $ppd_head = User::where('username',"dspadillo")->first();
-        $ictms_head = User::where('username',"rbgravador")->first();
-        Signatory::create([
-            "office_id" => $ord->id,
-            "user_id" => $ord_head->id,
-            "designation" => "Regional Director",
-            "title" => "OIC -",
-            "signatory_type" => "ORD",
+        $ord_designation = Library::create([
+            'library_type' => 'user_signatory_designation',
+            'name' => 'OIC Regional Director',
+            'title' => 'ORD',
+            'parent_id' => $ord->id,
+        ]);
+
+        $ord_name = Library::create([
+            'library_type' => 'user_signatory_name',
+            'name' => 'RONALD RYAN R. CUI',
+            'title' => 'ORD',
+            'parent_id' => $ord_designation->id,
+        ]);
+
+        $oarda_designation = Library::create([
+            'library_type' => 'user_signatory_designation',
+            'name' => 'OIC Assistant Regional Director for Administrator',
+            'title' => 'OARDA',
+            'parent_id' => $oarda->id,
+        ]);
+
+        $oarda_name = Library::create([
+            'library_type' => 'user_signatory_name',
+            'name' => 'MERLINDA A. PARAGAMAC',
+            'title' => 'OARDA',
+            'parent_id' => $oarda_designation->id,
         ]);
 
 
-        Signatory::create([
-            "office_id" => $oarda->id,
-            "user_id" => $oarda_head->id,
-            "designation" => "Assistant Regional Director for Administrator",
-            "title" => "OIC -",
-            "signatory_type" => "OARDA",
+        $oardo_designation = Library::create([
+            'library_type' => 'user_signatory_designation',
+            'name' => 'OIC Assistant Regional Director for Operations',
+            'title' => 'OARDO',
+            'parent_id' => $oardo->id,
         ]);
 
-        Signatory::create([
-            "office_id" => $oardo->id,
-            "user_id" => $oardo_head->id,
-            "designation" => "Assistant Regional Director for Operations",
-            "title" => "OIC -",
-            "signatory_type" => "OARDO",
+        $oardo_name = Library::create([
+            'library_type' => 'user_signatory_name',
+            'name' => 'ELIZABETH T. DEGORIO',
+            'title' => 'OARDO',
+            'parent_id' => $oardo_designation->id,
         ]);
-
-        Signatory::create([
-            "office_id" => $ppd->id,
-            "user_id" => $ppd_head->id,
-            "designation" => "PPD Chief",
-            "title" => "",
-            "signatory_type" => "DC",
-        ]);
-
-        Signatory::create([
-            "office_id" => $ictms->id,
-            "user_id" => $ictms_head->id,
-            "designation" => "ICT Section Head",
-            "title" => "",
-            "signatory_type" => "SH",
-        ]);
+        
     }
 }

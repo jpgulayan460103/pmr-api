@@ -42,8 +42,8 @@ class PurchaseRequest extends Model
 
     protected static $logAttributes = [
         '*',
-        'approved_by.office.name',
-        'requested_by.office.name',
+        'approved_by.name',
+        'requested_by.name',
         'end_user.name',
         'mode_of_procurement.name',
         'purchase_request_type.name',
@@ -116,12 +116,12 @@ class PurchaseRequest extends Model
 
     public function requested_by()
     {
-        return $this->belongsTo(Signatory::class);
+        return $this->belongsTo(Library::class);
     }
 
     public function approved_by()
     {
-        return $this->belongsTo(Signatory::class);
+        return $this->belongsTo(Library::class);
     }
 
     public function form_process()

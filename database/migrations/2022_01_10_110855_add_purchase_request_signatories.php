@@ -16,8 +16,8 @@ class AddPurchaseRequestSignatories extends Migration
         Schema::table('purchase_requests', function (Blueprint $table) {
             $table->unsignedBigInteger('requested_by_id')->nullable();
             $table->unsignedBigInteger('approved_by_id')->nullable();
-            $table->foreign('requested_by_id')->references('id')->on('signatories')->onDelete('set null');
-            $table->foreign('approved_by_id')->references('id')->on('signatories')->onDelete('set null');
+            $table->foreign('requested_by_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('approved_by_id')->references('id')->on('libraries')->onDelete('cascade');
         });
     }
 
