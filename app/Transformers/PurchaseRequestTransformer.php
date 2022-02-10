@@ -69,7 +69,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'alloted_amount' => $table->alloted_amount,
             'sa_or' => $table->sa_or,
             'file' => route('api.purchase-requests.pdf', ['id' => $table->purchase_request_uuid]),
-            'particulars' => $table->purpose."\r\n"."amounting to ".number_format($table->total_cost, 2), // set common field for all forms
+            'particulars' => $table->purpose, // set common field for all forms
             'process_complete_status' => $table->process_complete_status == 1,
             'process_complete_date' => $table->process_complete_date,
         ];
