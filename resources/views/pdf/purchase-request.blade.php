@@ -128,6 +128,7 @@
                 @endfor
             </tbody>
         </table>
+        @if( isset($form_process) )
         {{ $form_process['process_description'] }}:<br>
         <ul>
             @php
@@ -151,6 +152,7 @@
                 @endphp
             @endforeach
         </ul>
+        @endif
 </div>
 </body>
 </html>

@@ -57,27 +57,27 @@ class SupplierTest extends TestCase
         $user = User::with('signatories.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $contact_1 = SupplierContact::where('supplier_id', SupplierTest::$supplier_id)->first()->toArray();
-        $contact_1['name'] = "UPDATED ".$this->faker->address;
-        $contact_1['address'] = "UPDATED ".$this->faker->name;
+        $contact_1['name'] = $this->faker->name;
+        $contact_1['address'] = $this->faker->address;
         $contact_1['email_address'] = $this->faker->email();
         $response = $this->put('/api/suppliers/'.SupplierTest::$supplier_id,[
-            'name' => "UPDATED ".$this->faker->name,
+            'name' => $this->faker->name,
             'address' => $this->faker->address,
             'contacts' => [
                 $contact_1,
                 [
-                    'name' => $this->faker->address,
-                    'address' => $this->faker->name,
+                    'name' => $this->faker->name,
+                    'address' => $this->faker->address,
                     'email_address' => $this->faker->email(),
                 ],
                 [
-                    'name' => $this->faker->address,
-                    'address' => $this->faker->name,
+                    'name' => $this->faker->name,
+                    'address' => $this->faker->address,
                     'email_address' => $this->faker->email(),
                 ],
                 [
-                    'name' => $this->faker->address,
-                    'address' => $this->faker->name,
+                    'name' => $this->faker->name,
+                    'address' => $this->faker->address,
                     'email_address' => $this->faker->email(),
                 ]
             ]

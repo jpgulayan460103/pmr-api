@@ -34,8 +34,6 @@ class PurchaseRequestTest extends TestCase
         $office = $user->signatories;
         $response = $this->post('/api/purchase-requests',[
             'purpose' => $this->faker->text(200),
-            'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
-            'center_code' => $this->faker->numerify('cc-####-####-###'),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,

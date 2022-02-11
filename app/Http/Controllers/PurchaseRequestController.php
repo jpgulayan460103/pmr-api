@@ -170,18 +170,22 @@ class PurchaseRequestController extends Controller
         $items = $purchase_request_preview['items'];
         unset($purchase_request_preview['items']);
         $purchase_request_preview['items']['data'] = $items;
+        $purchase_request_preview['total_cost'] = 0;
         foreach ($purchase_request_preview['items']['data'] as $key => $item) {
             $count++;
             $count += substr_count($item['item_name'],"\n");
+            $purchase_request_preview['total_cost'] += $item['total_unit_cost'];
             if($purchase_request_preview['items']['data'][$key]['unit_of_measure_id'] == null){
                 return $purchase_request_preview['items']['data'][$key]['unit_of_measure_id'];
             }
             $purchase_request_preview['items']['data'][$key]['unit_of_measure'] = (new LibraryRepository)->getById($purchase_request_preview['items']['data'][$key]['unit_of_measure_id']);
         }
         
-        $purchase_request_preview['requested_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['requestedBy']);
-        $purchase_request_preview['approved_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['approvedBy']);
+        $purchase_request_preview['requested_by'] = (new LibraryRepository)->getById($purchase_request_preview['requested_by_id']);
+        $purchase_request_preview['approved_by'] = (new LibraryRepository)->getById($purchase_request_preview['approved_by_id']);
         $purchase_request_preview['count_items'] = $count;
+        // $purchase_request_preview['form_process'] = [];
+        // return $purchase_request_preview;
         $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request_preview);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
