@@ -33,6 +33,7 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
      */
     public function transform(PurchaseRequestItem $table)
     {
+        $uuid_last = explode("-",$table->purchase_request_item_uuid);
         return [
             'item_name' => $table->item_name,
             'item_code' => $table->item_code,
@@ -43,7 +44,8 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
             'total_unit_cost' => $table->total_unit_cost,
             'key' => $table->id,
             'id' => $table->id,
-            'is_ppmp' => $table->id != null,
+            'uuid' => $table->purchase_request_item_uuid,
+            'uuid_last' => end($uuid_last),
         ];
     }
 

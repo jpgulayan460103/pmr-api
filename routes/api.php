@@ -31,8 +31,9 @@ Route::middleware('auth:api')->get('/user', [UserController::class, 'auth']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
-Route::post('/active-directory/login', [AuthController::class, 'ad_login']);
-Route::get('/logger/purchase-request/{id}', [AuditTrailController::class, 'purchase_request']);
+Route::post('/active-directory/login', [AuthController::class, 'adLogin']);
+Route::get('/logger/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);
+Route::get('/logger/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
 Route::middleware(['auth:api'])->group(function () {
     Route::resources([
         'purchase-requests' => PurchaseRequestController::class,

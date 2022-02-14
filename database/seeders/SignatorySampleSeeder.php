@@ -106,6 +106,29 @@ class SignatorySampleSeeder extends Seeder
             "signatory_type" => "Personnel",
         ]);
 
+
+        $office = Library::where('library_type','user_section')->whereTitle('OARDO')->first();
+        $user = User::create([
+            "username" => "oardo",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+
+        $user->user_information()->create([
+            'firstname' => 'oardo_f',
+            'middlename' => 'oardo_m',
+            'lastname' => 'oardo_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+        ]);
+        Signatory::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+            "signatory_type" => "Personnel",
+        ]);
+
         $office = Library::where('library_type','user_section')->whereTitle('BACS')->first();
         $user = User::create([
             "username" => "bacs",

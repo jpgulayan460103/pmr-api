@@ -50,6 +50,7 @@ class PurchaseRequest extends Model
     ];
 
     protected static $logAttributesToIgnore = [
+        'purchase_request_uuid',
         'purchase_request_type_id',
         'process_complete_date',
         'process_complete_status',
@@ -72,7 +73,6 @@ class PurchaseRequest extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->purchase_request_uuid = (string) Str::uuid();
-            // $model->purchase_request_number = "BUDRP-PR-2022-01-00071";
             $model->status = 'Pending';
         });
         self::updating(function($model) {

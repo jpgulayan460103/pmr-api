@@ -21,6 +21,11 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $this->perPage(200);
     }
 
+    public function getByFormType($type, $id)
+    {
+        return $this->modelQuery()->where('form_type', $type)->where('id', $id)->first();
+    }
+
     public function purchaseRequest($created_purchase_request)
     {
         $origin_office = (new LibraryRepository)->getById($created_purchase_request->end_user_id);
@@ -38,7 +43,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             $routes[] = [
                 "office_id" => $origin_office->id,
                 "office_name" => $origin_office->name,
-                "label" => $origin_office->name,
+                "label" => "ORIGIN",
                 "status" => "pending",
                 "description" => "Finalization from the end user.",
                 "description_code" => "aprroval_from_enduser",
@@ -47,7 +52,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
         $routes[] = [
             "office_id" => $procurement_office->id,
-            "label" => $procurement_office->name,
+            "label" => "PROCUREMENT_1",
             "office_name" => $procurement_office->name,
             "status" => "pending",
             "description" => "Specification checking.",
@@ -60,7 +65,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             $routes[] = [
                 "office_id" => $division->id,
                 "office_name" => $division->name,
-                "label" => $division->name,
+                "label" => "DIVISION_CHIEF",
                 "status" => "pending",
                 "description" => "Approval from the division chief.",
                 "description_code" => "aprroval_from_division",
@@ -69,7 +74,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
         $routes[] = [
             "office_id" => $bacs_office->id,
-            "label" => $bacs_office->name,
+            "label" => "BACS",
             "office_name" => $bacs_office->name,
             "status" => "pending",
             "description" => "PPMP checking.",
@@ -79,7 +84,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         
         $routes[] = [
             "office_id" => $requested_by_office->id,
-            "label" => $requested_by_office->name,
+            "label" => "OARD",
             "office_name" => $requested_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$requested_by_office->title,
@@ -88,7 +93,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
         $routes[] = [
             "office_id" => $budget_office->id,
-            "label" => $budget_office->name,
+            "label" => "BS",
             "office_name" => $budget_office->name,
             "status" => "pending",
             "description" => "Budget allocation.",
@@ -97,7 +102,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
         $routes[] = [
             "office_id" => $approved_by_office->id,
-            "label" => $approved_by_office->name,
+            "label" => "ORD",
             "office_name" => $approved_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$requested_by_office->title,
@@ -117,18 +122,30 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         return $created_process;
     }
 
-    public function updatePurchaseRequest($process)
+    public function updatePurchaseRequestRouting($process, $type)
     {
-        if(request()->has("type") && request("type") == "twg"){
-            $new_routes = $this->addPurchaseRequestTwg($process);
+        if($type == "twg"){
+            $new_routes = $this->purchaseRequestAddTwgRoute($process);
             $process->form_routes = $new_routes;
+            return $process->save();
+        }elseif($type == "OARD"){
+            $updated_oard_route = $this->purchaseRequestUpdateOardRoute($process);
+            $process->form_routes = $updated_oard_route['new_routes'];
+            $form_route_repository = new FormRouteRepository;
+            $current_route = $form_route_repository->getCurrentRoute($process->id);
+            if($updated_oard_route['old_oard_route']['office_id'] == $current_route->to_office_id){
+                $data = [];
+                $data['remarks'] = $updated_oard_route['new_oard_route']['description'];
+                $data['to_office_id'] = $updated_oard_route['new_oard_route']['office_id'];
+                $form_route_repository->update($current_route->id, $data);
+            }
             return $process->save();
         }
     }
 
-    public function addPurchaseRequestTwg($process)
+    public function purchaseRequestAddTwgRoute($process)
     {
-        $process = fractal($process, new FormProcessTransformer)->toArray();;
+        $process = fractal($process, new FormProcessTransformer)->toArray();
         $form_routes = $process['form_routes'];
         $new_routes = [];
         foreach ($form_routes as $key => $form_route) {
@@ -137,7 +154,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 $technical_working_group = (new LibraryRepository)->getById(request('technical_working_group_id'));
                 $new_routes[] = [
                     "office_id" => $technical_working_group->id,
-                    "label" => $technical_working_group->name,
+                    "label" => "TWG",
                     "office_name" => $technical_working_group->name,
                     "status" => "pending",
                     "description" => "Approval from the Technical Working Group",
@@ -148,7 +165,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
                 $new_routes[] = [
                     "office_id" => $procurement_office->id,
-                    "label" => $procurement_office->name,
+                    "label" => "PROCUREMENT_2",
                     "office_name" => $procurement_office->name,
                     "status" => "pending",
                     "description" => "Approval from the Procurement Section",
@@ -161,11 +178,35 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         return $new_routes;
     }
 
-    public function updateRouting($id)
+    public function purchaseRequestUpdateOardRoute($process)
+    {
+        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
+        $requested_by_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by->title);
+        $process = fractal($process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("OARD", array_column($form_routes, 'label'));
+        $new_oard_route = [
+            "office_id" => $requested_by_office->id,
+            "label" => "OARD",
+            "office_name" => $requested_by_office->name,
+            "status" => "pending",
+            "description" => "Approval from the ".$requested_by_office->title,
+            "description_code" => "aprroval_from_oard",
+        ];
+        $old_oard_route = $form_routes[$key];
+        $form_routes[$key] = $new_oard_route;
+        return [
+            'new_routes' => $form_routes,
+            'new_oard_route' => $new_oard_route,
+            'old_oard_route' => $old_oard_route,
+        ];
+    }
+
+    public function updateRouting($id, $type)
     {
         $process = $this->getById($id);
         if($process['form_processable_type'] == "App\\Models\\PurchaseRequest"){
-            return $this->updatePurchaseRequest($process);
+            return $this->updatePurchaseRequestRouting($process, $type);
         }
     }
 }

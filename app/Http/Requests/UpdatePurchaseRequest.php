@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\LibraryExistRule;
 use App\Models\PurchaseRequest;
+use App\Repositories\LibraryRepository;
+use App\Repositories\PurchaseRequestRepository;
+use App\Transformers\FormProcessTransformer;
 
 class UpdatePurchaseRequest extends FormRequest
 {
@@ -92,6 +95,25 @@ class UpdatePurchaseRequest extends FormRequest
                     }
                 }
             }
+
+            if(request()->has('requested_by_id')){
+                $this->validateRequestedBy($validator);
+            }
         });
+    }
+
+    public function validateRequestedBy($validator)
+    {
+        $purchaseRequestRepository = new PurchaseRequestRepository;
+        $purchase_request = $purchaseRequestRepository->attach('form_process')->getById(request('id'));
+        $process = fractal($purchase_request->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("OARD", array_column($form_routes, 'label'));
+        $received_by_id_office_id = (new LibraryRepository)->getById(request('requested_by_id'))->parent->parent_id;
+        if($received_by_id_office_id != $form_routes[$key]['office_id']){
+            if($form_routes[$key]['status'] == "approved"){
+                $validator->errors()->add("requested_by_id", "The purchase number already approved by ".$form_routes[$key]['office_name']);
+            }
+        }
     }
 }

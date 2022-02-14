@@ -44,9 +44,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
      */
     public function transform($table)
     {
+        $uuid_last = explode("-",$table->purchase_request_uuid);
         return [
             'id' => $table->id,
             'purchase_request_uuid' => $table->purchase_request_uuid,
+            'uuid' => $table->purchase_request_uuid,
+            'uuid_last' => end($uuid_last),
             'purchase_request_number' => $table->purchase_request_number,
             'purpose' => $table->purpose,
             'fund_cluster' => $table->fund_cluster,

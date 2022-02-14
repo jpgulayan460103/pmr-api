@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\FormRoute;
+use App\Models\Item;
 use App\Models\Library;
 use App\Models\PurchaseRequest;
 use App\Models\PurchaseRequestItem;
@@ -44,14 +45,16 @@ class PurchaseRequestTest extends TestCase
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => 1,
+                    'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
+                    'is_ppmp' => true,
                 ],
                 [
                     'item_name' => "Item Test 2",
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => 2,
+                    'item_id' => null,
+                    'is_ppmp' => false,
                 ],
             ]
         ]);
@@ -80,6 +83,7 @@ class PurchaseRequestTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 2,
+                    'is_ppmp' => true,
                 ]
             ]
         ]);
@@ -201,14 +205,16 @@ class PurchaseRequestTest extends TestCase
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => 1,
+                    'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
+                    'is_ppmp' => true,
                 ],
                 [
                     'item_name' => "Item Test 2",
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => 2,
+                    'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
+                    'is_ppmp' => true,
                 ],
             ]
         ]);

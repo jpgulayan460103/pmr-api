@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Models\ActivityLog;
 use App\Transformers\UserTransformer;
+use App\Transformers\PurchaseRequestTransformer;
 
 class PurchaseRequestLogTransformer extends TransformerAbstract
 {
@@ -52,7 +53,8 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'user'
+        'user',
+        'subject'
     ];
     
     /**
@@ -73,6 +75,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
             'causer_id' => $activityLog->causer_id,
             'properties' => $this->addLabels($activityLog->properties),
             'created_at' => $activityLog->created_at->toDateString(),
+            'created_at_time' => $activityLog->created_at->toDayDateTimeString(),
         ];
     }
 
@@ -98,6 +101,12 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
     {
         if ($table->user) {
             return $this->item($table->user, new UserTransformer);
+        }
+    }
+    public function includeSubject(ActivityLog $table)
+    {
+        if ($table->subject) {
+            return $this->item($table->subject, new PurchaseRequestTransformer);
         }
     }
 }

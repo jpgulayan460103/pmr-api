@@ -20,6 +20,11 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $this->perPage(200);
     }
 
+    public function getCurrentRoute($process_id)
+    {
+        return $this->model->where('form_process_id', $process_id)->orderBy('id','desc')->first();
+    }
+
     public function purchaseRequest($purchase_request, $formProcess, $step = 0){
         $user = Auth::user();
         $data = [

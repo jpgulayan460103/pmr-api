@@ -13,7 +13,7 @@ use Laravel\Passport\Token;
 class AuthRepository implements AuthRepositoryInterface
 {
 
-    public function revoke_existing_tokens(User $user)
+    public function revokeExistingTokens(User $user)
     {
         Token::where('user_id', $user->id)->update(['revoked' => true]);
     }
@@ -54,12 +54,12 @@ class AuthRepository implements AuthRepositoryInterface
                 'error_code' => 'success',
             ];
         }
-        return $this->ldap_auth($request);
+        return $this->ldapAuth($request);
     }
 
 
 
-    public function ldap_auth(Request $request)
+    public function ldapAuth(Request $request)
     {
         $adServer = config('services.ad.host');
 

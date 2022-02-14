@@ -104,6 +104,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     {
         DB::beginTransaction();
         try {
+            $old_purchase_request = $this->getById($id);
             if(request()->has('items') && request('items') != array()){
                 $items = $this->updateItems($id);
                 $data['total_cost'] = $items['total_cost'];
@@ -111,6 +112,13 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $purchase_request = $this->mUpdate($id, $data);
             if(request()->has('items') && request('items') != array()){
                 $purchase_request->items()->saveMany($items['items']);
+            }
+            if(request()->has('requested_by_id')){
+                if($old_purchase_request->requested_by_id != request('requested_by_id')){
+                    $formProcessRepository = new FormProcessRepository;
+                    $formProcess = $formProcessRepository->getByFormType('purchase_request', $id);
+                    $formProcessRepository->updateRouting($formProcess->id, "OARD");
+                }
             }
             DB::commit();
             return $purchase_request;

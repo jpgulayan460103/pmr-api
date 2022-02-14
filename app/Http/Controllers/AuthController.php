@@ -21,21 +21,21 @@ class AuthController extends Controller
         $user = User::where('username', $request['username'])->first();
         $authenticator =  $this->authRepository->authenticate($request, $user);
         if($authenticator['error_code'] == "no_user"){
-            $ldap_auth = $this->authRepository->ldap_auth($request);
+            $ldap_auth = $this->authRepository->ldapAuth($request);
             $ldap_auth['error_code'] = $authenticator['error_code'];
             return response()->json($ldap_auth, $ldap_auth['status_code']);
         }
         if($authenticator['status'] == "ok"){
-            $this->authRepository->revoke_existing_tokens($user);
+            $this->authRepository->revokeExistingTokens($user);
             $token = $this->authRepository->getAccessToken($request->only('username', 'password'), $user); // with refresh token
             return response()->json($token);   
         }
         return response()->json($authenticator, $authenticator['status_code']);
     }
 
-    public function ad_login(Request $request)
+    public function adLogin(Request $request)
     {
-        $ldap_auth = $this->authRepository->ldap_auth($request);
+        $ldap_auth = $this->authRepository->ldapAuth($request);
         return response()->json($ldap_auth, $ldap_auth['status_code']);
     }
 
