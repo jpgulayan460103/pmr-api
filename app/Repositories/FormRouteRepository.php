@@ -25,7 +25,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $data = [
             "route_type" => "purchase_request",
             "status" => "pending",
-            "remarks" => "Finilization from the end user.",
+            "remarks" => "Finalization from the end user.",
             "remarks_by_id" => $user->id,
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,

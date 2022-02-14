@@ -40,7 +40,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 "office_name" => $origin_office->name,
                 "label" => $origin_office->name,
                 "status" => "pending",
-                "description" => "Finilization from the end user.",
+                "description" => "Finalization from the end user.",
                 "description_code" => "aprroval_from_enduser",
             ];
         }
