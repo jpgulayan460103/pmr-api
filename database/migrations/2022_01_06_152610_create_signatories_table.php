@@ -18,11 +18,12 @@ class CreateSignatoriesTable extends Migration
             $table->string('signatory_type')->nullable();
             $table->unsignedBigInteger('office_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('position_id')->nullable();
             $table->string('designation')->nullable();
             $table->string('title')->nullable();
             $table->string('signatory_name')->nullable();
-            $table->string('position')->nullable();
             $table->timestamps();
+            $table->foreign('position_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

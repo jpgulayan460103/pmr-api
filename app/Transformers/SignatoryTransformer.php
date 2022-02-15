@@ -23,7 +23,8 @@ class SignatoryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'office'
+        'office',
+        'position'
     ];
     
     /**
@@ -42,7 +43,7 @@ class SignatoryTransformer extends TransformerAbstract
             'title' => $table->title,
             'signatory_type' => $table->signatory_type,
             'signatory_name' => $table->signatory_name,
-            'position' => $table->position,
+            'position_id' => $table->position_id,
         ];
     }
 
@@ -50,6 +51,12 @@ class SignatoryTransformer extends TransformerAbstract
     {
         if ($table->office) {
             return $this->item($table->office, new LibraryTransformer);
+        }
+    }
+    public function includePosition(Signatory $table)
+    {
+        if ($table->position) {
+            return $this->item($table->position, new LibraryTransformer);
         }
     }
 }

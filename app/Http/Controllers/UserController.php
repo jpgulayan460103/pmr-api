@@ -26,8 +26,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->getAll($request);
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section');
+        $users = $this->userRepository->attach('user_information.section,signatories.office,signatories.position,groups.group')->getAll($request);
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,signatories.office,signatories.position,groups.group');
     }
 
     /**
@@ -92,9 +92,9 @@ class UserController extends Controller
      * @param  \App\Models\User  $User
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $User)
+    public function update(CreateUserRequest $request, User $User)
     {
-        //
+        return $request->all();
     }
 
     /**

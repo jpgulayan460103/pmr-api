@@ -27,6 +27,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $user->user_information()->create([
@@ -50,6 +51,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $user->user_information()->create([
@@ -82,6 +84,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $office = Library::where('library_type','user_section')->whereTitle('OARDA')->first();
@@ -104,6 +107,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
 
@@ -127,6 +131,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $office = Library::where('library_type','user_section')->whereTitle('BACS')->first();
@@ -149,6 +154,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $office = Library::where('library_type','user_section')->whereTitle('BS')->first();
@@ -170,6 +176,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $office = Library::where('library_type','user_section')->whereTitle('ORD')->first();
@@ -191,6 +198,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
 
         $office = Library::where('library_type','user_section')->whereTitle('ICTMS')->first();
@@ -216,6 +224,7 @@ class SignatorySampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
             "signatory_type" => "Personnel",
+            'position_id' => 170,
         ]);
     }
 }

@@ -15,7 +15,7 @@ class Signatory extends Model
         'office_id',
         'user_id',
         'designation',
-        'position',
+        'position_id',
         'title',
         'signatory_type',
         'signatory_name',
@@ -27,6 +27,11 @@ class Signatory extends Model
     }
 
     public function office()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function position()
     {
         return $this->belongsTo(Library::class);
     }
