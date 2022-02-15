@@ -105,7 +105,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => "ORD",
             "office_name" => $approved_by_office->name,
             "status" => "pending",
-            "description" => "Approval from the ".$requested_by_office->title,
+            "description" => "Approval from the ".$approved_by_office->title,
             "description_code" => "aprroval_from_ord",
         ];
         
