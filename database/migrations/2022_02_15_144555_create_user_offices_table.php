@@ -23,9 +23,6 @@ class CreateUserOfficesTable extends Migration
             $table->string('title')->nullable();
             $table->string('user_office_name')->nullable();
             $table->timestamps();
-            $table->foreign('position_id')->references('id')->on('libraries')->onDelete('set null');
-            $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -22,8 +22,6 @@ class CreateQuotationItemsTable extends Migration
             $table->float('unit_cost',15,2);
             $table->float('total_unit_cost',15,2);
             $table->timestamps();
-            $table->foreign('quotation_id')->references('id')->on('quotations')->onDelete('cascade');
-            $table->foreign('purchase_request_item_id')->references('id')->on('purchase_request_items')->onDelete('cascade');
         });
     }
 

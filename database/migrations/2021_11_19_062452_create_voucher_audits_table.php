@@ -22,7 +22,6 @@ class CreateVoucherAuditsTable extends Migration
             $table->string("department")->nullable();
             $table->unsignedBigInteger("user_id")->nullable();
             $table->timestamps();
-            $table->foreign('voucher_id')->references('id')->on('vouchers')->onDelete('cascade');;
         });
     }
 

@@ -20,11 +20,6 @@ class CreateSupplierContactsTable extends Migration
             $table->string('email_address')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->timestamps();
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
-        });
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->unsignedBigInteger('supplier_contact_id')->nullable();
-            $table->foreign('supplier_contact_id')->references('id')->on('supplier_contacts')->onDelete('cascade');
         });
     }
 
@@ -35,10 +30,6 @@ class CreateSupplierContactsTable extends Migration
      */
     public function down()
     {
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->dropForeign(['supplier_contact_id']);
-            $table->dropColumn('supplier_contact_id');
-        });
         Schema::dropIfExists('supplier_contacts');
     }
 }

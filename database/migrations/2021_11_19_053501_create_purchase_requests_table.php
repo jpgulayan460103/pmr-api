@@ -24,6 +24,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->unsignedBigInteger('end_user_id')->nullable();
             $table->unsignedBigInteger('purchase_request_type_id')->nullable();
             $table->unsignedBigInteger('mode_of_procurement_id')->nullable();
+            $table->unsignedBigInteger('bac_task_id')->nullable();
             $table->string('uacs_code')->nullable();
             $table->string('fund_cluster')->nullable();
             $table->string('center_code')->nullable();
@@ -33,6 +34,8 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('status')->nullable();
             $table->boolean('process_complete_status')->nullable();
             $table->date('process_complete_date')->nullable();
+            $table->unsignedBigInteger('requested_by_id')->nullable();
+            $table->unsignedBigInteger('approved_by_id')->nullable();
             $table->timestamps();
         });
     }

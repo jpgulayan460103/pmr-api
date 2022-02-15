@@ -26,11 +26,6 @@ class CreateFormRoutesTable extends Migration
             $table->string('form_routable_type')->nullable();
             $table->unsignedBigInteger('form_process_id')->nullable();
             $table->timestamps();
-            $table->foreign('remarks_by_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('form_process_id')->references('id')->on('form_processes')->onDelete('cascade');
-            $table->foreign('origin_office_id')->references('id')->on('libraries')->onDelete('set null');
-            $table->foreign('from_office_id')->references('id')->on('libraries')->onDelete('set null');
-            $table->foreign('to_office_id')->references('id')->on('libraries')->onDelete('set null');
         });
     }
 

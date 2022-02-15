@@ -23,7 +23,6 @@ class CreateUserInformationTable extends Migration
             $table->string('user_dn')->nullable();
             $table->string('email_address')->nullable();
             $table->string('cellphone_number')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
         

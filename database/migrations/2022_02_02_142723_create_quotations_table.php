@@ -22,10 +22,8 @@ class CreateQuotationsTable extends Migration
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->unsignedBigInteger('prepared_by_id')->nullable();
             $table->timestamps();
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
-            $table->foreign('prepared_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->float('total_amount',15,2)->nullable();
+            $table->unsignedBigInteger('supplier_contact_id')->nullable();
         });
     }
 
