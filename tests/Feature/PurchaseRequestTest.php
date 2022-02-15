@@ -30,9 +30,9 @@ class PurchaseRequestTest extends TestCase
     }
     public function test_create_purchase_request()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $office = $user->signatories;
+        $office = $user->user_offices;
         $response = $this->post('/api/purchase-requests',[
             'purpose' => $this->faker->text(200),
             'pr_date' => Carbon::now(),
@@ -65,7 +65,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_update_purchase_request_items()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $purchase_request = PurchaseRequest::find(PurchaseRequestTest::$purchase_request_id)->toArray();
         $item_1 = PurchaseRequestItem::where('purchase_request_id', PurchaseRequestTest::$purchase_request_id)->first()->toArray();
@@ -92,7 +92,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_ict()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -101,7 +101,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_procurement()
     {
-        $user = User::with('signatories.office')->where('username','procurement')->first();
+        $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -110,7 +110,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_update_purchase_request_procurement()
     {
-        $user = User::with('signatories.office')->where('username','procurement')->first();
+        $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
@@ -122,7 +122,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_ppd()
     {
-        $user = User::with('signatories.office')->where('username','ppd')->first();
+        $user = User::with('user_offices.office')->where('username','ppd')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -131,7 +131,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_bacs()
     {
-        $user = User::with('signatories.office')->where('username','bacs')->first();
+        $user = User::with('user_offices.office')->where('username','bacs')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -140,7 +140,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_oarda()
     {
-        $user = User::with('signatories.office')->where('username','oarda')->first();
+        $user = User::with('user_offices.office')->where('username','oarda')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -149,7 +149,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_budget()
     {
-        $user = User::with('signatories.office')->where('username','budget')->first();
+        $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -157,7 +157,7 @@ class PurchaseRequestTest extends TestCase
     }
     public function test_update_purchase_request_budget()
     {
-        $user = User::with('signatories.office')->where('username','budget')->first();
+        $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
@@ -175,7 +175,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_ord()
     {
-        $user = User::with('signatories.office')->where('username','ord')->first();
+        $user = User::with('user_offices.office')->where('username','ord')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -184,9 +184,9 @@ class PurchaseRequestTest extends TestCase
 
     public function test_new_purchase_request_for_rejection()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $office = $user->signatories;
+        $office = $user->user_offices;
         $response = $this->post('/api/purchase-requests',[
             'purpose' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
@@ -226,7 +226,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_purchase_request_ict_for_rejection()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
@@ -235,7 +235,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_reject_purchase_request_procurement()
     {
-        $user = User::with('signatories.office')->where('username','procurement')->first();
+        $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/reject',[
@@ -246,7 +246,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_resolve_purchase_request_from_procurement()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','with_issues')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve',[
@@ -257,7 +257,7 @@ class PurchaseRequestTest extends TestCase
 
     public function test_approve_rejected_purchase_request_procurement()
     {
-        $user = User::with('signatories.office')->where('username','procurement')->first();
+        $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',PurchaseRequestTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');

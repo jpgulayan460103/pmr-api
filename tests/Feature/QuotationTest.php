@@ -32,7 +32,7 @@ class QuotationTest extends TestCase
     {
         $purchase_request = PurchaseRequest::with('items')->where('process_complete_status', 1)->first();
         $supplier = Supplier::with('contacts')->first();
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $items = array_map(function($item)
             {
@@ -60,7 +60,7 @@ class QuotationTest extends TestCase
 
     public function test_update_quotation()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/quotations/'.QuotationTest::$quotation_id,[
             'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
@@ -73,7 +73,7 @@ class QuotationTest extends TestCase
 
     public function test_update_quotation_items()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $quotation = Quotation::with('items')->find(QuotationTest::$quotation_id);
         $items = array_map(function($item)

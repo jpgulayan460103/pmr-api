@@ -4,9 +4,9 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\LibraryTransformer;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 
-class SignatoryTransformer extends TransformerAbstract
+class UserOfficeTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -32,7 +32,7 @@ class SignatoryTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(Signatory $table)
+    public function transform(UserOffice $table)
     {
         return [
             'id' => $table->id,
@@ -41,19 +41,19 @@ class SignatoryTransformer extends TransformerAbstract
             'user_id' => $table->user_id,
             'designation' => $table->designation,
             'title' => $table->title,
-            'signatory_type' => $table->signatory_type,
-            'signatory_name' => $table->signatory_name,
+            'user_office_type' => $table->user_office_type,
+            'user_office_name' => $table->user_office_name,
             'position_id' => $table->position_id,
         ];
     }
 
-    public function includeOffice(Signatory $table)
+    public function includeOffice(UserOffice $table)
     {
         if ($table->office) {
             return $this->item($table->office, new LibraryTransformer);
         }
     }
-    public function includePosition(Signatory $table)
+    public function includePosition(UserOffice $table)
     {
         if ($table->position) {
             return $this->item($table->position, new LibraryTransformer);

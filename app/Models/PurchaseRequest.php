@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
 use App\Models\Library;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use Spatie\Activitylog\Traits\LogsActivity;

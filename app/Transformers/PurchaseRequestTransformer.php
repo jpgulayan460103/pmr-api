@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
-use App\Transformers\SignatoryTransformer;
+use App\Transformers\UserOfficeTransformer;
 use App\Transformers\FormProcessTransformer;
 use App\Transformers\FormRouteTransformer;
 

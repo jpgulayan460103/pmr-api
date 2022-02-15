@@ -26,8 +26,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->attach('user_information.section,signatories.office,signatories.position,groups.group')->getAll($request);
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,signatories.office,signatories.position,groups.group');
+        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_offices.position,groups.group')->getAll($request);
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_offices.position,groups.group');
     }
 
     /**
@@ -61,15 +61,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->attach('user_information,signatories,permissions')->getById($id);
+        $user = $this->userRepository->attach('user_information,user_offices,permissions')->getById($id);
         // return $user;
-        return fractal($user, new UserTransformer)->parseIncludes('user_information,signatories,permissions');
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions');
     }
 
     public function auth()
     {
         $auth_user = Auth::user();
-        $user = $this->userRepository->attach('user_information,signatories.office,permissions')->getById($auth_user->id);
+        $user = $this->userRepository->attach('user_information,user_offices.office,permissions')->getById($auth_user->id);
         // sleep(5);
         return $user;
     }

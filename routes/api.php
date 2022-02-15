@@ -10,7 +10,7 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\QuotationController;
-use App\Http\Controllers\SignatoryController;
+use App\Http\Controllers\UserOfficeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
@@ -40,7 +40,7 @@ Route::middleware(['auth:api'])->group(function () {
         'purchase-orders' => PurchaseOrderController::class,
         'items' => ItemController::class,
         'users' => UserController::class,
-        'signatories' => SignatoryController::class,
+        'user_offices' => UserOfficeController::class,
         'form-routes' => FormRouteController::class,
         'suppliers' => SupplierController::class,
         'quotations' => QuotationController::class,
@@ -85,7 +85,7 @@ Route::resources([
     'purchase-orders' => PurchaseOrderController::class,
     'items' => ItemController::class,
     'users' => UserController::class,
-    'signatories' => SignatoryController::class,
+    'user_offices' => UserOfficeController::class,
     // 'form-routes' => FormRouteController::class,
 ]);
 

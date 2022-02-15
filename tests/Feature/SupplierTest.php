@@ -24,7 +24,7 @@ class SupplierTest extends TestCase
     }
     public function test_create_supplier()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $response = $this->post('/api/suppliers',[
             'name' => $this->faker->name,
@@ -54,7 +54,7 @@ class SupplierTest extends TestCase
 
     public function test_update_supplier()
     {
-        $user = User::with('signatories.office')->where('username','ict')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $contact_1 = SupplierContact::where('supplier_id', SupplierTest::$supplier_id)->first()->toArray();
         $contact_1['name'] = $this->faker->name;

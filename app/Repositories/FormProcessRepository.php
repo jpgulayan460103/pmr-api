@@ -6,7 +6,7 @@ use App\Models\FormProcess;
 use App\Repositories\Interfaces\FormProcessRepositoryInterface;
 use App\Repositories\HasCrud;
 use App\Repositories\LibraryRepository;
-use App\Repositories\SignatoryRepository;
+use App\Repositories\UserOfficeRepository;
 use App\Transformers\FormProcessTransformer;
 
 class FormProcessRepository implements FormProcessRepositoryInterface

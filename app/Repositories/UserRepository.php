@@ -23,11 +23,11 @@ class UserRepository implements UserRepositoryInterface
     {
         if($data['account_type'] == "ad_account"){
             $data['password'] = config('services.ad.default_password');
-            $data['signatory_type'] = "Personnel";
+            $data['user_office_type'] = "Personnel";
         }
         $user = $this->create($data);
         $user_information = $user->user_information()->create($data);
-        $user_sigatories = $user->signatories()->create($data);
+        $user_sigatories = $user->user_offices()->create($data);
         return $user;
     }
 }

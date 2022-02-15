@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
 use App\Models\User;
 
-class Signatory extends Model
+class UserOffice extends Model
 {
     use HasFactory;
 
@@ -17,8 +17,8 @@ class Signatory extends Model
         'designation',
         'position_id',
         'title',
-        'signatory_type',
-        'signatory_name',
+        'user_office_type',
+        'user_office_name',
     ];
 
     public function user()
@@ -36,8 +36,8 @@ class Signatory extends Model
         return $this->belongsTo(Library::class);
     }
 
-    public function setSignatoryTypeAttribute($value)
+    public function setUserOfficeTypeAttribute($value)
     {
-        $this->attributes['signatory_type'] = ( isset($value) && trim($value) != "") ? $value: "Personnel";
+        $this->attributes['user_office_type'] = ( isset($value) && trim($value) != "") ? $value: "Personnel";
     }
 }

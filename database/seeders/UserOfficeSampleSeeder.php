@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Signatory;
-use App\Models\User;
 use App\Models\Library;
+use App\Models\User;
+use App\Models\UserOffice;
+use Illuminate\Database\Seeder;
 
-class SignatorySampleSeeder extends Seeder
+class UserOfficeSampleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,11 +22,11 @@ class SignatorySampleSeeder extends Seeder
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -46,11 +46,11 @@ class SignatorySampleSeeder extends Seeder
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -79,11 +79,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -102,11 +102,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -126,11 +126,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -149,11 +149,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -171,11 +171,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -193,11 +193,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
 
@@ -219,11 +219,11 @@ class SignatorySampleSeeder extends Seeder
             'cellphone_number' => '',
             'email_address' => '',
         ]);
-        Signatory::create([
+        UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "signatory_type" => "Personnel",
+            "user_office_type" => "Personnel",
             'position_id' => 170,
         ]);
     }

@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Signatory;
 use App\Models\Library;
-use App\Models\User;
+use Illuminate\Database\Seeder;
 
-class SignatorySeeder extends Seeder
+class UserOfficeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -62,6 +60,5 @@ class SignatorySeeder extends Seeder
             'title' => 'OARDO',
             'parent_id' => $oardo_designation->id,
         ]);
-        
     }
 }

@@ -30,7 +30,7 @@ class UserInformation extends Model
     }
 
 
-    public function signatory()
+    public function user_office()
     {
         return $this->belongsTo(Library::class);
     }

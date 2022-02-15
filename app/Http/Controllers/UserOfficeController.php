@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Signatory;
+use App\Models\UserOffice;
+use App\Transformers\UserOfficeTransformer;
 use Illuminate\Http\Request;
-use App\Transformers\SignatoryTransformer;
 
-class SignatoryController extends Controller
+class UserOfficeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,8 @@ class SignatoryController extends Controller
      */
     public function index()
     {
-        $signatories =  Signatory::with('user.user_information','office')->get();
-        return fractal($signatories, new SignatoryTransformer)->parseIncludes('user.user_information,office');
+        $user_offices =  UserOffice::with('user.user_information','office')->get();
+        return fractal($user_offices, new UserOfficeTransformer)->parseIncludes('user.user_information,office');
 
     }
 
@@ -44,10 +44,10 @@ class SignatoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Signatory  $signatories
+     * @param  \App\Models\UserOffice  $user_offices
      * @return \Illuminate\Http\Response
      */
-    public function show(Signatory $signatories)
+    public function show(UserOffice $user_offices)
     {
         //
     }
@@ -55,10 +55,10 @@ class SignatoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Signatory  $signatories
+     * @param  \App\Models\UserOffice  $user_offices
      * @return \Illuminate\Http\Response
      */
-    public function edit(Signatory $signatories)
+    public function edit(UserOffice $user_offices)
     {
         //
     }
@@ -67,10 +67,10 @@ class SignatoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Signatory  $signatories
+     * @param  \App\Models\UserOffice  $user_offices
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Signatory $signatories)
+    public function update(Request $request, UserOffice $user_offices)
     {
         //
     }
@@ -78,10 +78,10 @@ class SignatoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Signatory  $signatories
+     * @param  \App\Models\UserOffice  $user_offices
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Signatory $signatories)
+    public function destroy(UserOffice $user_offices)
     {
         //
     }

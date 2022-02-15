@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Library;
 use App\Models\User;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 use Illuminate\Database\Seeder;
 use League\Csv\Reader;
 

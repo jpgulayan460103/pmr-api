@@ -40,7 +40,7 @@ class UserInformationTransformer extends TransformerAbstract
             'middlename' => $table->middlename,
             'lastname' => $table->lastname,
             'user_dn' => $table->user_dn,
-            'signatory_id' => $table->signatory_id,
+            'user_office_id' => $table->user_office_id,
             'cellphone_number' => $table->cellphone_number,
             'email_address' => $table->email_address,
             'section_id' => $table->section_id,

@@ -7,7 +7,7 @@ use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\PurchaseRequest;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Repositories\LibraryRepository;
-use App\Repositories\SignatoryRepository;
+use App\Repositories\UserOfficeRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
@@ -40,7 +40,7 @@ class PurchaseRequestController extends Controller
             $filters['status'] = ['Approved'];
         }else{
             $user = Auth::user();
-            $offices_ids = $user->signatories->pluck('office_id');
+            $offices_ids = $user->user_offices->pluck('office_id');
             $filters['offices_ids'] = $offices_ids;
         }
         isset($request['purpose']) ? $filters['purpose'] = $request['purpose'] : "";
