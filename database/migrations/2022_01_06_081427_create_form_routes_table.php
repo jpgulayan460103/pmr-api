@@ -18,6 +18,9 @@ class CreateFormRoutesTable extends Migration
             $table->string('route_type')->nullable();
             $table->string('status')->nullable();
             $table->string('remarks')->nullable();
+            $table->string('forwarded_remarks')->nullable();
+            $table->unsignedBigInteger('owner_id')->nullable();
+            $table->unsignedBigInteger('forwarded_by_id')->nullable();
             $table->unsignedBigInteger('remarks_by_id')->nullable();
             $table->unsignedBigInteger('origin_office_id')->nullable();
             $table->unsignedBigInteger('from_office_id')->nullable();

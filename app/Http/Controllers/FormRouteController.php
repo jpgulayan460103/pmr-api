@@ -165,6 +165,7 @@ class FormRouteController extends Controller
         $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks')]);
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
+        $data['remarks'] = request('remarks');
         $this->formRouteRepository->create($data);
         // event(new NewMessage(['test' => 'asdasd']));
     }

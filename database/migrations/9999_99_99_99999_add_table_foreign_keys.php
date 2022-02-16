@@ -23,6 +23,8 @@ class AddTableForeignKeys extends Migration
         });
 
         Schema::table('form_routes', function (Blueprint $table) {
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('forwarded_by_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('remarks_by_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('form_process_id')->references('id')->on('form_processes')->onDelete('cascade');
             $table->foreign('origin_office_id')->references('id')->on('libraries')->onDelete('set null');

@@ -36,6 +36,8 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "from_office_id" => $purchase_request->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
             "form_process_id" => $formProcess['id'],
+            "owner_id" => $user->id,
+            "forwarded_by_id" => $user->id,
         ];
         $created_route = $purchase_request->form_routes()->create($data);
         return $created_route;
@@ -69,14 +71,16 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $data = [
             "route_type" => $formRoute->route_type,
             "status" => "pending",
-            "remarks" => (isset($remarks) && $remarks != "") ? $remarks : $nextRoute['description'],
-            "remarks_by_id" => $user->id,
+            "remarks" => $nextRoute['description'],
+            "forwarded_remarks" => (isset($remarks) && $remarks != "") ? $remarks : null,
+            "forwarded_by_id" => $user->id,
             "origin_office_id" => $formRoute->origin_office_id,
             "from_office_id" => $formRoute->to_office_id,
             "to_office_id" => $nextRoute['office_id'],
             "form_process_id" => $formRoute->form_process_id,
             "form_routable_id" => $formRoute->form_routable_id,
             "form_routable_type" => $formRoute->form_routable_type,
+            "owner_id" => $formRoute->owner_id,
         ];
         $created_route = $this->create($data);
         return $created_route;
@@ -103,6 +107,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             'form_routable_id'=> $form_route->form_routable_id,
             'form_routable_type'=> $form_route->form_routable_type,
             'form_process_id'=> $form_route->form_process_id,
+            'owner_id'=> $form_route->owner_id,
             'to_office_id'=> isset($data['to_office_id']) ? $data['to_office_id'] : $form_route->origin_office_id,
         ];
         return $data;

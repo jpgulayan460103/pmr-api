@@ -49,6 +49,8 @@ class FormRouteTransformer extends TransformerAbstract
             'status' => $table->status,
             'status_str' => Str::headline($table->status),
             'remarks' => $table->remarks,
+            'forwarded_remarks' => $table->forwarded_remarks,
+            'forwarded_by_id' => $table->forwarded_by_id,
             'remarks_by_id' => $table->remarks_by_id,
             'origin_office_id' => $table->origin_office_id,
             'from_office_id' => $table->from_office_id,
