@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LibraryExistRule;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\MaxQuantity;
 
@@ -30,7 +31,7 @@ class CreateQuotationRequest extends FormRequest
             'supplier_contact_id' => 'required',
             'prepared_by_id' => 'required',
             'items.*.item_name' => 'required',
-            'items.*.unit_of_measure_id' => 'required',
+            'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'items.*.quantity' => 'numeric|min:1',
             'items.*.unit_cost' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
         ];

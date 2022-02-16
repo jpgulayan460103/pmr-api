@@ -40,9 +40,6 @@ class UserOfficeTransformer extends TransformerAbstract
             'office_id' => $table->office_id,
             'user_id' => $table->user_id,
             'designation' => $table->designation,
-            'title' => $table->title,
-            'user_office_type' => $table->user_office_type,
-            'user_office_name' => $table->user_office_name,
             'position_id' => $table->position_id,
         ];
     }

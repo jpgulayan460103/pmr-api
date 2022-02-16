@@ -78,7 +78,7 @@ class User extends Authenticatable
         return $this->hasMany(UserOffice::class);
     }
 
-    public function groups()
+    public function user_groups()
     {
         return $this->hasMany(UserGroup::class);
     }

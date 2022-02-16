@@ -15,10 +15,6 @@ class UserOffice extends Model
         'office_id',
         'user_id',
         'designation',
-        'position_id',
-        'title',
-        'user_office_type',
-        'user_office_name',
     ];
 
     public function user()
@@ -29,15 +25,5 @@ class UserOffice extends Model
     public function office()
     {
         return $this->belongsTo(Library::class);
-    }
-    
-    public function position()
-    {
-        return $this->belongsTo(Library::class);
-    }
-
-    public function setUserOfficeTypeAttribute($value)
-    {
-        $this->attributes['user_office_type'] = ( isset($value) && trim($value) != "") ? $value: "Personnel";
     }
 }

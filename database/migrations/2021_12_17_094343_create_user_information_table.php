@@ -16,6 +16,7 @@ class CreateUserInformationTable extends Migration
         Schema::create('user_informations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('position_id')->nullable();
             $table->string('fullname')->nullable();
             $table->string('firstname')->nullable();
             $table->string('middlename')->nullable();

@@ -29,7 +29,7 @@ class UserTransformer extends TransformerAbstract
         'user_information',
         'user_offices',
         'permissions',
-        'groups',
+        'user_groups',
     ];
     
     /**
@@ -66,10 +66,10 @@ class UserTransformer extends TransformerAbstract
             return $this->collection($table->permissions, new PermissionTransformer);
         }
     }
-    public function includeGroups(User $table)
+    public function includeUserGroups(User $table)
     {
-        if ($table->groups) {
-            return $this->collection($table->groups, new UserGroupTransformer);
+        if ($table->user_groups) {
+            return $this->collection($table->user_groups, new UserGroupTransformer);
         }
     }
 }

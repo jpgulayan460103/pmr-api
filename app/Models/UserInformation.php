@@ -22,6 +22,7 @@ class UserInformation extends Model
         'user_dn',
         'cellphone_number',
         'email_address',
+        'position_id',
     ];
 
     public function user()
@@ -36,6 +37,11 @@ class UserInformation extends Model
     }
 
     public function section()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function position()
     {
         return $this->belongsTo(Library::class);
     }

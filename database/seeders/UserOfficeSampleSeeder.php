@@ -26,10 +26,8 @@ class UserOfficeSampleSeeder extends Seeder
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $user->user_information()->create([
             'firstname' => 'ict_f',
             'middlename' => 'ict_m',
@@ -37,6 +35,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
 
 
@@ -50,10 +49,8 @@ class UserOfficeSampleSeeder extends Seeder
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $user->user_information()->create([
             'firstname' => 'proc_f',
             'middlename' => 'proc_m',
@@ -61,6 +58,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
 
 
@@ -78,22 +76,21 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $office = Library::where('library_type','user_section')->whereTitle('OARDA')->first();
         $user = User::create([
             "username" => "oarda",
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
-
+        
         $user->user_information()->create([
             'firstname' => 'oarda_f',
             'middlename' => 'oarda_m',
@@ -101,15 +98,14 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
 
         $office = Library::where('library_type','user_section')->whereTitle('OARDO')->first();
         $user = User::create([
@@ -117,7 +113,7 @@ class UserOfficeSampleSeeder extends Seeder
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
-
+        
         $user->user_information()->create([
             'firstname' => 'oardo_f',
             'middlename' => 'oardo_m',
@@ -125,22 +121,21 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $office = Library::where('library_type','user_section')->whereTitle('BACS')->first();
         $user = User::create([
             "username" => "bacs",
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
-
+        
         $user->user_information()->create([
             'firstname' => 'bacs_f',
             'middlename' => 'bacs_m',
@@ -148,15 +143,14 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $office = Library::where('library_type','user_section')->whereTitle('BS')->first();
         $user = User::create([
             "username" => "budget",
@@ -170,15 +164,14 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $office = Library::where('library_type','user_section')->whereTitle('ORD')->first();
         $user = User::create([
             "username" => "ord",
@@ -192,15 +185,14 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
-
+        
         $office = Library::where('library_type','user_section')->whereTitle('ICTMS')->first();
         $user = User::create([
             "username" => "twgict",
@@ -208,7 +200,7 @@ class UserOfficeSampleSeeder extends Seeder
             "account_type" => "app_account",
         ]);
         $twg = Library::where('library_type','technical_working_group')->whereName('Information Technology')->first();
-        $user->groups()->create([
+        $user->user_groups()->create([
             'group_id' => $twg->id
         ]);
         $user->user_information()->create([
@@ -218,13 +210,12 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
+            'position_id' => 170,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
             "designation" => "Test Account",
-            "user_office_type" => "Personnel",
-            'position_id' => 170,
         ]);
     }
 }

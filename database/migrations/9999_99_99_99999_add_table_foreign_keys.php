@@ -65,16 +65,13 @@ class AddTableForeignKeys extends Migration
         Schema::table('quotations', function (Blueprint $table) {
             $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->foreign('supplier_contact_id')->references('id')->on('supplier_contacts')->onDelete('cascade');
             $table->foreign('prepared_by_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::table('quotation_items', function (Blueprint $table) {
             $table->foreign('quotation_id')->references('id')->on('quotations')->onDelete('cascade');
             $table->foreign('purchase_request_item_id')->references('id')->on('purchase_request_items')->onDelete('cascade');
-        });
-
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->foreign('supplier_contact_id')->references('id')->on('supplier_contacts')->onDelete('cascade');
         });
 
         Schema::table('supplier_contacts', function (Blueprint $table) {
@@ -87,12 +84,12 @@ class AddTableForeignKeys extends Migration
         });
 
         Schema::table('user_offices', function (Blueprint $table) {
-            $table->foreign('position_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::table('user_informations', function (Blueprint $table) {
+            $table->foreign('position_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
@@ -131,7 +128,6 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['to_office_id']);
         });
 
-
         Schema::table('items', function (Blueprint $table) {
             $table->dropForeign(['item_category_id']);
             $table->dropForeign(['unit_of_measure_id']);
@@ -165,15 +161,12 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['purchase_request_id']);
             $table->dropForeign(['supplier_id']);
             $table->dropForeign(['prepared_by_id']);
+            $table->dropForeign(['supplier_contact_id']);
         });
 
         Schema::table('quotation_items', function (Blueprint $table) {
             $table->dropForeign(['quotation_id']);
             $table->dropForeign(['purchase_request_item_id']);
-        });
-
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->dropForeign(['supplier_contact_id']);
         });
 
         Schema::table('supplier_contacts', function (Blueprint $table) {
@@ -186,12 +179,12 @@ class AddTableForeignKeys extends Migration
         });
 
         Schema::table('user_offices', function (Blueprint $table) {
-            $table->dropForeign(['position_id']);
             $table->dropForeign(['office_id']);
             $table->dropForeign(['user_id']);
         });
-
+        
         Schema::table('user_informations', function (Blueprint $table) {
+            $table->dropForeign(['position_id']);
             $table->dropForeign(['user_id']);
         });
 

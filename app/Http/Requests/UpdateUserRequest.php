@@ -3,12 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use App\Rules\AllowedStringName;
 use App\Rules\LibraryExistRule;
 use App\Rules\ValidCellphoneNumber;
-use Illuminate\Validation\Rule;
 
-class CreateUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,8 +35,6 @@ class CreateUserRequest extends FormRequest
             'firstname' => ['required', new AllowedStringName],
             'lastname' => ['required', new AllowedStringName],
             'middlename' => [new AllowedStringName],
-            'password' => 'required',
-            'account_type' => 'required',
             'office_id' => ['required', new LibraryExistRule('user_section')],
             'position_id' => ['required', new LibraryExistRule('user_position')],
             'cellphone_number' => ['required','digits:11', new ValidCellphoneNumber],

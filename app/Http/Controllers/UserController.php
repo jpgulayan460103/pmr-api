@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
@@ -26,8 +27,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_offices.position,groups.group')->getAll($request);
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_offices.position,groups.group');
+        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group')->getAll($request);
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group');
     }
 
     /**
@@ -50,7 +51,7 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
-        return $this->userRepository->register($request->all());
+        return $this->userRepository->create($request->all());
     }
 
     /**
@@ -92,9 +93,9 @@ class UserController extends Controller
      * @param  \App\Models\User  $User
      * @return \Illuminate\Http\Response
      */
-    public function update(CreateUserRequest $request, User $User)
+    public function update(UpdateUserRequest $request, $id)
     {
-        return $request->all();
+        return $this->userRepository->update($request->all(), $id);
     }
 
     /**
@@ -110,7 +111,7 @@ class UserController extends Controller
 
     public function register(CreateUserRequest $request)
     {
-        $user = $this->userRepository->register($request->all());
+        $user = $this->userRepository->create($request->all());
         $token = (new AuthRepository)->getAccessToken(['username' => $user->username, 'password' => ''], $user); // with refresh token
         return response()->json($token);  
     }
