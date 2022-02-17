@@ -2,12 +2,11 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\ActivityLog;
-use App\Transformers\UserTransformer;
-use App\Transformers\PurchaseRequestTransformer;
+use League\Fractal\TransformerAbstract;
+use App\Transformers\BacTaskTransformer;
 
-class PurchaseRequestLogTransformer extends TransformerAbstract
+class BacTaskLogTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -15,33 +14,19 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      * @var array
      */
     protected $labels = [
-        "sa_or" => "SA/OR",
-        "pr_dir" => "pr_dir",
-        "status" => "Status",
-        "pr_date" => "PR Date",
-        "purpose" => "Particulars",
-        "charge_to" => "Charge To",
-        "uacs_code" => "UACS Code",
-        "total_cost" => "Total Cost",
-        "center_code" => "Responsibility Center Code",
-        "fund_cluster" => "Fund Cluster",
-        "end_user.name" => "End User",
-        "alloted_amount" => "ABC (PHP)",
-        "purchase_request_uuid" => "UUID",
-        "approved_by.name" => "Approved By",
-        "purchase_request_number" => "PR Number",
-        "mode_of_procurement.name" => "Mode of Procurement",
-        "requested_by.name" => "Requested By",
-        "purchase_request_type.name" => "Procurement Type",
-        "purchase_request_type_id" => "purchase_request_type_id",
-        "process_complete_date" => "process_complete_date",
-        "process_complete_status" => "process_complete_status",
-        "bac_task_id" => "bac_task_id",
-        "end_user_id" => "end_user_id",
-        "requested_by_id" => "requested_by_id",
-        "approved_by_id" => "approved_by_id",
-        "mode_of_procurement_id" => "mode_of_procurement_id",
-        "id" => "id",
+        "preproc_conference" => "Pre-Proc Conference",
+        "post_of_ib" => "Ads/Post of IB",
+        "prebid_conf" => "Pre-bid Conf",
+        "eligibility_check" => "Pre-bid Conf",
+        "open_of_bids" => "Sub/Open of Bids",
+        "bid_evaluation" => "Bid Evaluation",
+        "post_qual" => "Post Qual",
+        "notice_of_award" => "Notice of Award",
+        "contract_signing" => "Contract Signing",
+        "notice_to_proceed" => "Notice to Proceed",
+        "estimated_ldd" => "Estimated LDD",
+        "abstract_of_qoutations" => "Abstract of Quotations",
+        // "purchase_request.purchase_request_uuid" => "Purchase Request",
     ];
     protected $defaultIncludes = [
         //
@@ -108,7 +93,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
     public function includeSubject(ActivityLog $table)
     {
         if ($table->subject) {
-            return $this->item($table->subject, new PurchaseRequestTransformer);
+            return $this->item($table->subject, new BacTaskTransformer);
         }
     }
 }

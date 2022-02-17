@@ -35,23 +35,24 @@ class PurchaseRequestController extends Controller
     {
         $attach = 'end_user, purchase_request_type, mode_of_procurement';
         $filters = [];
-        if($request['type'] == "all"){
-        }elseif($request['type'] == "procurement"){
+        if(request('type') == "all"){
+        }elseif(request('type') == "procurement"){
             $filters['status'] = ['Approved'];
+            $attach .= ",bac_task";
         }else{
             $user = Auth::user();
             $offices_ids = $user->user_offices->pluck('office_id');
             $filters['offices_ids'] = $offices_ids;
         }
-        isset($request['purpose']) ? $filters['purpose'] = $request['purpose'] : "";
-        isset($request['total_cost']) ? $filters['total_cost'] = $request['total_cost'] : "";
-        isset($request['status']) ? $filters['status'] = $request['status'] : "";
-        isset($request['pr_date']) ? $filters['pr_date'] = $request['pr_date'] : "";
-        isset($request['sa_or']) ? $filters['sa_or'] = $request['sa_or'] : "";
-        isset($request['purchase_request_number']) ? $filters['purchase_request_number'] = $request['purchase_request_number'] : "";
-        isset($request['end_user_id']) ? $filters['end_user_id'] = $request['end_user_id'] : "";
-        isset($request['purchase_request_type_id']) ? $filters['purchase_request_type_id'] = $request['purchase_request_type_id'] : "";
-        isset($request['mode_of_procurement_id']) ? $filters['mode_of_procurement_id'] = $request['mode_of_procurement_id'] : "";
+        request()->has('purpose') ? $filters['purpose'] = request('purpose') : "";
+        request()->has('total_cost') ? $filters['total_cost'] = request('total_cost') : "";
+        request()->has('status') ? $filters['status'] = request('status') : "";
+        request()->has('pr_date') ? $filters['pr_date'] = request('pr_date') : "";
+        request()->has('sa_or') ? $filters['sa_or'] = request('sa_or') : "";
+        request()->has('purchase_request_number') ? $filters['purchase_request_number'] = request('purchase_request_number') : "";
+        request()->has('end_user_id') ? $filters['end_user_id'] = request('end_user_id') : "";
+        request()->has('purchase_request_type_id') ? $filters['purchase_request_type_id'] = request('purchase_request_type_id') : "";
+        request()->has('mode_of_procurement_id') ? $filters['mode_of_procurement_id'] = request('mode_of_procurement_id') : "";
         // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);
@@ -192,8 +193,8 @@ class PurchaseRequestController extends Controller
         return $pdf->stream('purchase-request-preview.pdf');
     }
 
-    public function approve(Request $request, $id)
+    public function updateBacTasks(Request $request, $id)
     {
-        PurchaseRequest::find($id)->update(['status' => 'approved']);
+        return $this->purchaseRequestRepository->createOrUpdateBac($request->all());
     }
 }

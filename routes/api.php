@@ -64,8 +64,9 @@ Route::group(['prefix' => '/pdf'], function () {
 });
 
 
-Route::group(['prefix' => '/purchase-requests'], function () {
-    Route::post('/{id}/approve', [PurchaseRequestController::class, 'approve']);
+Route::group(['prefix' => '/purchase-requests', 'middleware' => 'auth:api'], function () {
+    Route::post('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
+    Route::get('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
 });
 
 Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {

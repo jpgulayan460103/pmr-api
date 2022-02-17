@@ -76,20 +76,22 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
             $logger = $properties['attributes'];
         }
         foreach ($logger as $key => $property) {
-            if($key == 'is_ppmp'){
-                $properties['changes'][] = [
-                    'label' => $this->labels[$key],
-                    'key' => $this->labels[$key],
-                    'old' => isset($properties['old'][$key]) ? ($properties['old'][$key] == true ? "Yes" : "No") : "",
-                    'new' => isset($properties['attributes'][$key]) ? ($properties['attributes'][$key] == true ? "Yes" : "No") : "",
-                ];
-            }else{
-                $properties['changes'][] = [
-                    'label' => $this->labels[$key],
-                    'key' => $this->labels[$key],
-                    'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
-                    'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
-                ];
+            if(isset($this->labels[$key])){
+                if($key == 'is_ppmp'){
+                    $properties['changes'][] = [
+                        'label' => $this->labels[$key],
+                        'key' => "logger_$key",
+                        'old' => isset($properties['old'][$key]) ? ($properties['old'][$key] == true ? "Yes" : "No") : "",
+                        'new' => isset($properties['attributes'][$key]) ? ($properties['attributes'][$key] == true ? "Yes" : "No") : "",
+                    ];
+                }else{
+                    $properties['changes'][] = [
+                        'label' => $this->labels[$key],
+                        'key' => "logger_$key",
+                        'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
+                        'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
+                    ];
+                }
             }
         }
         unset($properties['old']);

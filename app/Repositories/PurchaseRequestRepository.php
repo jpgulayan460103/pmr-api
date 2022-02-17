@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\BacTask;
 use App\Models\PurchaseRequest;
 use App\Models\PurchaseRequestItem;
 use App\Repositories\Interfaces\PurchaseRequestRepositoryInterface;
@@ -157,6 +158,18 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         foreach ($removed_item_ids as $removed_item_id) {
             PurchaseRequestItem::where('id', $removed_item_id)->first()->delete();
         }
+    }
+
+    public function createOrUpdateBac($data)
+    {
+        $purchase_request = PurchaseRequest::with('bac_task')->find($data['purchase_request_id']);
+        if($purchase_request->bac_task){
+            $purchase_request->bac_task()->first()->update($data);
+        }else{
+            $purchase_request->bac_task()->create($data);
+        }
+        return $purchase_request;
+        // return ;
     }
 }
 

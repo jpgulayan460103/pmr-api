@@ -7,6 +7,7 @@ use App\Transformers\PurchaseRequestItemTransformer;
 use App\Transformers\UserOfficeTransformer;
 use App\Transformers\FormProcessTransformer;
 use App\Transformers\FormRouteTransformer;
+use App\Transformers\BacTaskTransformer;
 
 class PurchaseRequestTransformer extends TransformerAbstract
 {
@@ -95,7 +96,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
     public function includeBacTask($table)
     {
         if ($table->bac_task) {
-            return $this->item($table->bac_task, new LibraryTransformer);
+            return $this->item($table->bac_task, new BacTaskTransformer);
         }
     }
 
