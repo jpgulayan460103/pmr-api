@@ -147,6 +147,7 @@ class PurchaseRequestController extends Controller
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         // return $purchase_request;
+        // return view('pdf.purchase-request', $purchase_request);
         if($request['view']){
             return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
         }

@@ -37,7 +37,7 @@ class UpdatePurchaseRequest extends FormRequest
             $rules = [
                 'purchase_request_number_last' => 'required|numeric|digits:5',
                 'fund_cluster' => 'required',
-                'center_code' => 'required',
+                // 'center_code' => 'required',
                 'charge_to' => 'required',
                 'alloted_amount' => 'required',
                 'uacs_code' => 'required',

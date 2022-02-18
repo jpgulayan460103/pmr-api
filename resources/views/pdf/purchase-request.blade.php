@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> -->
+    <meta http-equiv="Content-Type" content="charset=utf-8" />
     <title>Document</title>
     <style>
          @page {
@@ -77,6 +78,38 @@
                 <tr>
                     <td></td>
                     <td></td>
+                    <td>        @if( isset($form_process) )
+        <!-- {{ $form_process['process_description'] }}:<br> -->
+        <div style="font-size: 9pt;">
+            @php
+            $i = 0;
+            @endphp
+            @foreach($form_process['form_routes'] as $key => $route)
+                @if($i != 0 && $route['status'] == "approved")
+                    <span>✓ {{ $route['office_name'] }}</span><br>
+                    @if($route['office_name'] == "Budget Section")
+                    <div>
+                        <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">Amount:</b> {{ number_format($alloted_amount, 2) }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">UACS Code:</b> {{ $uacs_code }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">SA/OR:</b> {{ $sa_or }}</span><br> 
+                    </div>
+                    @endif
+                @endif
+                
+                @php
+                $i++;
+                @endphp
+            @endforeach
+        </div>
+        @endif</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
                     <td style="text-align: center;font-weight: bold;">Total</td>
                     <td></td>
                     <td></td>
@@ -128,31 +161,6 @@
                 @endfor
             </tbody>
         </table>
-        @if( isset($form_process) )
-        {{ $form_process['process_description'] }}:<br>
-        <ul>
-            @php
-            $i = 0;
-            @endphp
-            @foreach($form_process['form_routes'] as $key => $route)
-                @if($i != 0 && $route['status'] == "approved")
-                    <li><b>({{ $route['status'] }})</b> {{ $route['office_name'] }}</li>
-                    @if($route['office_name'] == "Budget Section")
-                    <ul>
-                        <li><b>Charge To:</b> {{ $charge_to }}</li>
-                        <li><b>Amount:</b> {{ number_format($alloted_amount, 2) }}</li>
-                        <li><b>UACS Code:</b> {{ $uacs_code }}</li>
-                        <li><b>SA/OR:</b> {{ $sa_or }}</li>
-                    </ul>
-                    @endif
-                @endif
-                
-                @php
-                $i++;
-                @endphp
-            @endforeach
-        </ul>
-        @endif
 </div>
 </body>
 </html>
