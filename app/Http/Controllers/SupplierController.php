@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Repositories\SupplierRepository;
+use App\Transformers\SupplierTransformer;
 
 class SupplierController extends Controller
 {
@@ -20,9 +21,10 @@ class SupplierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $suppliers = $this->supplierRepository->attach('contacts')->getAll($request);
+        return fractal($suppliers, new SupplierTransformer)->parseIncludes('contacts')->toArray();
     }
 
     /**

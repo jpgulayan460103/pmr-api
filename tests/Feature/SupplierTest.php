@@ -33,16 +33,19 @@ class SupplierTest extends TestCase
                 [
                     'name' => $this->faker->address,
                     'address' => $this->faker->name,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ],
                 [
                     'name' => $this->faker->address,
                     'address' => $this->faker->name,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ],
                 [
                     'name' => $this->faker->address,
                     'address' => $this->faker->name,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ]
             ]
@@ -68,16 +71,19 @@ class SupplierTest extends TestCase
                 [
                     'name' => $this->faker->name,
                     'address' => $this->faker->address,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ],
                 [
                     'name' => $this->faker->name,
                     'address' => $this->faker->address,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ],
                 [
                     'name' => $this->faker->name,
                     'address' => $this->faker->address,
+                    'contact_number' => $this->faker->phoneNumber,
                     'email_address' => $this->faker->email(),
                 ]
             ]

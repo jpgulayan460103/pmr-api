@@ -18,6 +18,7 @@ class CreateSupplierContactsTable extends Migration
             $table->string('name')->nullable();
             $table->string('address')->nullable();
             $table->string('email_address')->nullable();
+            $table->string('contact_number')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->timestamps();
         });

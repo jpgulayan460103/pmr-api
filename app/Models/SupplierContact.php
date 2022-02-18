@@ -13,6 +13,7 @@ class SupplierContact extends Model
         'name',
         'address',
         'email_address',
+        'contact_number',
         'supplier_id',
     ];
 

@@ -190,6 +190,7 @@ class PurchaseRequestController extends Controller
         $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request_preview);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
+        // $pdf->save('sad.pdf');
         return $pdf->stream('purchase-request-preview.pdf');
     }
 
