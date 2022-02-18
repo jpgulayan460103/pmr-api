@@ -57,10 +57,9 @@ Route::group(['prefix' => '/pdf'], function () {
         Route::get('/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview'])->name('api.purchase-requests.pdf.preview');
         Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview'])->name('api.purchase-requests.pdf.validate');
     });
-
-    Route::group(['prefix' => '/purchase-requests'], function () {
-        Route::get('/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
-    });
+    
+    Route::get('/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
+    Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
 });
 
 

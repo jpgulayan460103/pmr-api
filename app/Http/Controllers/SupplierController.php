@@ -23,8 +23,8 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        $suppliers = $this->supplierRepository->attach('contacts')->getAll($request);
-        return fractal($suppliers, new SupplierTransformer)->parseIncludes('contacts')->toArray();
+        $suppliers = $this->supplierRepository->attach('contacts,categories.category')->getAll($request);
+        return fractal($suppliers, new SupplierTransformer)->parseIncludes('contacts,categories.category')->toArray();
     }
 
     /**

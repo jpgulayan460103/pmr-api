@@ -6,6 +6,7 @@ use App\Http\Requests\CreateQuotationRequest;
 use App\Models\Quotation;
 use Illuminate\Http\Request;
 use App\Repositories\QuotationRepository;
+use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 
 class QuotationController extends Controller
 {
@@ -90,4 +91,16 @@ class QuotationController extends Controller
     {
         //
     }
+
+    public function pdf($id)
+    {
+        $pdf = FacadesPdf::loadView('pdf.quotation');
+        $pdf->shrink_tables_to_fit = 1.4;
+        $pdf->use_kwt = true;
+        // $pdf->save('sad.pdf');
+        return $pdf->stream('purchase-request-preview.pdf');
+        return view('pdf.quotation');
+        // return $data;
+    }
+
 }

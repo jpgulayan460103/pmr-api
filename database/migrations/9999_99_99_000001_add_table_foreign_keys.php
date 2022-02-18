@@ -74,6 +74,11 @@ class AddTableForeignKeys extends Migration
             $table->foreign('purchase_request_item_id')->references('id')->on('purchase_request_items')->onDelete('cascade');
         });
 
+        Schema::table('supplier_categories', function (Blueprint $table) {
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('libraries')->onDelete('cascade');
+        });
+
         Schema::table('supplier_contacts', function (Blueprint $table) {
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
@@ -167,6 +172,11 @@ class AddTableForeignKeys extends Migration
         Schema::table('quotation_items', function (Blueprint $table) {
             $table->dropForeign(['quotation_id']);
             $table->dropForeign(['purchase_request_item_id']);
+        });
+
+        Schema::table('supplier_categories', function (Blueprint $table) {
+            $table->dropForeign(['supplier_id']);
+            $table->dropForeign(['category_id']);
         });
 
         Schema::table('supplier_contacts', function (Blueprint $table) {

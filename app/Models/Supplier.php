@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SupplierContact;
+use App\Models\SupplierCategory;
 use App\Models\Quotation;
 
 class Supplier extends Model
@@ -23,5 +24,10 @@ class Supplier extends Model
     public function quotations()
     {
         return $this->hasMany(Quotation::class);
+    }
+    
+    public function categories()
+    {
+        return $this->hasMany(SupplierCategory::class);
     }
 }
