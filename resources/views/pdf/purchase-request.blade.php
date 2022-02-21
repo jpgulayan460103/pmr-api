@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> -->
     <meta http-equiv="Content-Type" content="charset=utf-8" />
-    <title>Document</title>
+    <title>Purchase Request</title>
     <style>
          @page {
             /* margin: 0px 0px 0px 0px !important; */
@@ -86,7 +86,7 @@
             @endphp
             @foreach($form_process['form_routes'] as $key => $route)
                 @if($i != 0 && $route['status'] == "approved")
-                    <span>✓ {{ $route['office_name'] }}</span><br>
+                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['office_name'] }}</span><br>
                     @if($route['office_name'] == "Budget Section")
                     <div>
                         <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
@@ -133,9 +133,9 @@
                     <td style=" text-align: center; border-top: 0">{{ $requested_by['parent']['name'] }}</td>
                     <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['parent']['name'] }}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td colspan="6" style="border: 0;"></td>
-                </tr>
+                </tr> -->
             </tfoot>
             <tbody>
                 @foreach($items['data'] as $key => $item)
@@ -149,7 +149,7 @@
                     <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
                 @endforeach
-                @for($i = 0; $i<=(32 - $count_items); $i ++)
+                @for($i = 0; $i<=(21 - $count_items); $i ++)
                 <tr>
                     <td style="text-align: center">&nbsp;</td>
                     <td style="text-align: center;"></td>
