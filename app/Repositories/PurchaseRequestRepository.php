@@ -63,6 +63,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();
             $this->modelQuery()->whereBetween('pr_date', $pr_date);
         }
+        $this->modelQuery()->orderBy('id','desc');
         return $this->modelQuery()->paginate($this->perPage);
     }
 

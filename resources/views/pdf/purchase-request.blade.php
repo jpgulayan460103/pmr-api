@@ -86,7 +86,7 @@
             @endphp
             @foreach($form_process['form_routes'] as $key => $route)
                 @if($i != 0 && $route['status'] == "approved")
-                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['office_name'] }}</span><br>
+                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['description_code'] == 'aprroval_from_twg' ? "TWG: " : "" }}{{ $route['office_name'] }}</span><br>
                     @if($route['office_name'] == "Budget Section")
                     <div>
                         <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
