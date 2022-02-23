@@ -30,6 +30,6 @@ class Library extends Model
 
     public function children()
     {
-        return $this->hasMany(Library::class, 'parent_id')->orderBy('name','desc');
+        return $this->hasMany(Library::class, 'parent_id')->orderBy('name');
     }
 }

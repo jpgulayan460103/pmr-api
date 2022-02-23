@@ -33,7 +33,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $attach = 'end_user, purchase_request_type, mode_of_procurement';
+        $attach = 'end_user, procurement_type, mode_of_procurement';
         $filters = [];
         if(request('type') == "all"){
         }elseif(request('type') == "procurement"){
@@ -51,7 +51,7 @@ class PurchaseRequestController extends Controller
         request()->has('sa_or') ? $filters['sa_or'] = request('sa_or') : "";
         request()->has('purchase_request_number') ? $filters['purchase_request_number'] = request('purchase_request_number') : "";
         request()->has('end_user_id') ? $filters['end_user_id'] = request('end_user_id') : "";
-        request()->has('purchase_request_type_id') ? $filters['purchase_request_type_id'] = request('purchase_request_type_id') : "";
+        request()->has('procurement_type_id') ? $filters['procurement_type_id'] = request('procurement_type_id') : "";
         request()->has('mode_of_procurement_id') ? $filters['mode_of_procurement_id'] = request('mode_of_procurement_id') : "";
         request()->has('purchase_request_type_category') ? $filters['purchase_request_type_category'] = request('purchase_request_type_category') : "";
         // return $filters;
@@ -93,7 +93,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process, end_user, form_routes.to_office, form_routes.from_office, purchase_request_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by, bac_task";
+        $attach = "form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();

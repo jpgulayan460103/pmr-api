@@ -34,7 +34,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'approved_by',
         'form_process',
         'form_routes',
-        'purchase_request_type',
+        'procurement_type',
         'mode_of_procurement',
     ];
     
@@ -60,7 +60,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'common_amount' => $table->total_cost,
             'pr_dir' => $table->pr_dir,
             'end_user_id' => $table->end_user_id,
-            'purchase_request_type_id' => $table->purchase_request_type_id,
+            'procurement_type_id' => $table->procurement_type_id,
             'status' => $table->status,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
@@ -100,10 +100,10 @@ class PurchaseRequestTransformer extends TransformerAbstract
         }
     }
 
-    public function includePurchaseRequestType($table)
+    public function includeProcurementType($table)
     {
-        if ($table->purchase_request_type) {
-            return $this->item($table->purchase_request_type, new LibraryTransformer);
+        if ($table->procurement_type) {
+            return $this->item($table->procurement_type, new LibraryTransformer);
         }
     }
     public function includeModeOfProcurement($table)

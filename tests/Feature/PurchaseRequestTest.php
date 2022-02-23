@@ -113,7 +113,7 @@ class PurchaseRequestTest extends TestCase
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
-            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
@@ -294,7 +294,7 @@ class PurchaseRequestTest extends TestCase
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
-            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
@@ -316,7 +316,7 @@ class PurchaseRequestTest extends TestCase
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
-            'purchase_request_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
