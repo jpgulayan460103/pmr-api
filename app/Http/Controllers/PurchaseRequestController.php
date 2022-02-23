@@ -53,6 +53,7 @@ class PurchaseRequestController extends Controller
         request()->has('end_user_id') ? $filters['end_user_id'] = request('end_user_id') : "";
         request()->has('purchase_request_type_id') ? $filters['purchase_request_type_id'] = request('purchase_request_type_id') : "";
         request()->has('mode_of_procurement_id') ? $filters['mode_of_procurement_id'] = request('mode_of_procurement_id') : "";
+        request()->has('purchase_request_type_category') ? $filters['purchase_request_type_category'] = request('purchase_request_type_category') : "";
         // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);

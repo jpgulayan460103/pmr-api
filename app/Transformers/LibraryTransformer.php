@@ -22,7 +22,8 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'user_office'
+        'user_office',
+        'children'
     ];
     
     /**
@@ -47,6 +48,12 @@ class LibraryTransformer extends TransformerAbstract
     {
         if ($table->parent) {
             return $this->item($table->parent, new LibraryTransformer);
+        }
+    }
+    public function includeChildren(Library $table)
+    {
+        if ($table->children) {
+            return $this->collection($table->children, new LibraryTransformer);
         }
     }
 

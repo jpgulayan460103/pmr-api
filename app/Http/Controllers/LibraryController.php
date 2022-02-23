@@ -20,8 +20,10 @@ class LibraryController extends Controller
     public function index()
     {
         DB::enableQueryLog();
-        $library = Library::orderBy('library_type')->orderBy('name')->get();
-        return fractal($library, new LibraryTransformer)->parseIncludes('parent.parent.parent');
+        $library = Library::with('parent','children')->orderBy('library_type')->orderBy('name')->get();
+        // return DB::getQueryLog();
+        // return $library;
+        return fractal($library, new LibraryTransformer)->parseIncludes('children');
     }
 
     /**

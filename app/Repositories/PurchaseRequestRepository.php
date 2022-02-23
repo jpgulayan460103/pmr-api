@@ -10,6 +10,7 @@ use App\Repositories\HasCrud;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
+use App\Repositories\LibraryRepository;
 use App\Transformers\FormProcessTransformer;
 use Carbon\Carbon;
 
@@ -57,6 +58,11 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         }
         if(isset($filters['mode_of_procurement_id'])){
             $this->modelQuery()->whereIn('mode_of_procurement_id', $filters['mode_of_procurement_id']);
+        }
+        if(isset($filters['purchase_request_type_category'])){
+            $purchase_request_type_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',$filters['purchase_request_type_category'])->pluck('id');
+            // $purchase_request_type_ids;
+            $this->modelQuery()->whereIn('purchase_request_type_id', $purchase_request_type_ids);
         }
         if(isset($filters['pr_date'])){
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();

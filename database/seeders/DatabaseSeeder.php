@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DivisionSeeder::class);
         $this->call(SectionSeeder::class);
         $this->call(TechnicalWorkingGroupSeeder::class);
+        $this->call(ProcurementTypeCategorySeeder::class);
         $this->call(ProcurementTypeSeeder::class);
         $this->call(ProcurementModeOfPaymentSeeder::class);
         $this->call(PositionSeeder::class);
