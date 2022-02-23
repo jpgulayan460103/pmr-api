@@ -28,6 +28,7 @@ class CreatePurchaseRequest extends FormRequest
             'end_user_id' => ['required', new LibraryExistRule('user_section')], 
             'pr_date' => 'date|required',
             'purpose' => 'required',
+            'title' => 'required',
             'items.*.item_name' => 'required',
             'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'items.*.quantity' => 'numeric|min:1',
@@ -50,4 +51,21 @@ class CreatePurchaseRequest extends FormRequest
             'items.*.unit_cost.regex' => '2 decimal places only',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if(request()->has('items')){
+                if(request('items') == array()){
+                    $validator->errors()->add("items", "No purchase request items added.");
+                }
+            }
+            if(request()->has('purpose')){
+                if(trim(request('purpose')) == "For the implementation of undefined" || trim(request('purpose')) == "For the implementation of"){
+                    $validator->errors()->add("purpose", "The purpose field is required.");
+                }
+            }            
+        });
+    }
+
 }

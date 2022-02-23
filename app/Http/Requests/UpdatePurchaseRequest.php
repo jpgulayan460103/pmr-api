@@ -50,6 +50,7 @@ class UpdatePurchaseRequest extends FormRequest
                 'end_user_id' => ['required', new LibraryExistRule('user_section')], 
                 'pr_date' => 'date|required',
                 'purpose' => 'required',
+                'title' => 'required',
                 'items.*.item_name' => 'required',
                 'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
                 'items.*.quantity' => 'numeric|min:1',

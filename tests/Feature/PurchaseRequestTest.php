@@ -34,6 +34,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $office = $user->user_offices;
         $response = $this->post('/api/purchase-requests',[
+            'title' => $this->faker->text(200),
             'purpose' => $this->faker->text(200),
             'pr_date' => Carbon::now(),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
@@ -75,6 +76,7 @@ class PurchaseRequestTest extends TestCase
             'end_user_id' => $purchase_request['end_user_id'],
             'pr_date' => $purchase_request['pr_date'],
             'purpose' => $purchase_request['purpose'],
+            'title' => $purchase_request['title'],
             'items' => [
                 $item_1,
                 [
@@ -114,6 +116,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
@@ -189,6 +192,7 @@ class PurchaseRequestTest extends TestCase
         $office = $user->user_offices;
         $response = $this->post('/api/purchase-requests',[
             'purpose' => $this->faker->text(200),
+            'title' => $this->faker->text(200),
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('cc-####-####-###'),
             'pr_date' => Carbon::now(),
@@ -295,6 +299,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
@@ -317,6 +322,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
+            'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);
@@ -353,6 +359,7 @@ class PurchaseRequestTest extends TestCase
             'end_user_id' => $purchase_request->end_user_id,
             'pr_date' => $purchase_request->pr_date,
             'purpose' => $purchase_request->purpose,
+            'title' => $purchase_request->title,
         ]);
         $response->assertStatus(200);
     }

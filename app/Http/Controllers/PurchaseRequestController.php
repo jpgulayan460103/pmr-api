@@ -45,6 +45,7 @@ class PurchaseRequestController extends Controller
             $filters['offices_ids'] = $offices_ids;
         }
         request()->has('purpose') ? $filters['purpose'] = request('purpose') : "";
+        request()->has('title') ? $filters['title'] = request('title') : "";
         request()->has('total_cost') ? $filters['total_cost'] = request('total_cost') : "";
         request()->has('status') ? $filters['status'] = request('status') : "";
         request()->has('pr_date') ? $filters['pr_date'] = request('pr_date') : "";

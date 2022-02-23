@@ -35,6 +35,9 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(isset($filters['purpose'])){
             $this->modelQuery()->where('purpose', 'like', "%".$filters['purpose']."%");
         }
+        if(isset($filters['title'])){
+            $this->modelQuery()->where('title', 'like', "%".$filters['title']."%");
+        }
         if(isset($filters['total_cost'])){
             $this->modelQuery()->where('total_cost', $filters['total_cost']);
         }

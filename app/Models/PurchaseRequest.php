@@ -20,6 +20,7 @@ class PurchaseRequest extends Model
         'purchase_request_uuid',
         'purchase_request_number',
         'purpose',
+        'title',
         'fund_cluster',
         'center_code',
         'total_cost',
@@ -45,8 +46,9 @@ class PurchaseRequest extends Model
         'approved_by.name',
         'requested_by.name',
         'end_user.name',
-        'mode_of_procurement.name',
+        'procurement_type.parent.name',
         'procurement_type.name',
+        'mode_of_procurement.name',
     ];
 
     protected static $logAttributesToIgnore = [
@@ -60,7 +62,7 @@ class PurchaseRequest extends Model
         'approved_by_id',
         'mode_of_procurement_id',
         'id',
-        'pending',
+        'status',
         'created_at',
         'updated_at',
     ];
@@ -102,7 +104,7 @@ class PurchaseRequest extends Model
     }
     public function procurement_type()
     {
-        return $this->belongsTo(Library::class);
+        return $this->belongsTo(Library::class)->withDefault(true);
     }
     public function mode_of_procurement()
     {

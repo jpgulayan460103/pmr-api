@@ -17,8 +17,9 @@ class CreatePurchaseRequestsTable extends Migration
             $table->id();
             $table->string('purchase_request_uuid')->nullable();
             $table->string('purchase_request_number')->nullable();
-            $table->string('purpose')->nullable();
+            $table->text('purpose')->nullable();
             $table->string('pr_dir')->nullable();
+            $table->text('title')->nullable();
             $table->float('total_cost',15,2)->nullable();
             $table->date('pr_date')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();

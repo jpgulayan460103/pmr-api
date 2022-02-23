@@ -138,6 +138,10 @@
                 </tr> -->
             </tfoot>
             <tbody>
+                <tr>
+                    <td style="text-align: center;" colspan="2"><b>Title:</b></td>
+                    <td colspan="4"><b>{{ $title }}</b></td>
+                </tr>
                 @foreach($items['data'] as $key => $item)
                 <tr>
                     <td style="text-align: center">{{ $item['item_code'] }}</td>
