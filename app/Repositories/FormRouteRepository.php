@@ -51,7 +51,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function getForApproval($request, $filters)
     {
-        return $this->modelQuery()->where(function($query) {
+        return $this->modelQuery()->orderBy('id','desc')->where(function($query) {
             $query->where('status','pending')
                   ->orWhere('status','with_issues');
             })->whereIn('to_office_id',$filters['offices_ids'])->paginate($this->perPage);

@@ -32,6 +32,7 @@ class UpdatePurchaseRequest extends FormRequest
             $rules = [
                 'procurement_type_id' => ['required', new LibraryExistRule('procurement_type')],
                 'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
+                'procurement_type_category' => ['required', new LibraryExistRule('procurement_type_category')],
             ];
         }elseif(request()->has('updater') && request('updater') == 'budget'){
             $rules = [
@@ -72,6 +73,7 @@ class UpdatePurchaseRequest extends FormRequest
             'items.*.unit_cost.numeric' => 'Required',
             'items.*.unit_cost.regex' => '2 decimal places only',
             'procurement_type_id.required' => 'Please select procurement type.',
+            'procurement_type_category.required' => 'Please select procurement category.',
             'mode_of_procurement_id.required' => 'Please select mode of procurement.',
             'purchase_request_number.unique' => 'The purchase request number is already in the database.',
             // 'purchase_request_number_last.required' => 'The office/section is required.',

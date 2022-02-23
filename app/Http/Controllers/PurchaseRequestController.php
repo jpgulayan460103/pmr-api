@@ -54,6 +54,8 @@ class PurchaseRequestController extends Controller
         request()->has('procurement_type_id') ? $filters['procurement_type_id'] = request('procurement_type_id') : "";
         request()->has('mode_of_procurement_id') ? $filters['mode_of_procurement_id'] = request('mode_of_procurement_id') : "";
         request()->has('purchase_request_type_category') ? $filters['purchase_request_type_category'] = request('purchase_request_type_category') : "";
+        request()->has('sortColumn') ? $filters['sortColumn'] = request('sortColumn') : "";
+        request()->has('sortOrder') ? $filters['sortOrder'] = request('sortOrder') : "";
         // return $filters;
 
         $this->purchaseRequestRepository->attach($attach);

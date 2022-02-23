@@ -61,13 +61,17 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         }
         if(isset($filters['purchase_request_type_category'])){
             $procurement_type_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',$filters['purchase_request_type_category'])->pluck('id');
-            // $procurement_type_ids;
             $this->modelQuery()->whereIn('procurement_type_id', $procurement_type_ids);
         }
         if(isset($filters['pr_date'])){
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();
             $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();
             $this->modelQuery()->whereBetween('pr_date', $pr_date);
+        }
+
+        if(isset($filters['sortColumn']) && isset($filters['sortOrder'])){
+            $filters['sortOrder'] = $filters['sortOrder'] ==  'ascend' ? 'ASC' : 'DESC';  
+            $this->modelQuery()->orderBy($filters['sortColumn'],$filters['sortOrder']);
         }
         $this->modelQuery()->orderBy('id','desc');
         return $this->modelQuery()->paginate($this->perPage);
