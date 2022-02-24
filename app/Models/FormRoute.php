@@ -25,8 +25,9 @@ class FormRoute extends Model
         'form_routable_id',
         'form_routable_type',
         'form_process_id',
+        'action_taken',
     ];
-
+    
     public function form_routable()
     {
         return $this->morphTo();

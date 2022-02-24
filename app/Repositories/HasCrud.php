@@ -52,7 +52,7 @@ Trait HasCrud {
 
     public function getAllPaginated($request) : object
     {
-        return $this->modelQuery()->paginate($this->perPage);
+        return $this->modelQuery()->simplePaginate($this->perPage);
     }
  
     public function getById($id) : object

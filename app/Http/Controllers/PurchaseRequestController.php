@@ -203,4 +203,18 @@ class PurchaseRequestController extends Controller
     {
         return $this->purchaseRequestRepository->createOrUpdateBac($request->all());
     }
+
+    public function getNextNumber(Request $request)
+    {
+        $purchase_request = $this->purchaseRequestRepository->getLastNumber();
+        if(!$purchase_request){
+            return [
+                'next_number' => "00001"
+            ];
+        }
+        $last_number = (integer)substr($purchase_request->purchase_request_number, 17);
+        return [
+            'next_number' => str_pad($last_number+1,5,"0",STR_PAD_LEFT)
+        ];
+    }
 }

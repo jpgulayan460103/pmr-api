@@ -43,14 +43,69 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $created_route;
     }
 
-
+    public function getProcessed($type, $filters)
+    {
+        $user = Auth::user();
+        $results = $this->modelQuery()->where('form_routes.status', $type);
+        $results->where('remarks_by_id',$user->id);
+        if($type == "approved"){
+            $results->where('remarks','<>','Finalization from the end user.');
+        }
+        $results = $this->filters($results, $filters);
+        $results->orderBy('id','desc');
+        $results = $results->simplePaginate($this->perPage);
+        return $results;   
+    }
 
     public function getForApproval($filters)
     {
-        return $this->modelQuery()->orderBy('id','desc')->where(function($query) {
-            $query->where('status','pending')
-                  ->orWhere('status','with_issues');
-            })->whereIn('to_office_id',$filters['offices_ids'])->paginate($this->perPage);
+        $results = $this->modelQuery()->orderBy('id','desc');
+        $results->where(function($query) {
+            $query->where('form_routes.status','pending')
+                  ->orWhere('form_routes.status','with_issues');
+            }
+        );
+        $results = $this->filters($results, $filters);
+        $results->whereIn('to_office_id',$filters['offices_ids']);
+        $results = $results->simplePaginate($this->perPage);
+        return $results;
+    }
+
+    public function filters($results, $filters)
+    {
+        if(isset($filters['title']) || isset($filters['purpose']) ){
+            $results->join('purchase_requests', 'form_routes.form_routable_id', '=', 'purchase_requests.id');
+            $results->select('form_routes.*','purchase_requests.title', 'purchase_requests.purpose');
+            if(isset($filters['title'])){
+                $results->where('title','like',"%".$filters['title']."%");
+            }
+            if(isset($filters['purpose'])){
+                $results->where('purpose','like',"%".$filters['purpose']."%");
+            }
+        }
+        if(isset($filters['end_user_id'])){
+            $results->whereIn('origin_office_id', $filters['end_user_id']);
+        }
+        if(isset($filters['created_at']) && $filters['created_at'] != array() && count($filters['created_at']) == 2){
+            $results->whereBetween('created_at', [
+                Carbon::parse($filters['created_at'][0]),
+                Carbon::parse($filters['created_at'][1])->addDay()->subSecond()
+            ]);
+        }
+        if(isset($filters['updated_at']) && $filters['updated_at'] != array() && count($filters['updated_at']) == 2){
+            $results->whereBetween('updated_at', [
+                Carbon::parse($filters['updated_at'][0]),
+                Carbon::parse($filters['updated_at'][1])->addDay()->subSecond()
+            ]);
+        }
+
+        if(isset($filters['remarks'])){
+            $results->where('remarks', 'like', "%".$filters['remarks']."%");
+        }
+        if(isset($filters['forwarded_remarks'])){
+            $results->where('forwarded_remarks', 'like', "%".$filters['forwarded_remarks']."%");
+        }
+        return $results;
     }
 
 
@@ -109,22 +164,6 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $data;
     }
 
-    public function getApproved()
-    {
-        // config(['database.connections.mysql.strict' => false]);
-        $user = Auth::user();
-        $result = $this->modelQuery()->where('status','approved')->where('remarks_by_id',$user->id)->where('remarks','<>','Finalization from the end user.')->orderBy('id','desc')->simplePaginate($this->perPage);
-        return $result;
-        
-    }
 
-    public function getRejected()
-    {
-        // config(['database.connections.mysql.strict' => false]);
-        $user = Auth::user();
-        $result = $this->modelQuery()->where('status','rejected')->where('remarks_by_id',$user->id)->orderBy('id','desc')->simplePaginate($this->perPage);
-        return $result;
-        
-    }
 
 }

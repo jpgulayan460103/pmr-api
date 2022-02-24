@@ -77,7 +77,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $this->modelQuery()->orderBy($filters['sortColumn'],$filters['sortOrder']);
         }
         $this->modelQuery()->orderBy('id','desc');
-        return $this->modelQuery()->paginate($this->perPage);
+        return $this->modelQuery()->simplePaginate($this->perPage);
     }
 
     public function create($data)
@@ -183,7 +183,11 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $purchase_request->bac_task()->create($data);
         }
         return $purchase_request;
-        // return ;
+    }
+
+    public function getLastNumber()
+    {
+        return $this->modelQuery()->whereNotNull('purchase_request_number')->orderBy('id','desc')->limit(1)->first();
     }
 }
 

@@ -10,14 +10,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
+use App\Models\Library;
+use App\Repositories\LibraryRepository;
+
 class FormRouteController extends Controller
 {
 
     private $formRouteRepository;
+    private $attach;
 
     public function __construct(FormRouteRepository $formRouteRepository)
     {
         $this->formRouteRepository = $formRouteRepository;
+        $this->attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
     }
     /**
      * Display a listing of the resource.
@@ -101,17 +106,29 @@ class FormRouteController extends Controller
         //
     }
 
+    public function rejected(Request $request)
+    {
+        $filters = $request->all();
+        $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('rejected', $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
+    }
+    public function approved(Request $request)
+    {
+        $filters = $request->all();
+        $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('approved', $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
+    }
+
     public function forApproval(Request $request)
     {
+        $filters = $request->all();
         $user = Auth::user();
-        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
-        // $user = User::find(3);
         $offices_ids = $user->user_offices->pluck('office_id')->toArray();
         $groups_ids = $user->user_groups->pluck('group_id')->toArray();
         $filters['offices_ids'] = array_merge($groups_ids, $offices_ids);
-        $routes = $this->formRouteRepository->attach($attach)->getForApproval($filters);
+        $routes = $this->formRouteRepository->attach($this->attach)->getForApproval($filters);
         // return $routes;
-        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
     }
 
     public function approve(Request $request, $id)
@@ -137,6 +154,7 @@ class FormRouteController extends Controller
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
                 $form = $formRoute->form_routable;
                 $this->formRouteRepository->completeForm($form);
+                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
             }else{
                 $currentRoute = $formRoutes[$step];
                 if($formRoute->to_office_id == $currentRoute['office_id']){
@@ -145,6 +163,10 @@ class FormRouteController extends Controller
                     $nextRoute = $currentRoute;
                 }
                 $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
+                if($nextRoute['description_code'] == 'aprroval_from_twg'){
+                    $nextRoute['office_name'] .= " Techinical Working Group";
+                }
+                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Forwarded to ".$nextRoute['office_name']."." ]);
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
@@ -165,21 +187,11 @@ class FormRouteController extends Controller
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $data['remarks'] = request('remarks');
+        $office = (new LibraryRepository)->getById($data['to_office_id']);
         $this->formRouteRepository->create($data);
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => $data]);
+        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
         // event(new NewMessage(['test' => 'asdasd']));
     }
 
-    public function rejected(Request $request)
-    {
-        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
-        $routes = $this->formRouteRepository->getRejected();
-        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
-    }
-    public function approved(Request $request)
-    {
-        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
-        $routes = $this->formRouteRepository->getApproved();
-        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
-    }
+
 }

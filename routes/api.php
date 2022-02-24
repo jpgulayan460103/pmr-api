@@ -65,7 +65,6 @@ Route::group(['prefix' => '/pdf'], function () {
 
 Route::group(['prefix' => '/purchase-requests', 'middleware' => 'auth:api'], function () {
     Route::post('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
-    Route::get('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
 });
 
 Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
@@ -78,6 +77,10 @@ Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
     }); 
     Route::get('/rejected', [FormRouteController::class, 'rejected']);
     Route::get('/approved', [FormRouteController::class, 'approved']);
+});
+
+Route::group(['prefix' => '/next-numbers'], function () {
+    Route::get('/purchase-request', [PurchaseRequestController::class, 'getNextNumber']);
 });
 
 Route::resources([
