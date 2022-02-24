@@ -43,13 +43,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $created_route;
     }
 
-    public function approve()
-    {
-        # code...
-    }
 
 
-    public function getForApproval($request, $filters)
+    public function getForApproval($filters)
     {
         return $this->modelQuery()->orderBy('id','desc')->where(function($query) {
             $query->where('status','pending')
@@ -112,4 +108,23 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         ];
         return $data;
     }
+
+    public function getApproved()
+    {
+        // config(['database.connections.mysql.strict' => false]);
+        $user = Auth::user();
+        $result = $this->modelQuery()->where('status','approved')->where('remarks_by_id',$user->id)->where('remarks','<>','Finalization from the end user.')->orderBy('id','desc')->simplePaginate($this->perPage);
+        return $result;
+        
+    }
+
+    public function getRejected()
+    {
+        // config(['database.connections.mysql.strict' => false]);
+        $user = Auth::user();
+        $result = $this->modelQuery()->where('status','rejected')->where('remarks_by_id',$user->id)->orderBy('id','desc')->simplePaginate($this->perPage);
+        return $result;
+        
+    }
+
 }

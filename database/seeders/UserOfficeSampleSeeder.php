@@ -35,7 +35,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
 
 
@@ -58,7 +58,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
 
 
@@ -76,7 +76,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -98,7 +98,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -121,7 +121,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -143,7 +143,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -164,7 +164,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -185,7 +185,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,
@@ -210,7 +210,7 @@ class UserOfficeSampleSeeder extends Seeder
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
-            'position_id' => 170,
+            'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         UserOffice::create([
             "office_id" => $office->id,

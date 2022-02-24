@@ -109,7 +109,7 @@ class FormRouteController extends Controller
         $offices_ids = $user->user_offices->pluck('office_id')->toArray();
         $groups_ids = $user->user_groups->pluck('group_id')->toArray();
         $filters['offices_ids'] = array_merge($groups_ids, $offices_ids);
-        $routes = $this->formRouteRepository->attach($attach)->getForApproval($request, $filters);
+        $routes = $this->formRouteRepository->attach($attach)->getForApproval($filters);
         // return $routes;
         return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
     }
@@ -162,11 +162,24 @@ class FormRouteController extends Controller
         $user = Auth::user();
         $data = $request->all();
         $data = $this->formRouteRepository->returnToRejecter($id, $data);
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks')]);
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $data['remarks'] = request('remarks');
         $this->formRouteRepository->create($data);
+        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => $data]);
         // event(new NewMessage(['test' => 'asdasd']));
+    }
+
+    public function rejected(Request $request)
+    {
+        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
+        $routes = $this->formRouteRepository->getRejected();
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
+    }
+    public function approved(Request $request)
+    {
+        $attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
+        $routes = $this->formRouteRepository->getApproved();
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($attach);
     }
 }

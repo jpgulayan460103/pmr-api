@@ -75,9 +75,9 @@ Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
         Route::get('/requests/pending', [FormRouteController::class, 'forApproval']);
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
         Route::post('/requests/pending/{id}/reject', [FormRouteController::class, 'reject']);
-        Route::get('/requests/rejected', [FormRouteController::class, 'forApproval']);
-        Route::get('/requests/approved', [FormRouteController::class, 'forApproval']);
     }); 
+    Route::get('/rejected', [FormRouteController::class, 'rejected']);
+    Route::get('/approved', [FormRouteController::class, 'approved']);
 });
 
 Route::resources([
