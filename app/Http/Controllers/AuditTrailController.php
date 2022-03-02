@@ -25,7 +25,7 @@ class AuditTrailController extends Controller
             ->where('subject_type','App\\Models\\PurchaseRequest')
             ->where('subject_id',$id)
             ->get();
-        if($request->type && $request->type == "procurement"){
+        // if($request->type && $request->type == "procurement"){
             if($purchase_request->bac_task){
                 $bac_log = $this->bacTask($purchase_request);
                 // return $bac_log;
@@ -41,7 +41,7 @@ class AuditTrailController extends Controller
                 ];
 
             }
-        }
+        // }
         return fractal($purchase_request_log, new PurchaseRequestLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
     }
 

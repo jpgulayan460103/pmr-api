@@ -119,7 +119,7 @@ class FormRouteController extends Controller
         return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
     }
 
-    public function forApproval(Request $request)
+    public function getPending(Request $request)
     {
         $filters = $request->all();
         $user = Auth::user();

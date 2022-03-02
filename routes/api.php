@@ -14,6 +14,7 @@ use App\Http\Controllers\UserOfficeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
+use App\Http\Controllers\FormUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,12 +72,16 @@ Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
     Route::put('/process/{id}', [FormProcessController::class, 'update']);
     Route::get('/routes/{id}', [FormRouteController::class, 'show']);
     Route::group(['prefix' => '/routes'], function () {
-        Route::get('/requests/pending', [FormRouteController::class, 'forApproval']);
+        Route::get('/requests/pending', [FormRouteController::class, 'getPending']);
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
         Route::post('/requests/pending/{id}/reject', [FormRouteController::class, 'reject']);
     }); 
     Route::get('/rejected', [FormRouteController::class, 'rejected']);
     Route::get('/approved', [FormRouteController::class, 'approved']);
+
+    Route::group(['prefix' => '/uploads'], function () {
+        Route::post('/purchase-request', [FormUploadController::class, 'store']);
+    });
 });
 
 Route::group(['prefix' => '/next-numbers'], function () {
