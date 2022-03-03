@@ -80,7 +80,7 @@ Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
     Route::get('/approved', [FormRouteController::class, 'approved']);
 
     Route::group(['prefix' => '/uploads'], function () {
-        Route::post('/purchase-request', [FormUploadController::class, 'store']);
+        Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
     });
 });
 

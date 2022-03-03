@@ -25,7 +25,15 @@ class FormUploadRequest extends FormRequest
     {
         return [
             'meta.description' => 'required',
-            'meta.uid' => 'required'
+            'file' => 'file|max:20000'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'meta.description.required' => 'File description is required.',
+            'file.max' => 'File size must not be greater than 20 MB.',
         ];
     }
 }

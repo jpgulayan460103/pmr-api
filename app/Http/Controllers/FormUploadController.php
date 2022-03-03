@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Transformers\FormUploadTransformer;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FormUploadRequest;
+use App\Models\PurchaseRequest;
+use Illuminate\Support\Facades\Auth;
 
 class FormUploadController extends Controller
 {
@@ -36,13 +38,34 @@ class FormUploadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(FormUploadRequest $request)
+    public function store(FormUploadRequest $request, $type, $id)
     {
-        foreach ($request->file('files') as $file) {
-            $path = Storage::putFile('avatars', $file);
+        $user = Auth::user();
+        $file = $request->file;
+        $path = Storage::putFile('public/test', $file);
+        $url = Storage::url($path);
+        $classname = "";
+        switch ($type) {
+            case 'purchase-request':
+                $classname = new PurchaseRequest;
+                break;
+            
+            default:
+                # code...
+                break;
         }
+        FormUpload::create([
+            'upload_type' => $type,
+            'title' => $request->meta['description'],
+            'filename' => $file->getClientOriginalName(),
+            'file_directory' => $url,
+            'user_id' => $user->id,
+            'form_uploadable_id' => $id,
+            'form_uploadable_type' => get_class($classname),
+        ]);
+        return $url;
+        return $path;
         return $request->all();
-        // echo $path;
     }
 
     /**
