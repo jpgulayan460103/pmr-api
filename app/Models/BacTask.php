@@ -30,7 +30,7 @@ class BacTask extends Model
 
     protected static $logAttributes = [
         '*',
-        'purchase_request.purchase_request_uuid',
+        'purchase_request.uuid',
     ];
 
     protected static $logAttributesToIgnore = [

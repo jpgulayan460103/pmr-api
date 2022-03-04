@@ -14,7 +14,7 @@ class PurchaseRequestFactory extends Factory
     public function definition()
     {
         return [
-            'purchase_request_uuid' => $this->faker->uuid,
+            'uuid' => $this->faker->uuid,
             'purchase_request_number' => $this->faker->uuid,
             'purpose' => $this->faker->text(100),
             'fund_cluster' => $this->faker->word,

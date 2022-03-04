@@ -27,7 +27,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         }
         $this->model($purchaseRequest);
         $this->perPage(10);
-        $this->uuid = "purchase_request_uuid";
+        $this->uuid = "uuid";
     }
 
     public function search($filters)

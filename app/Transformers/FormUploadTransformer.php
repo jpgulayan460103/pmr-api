@@ -22,7 +22,7 @@ class FormUploadTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        //
+        'uploader'
     ];
     
     /**
@@ -39,10 +39,19 @@ class FormUploadTransformer extends TransformerAbstract
             'upload_type' => $formUpload->upload_type,
             'title' => $formUpload->title,
             'filename' => $formUpload->filename,
-            'file_directory' => $formUpload->file_directory,
+            'filesize' => $formUpload->filesize,
+            'file_directory' => url($formUpload->file_directory),
             'user_id' => $formUpload->user_id,
             'form_uploadable_id' => $formUpload->form_uploadable_id,
             'form_uploadable_type' => $formUpload->form_uploadable_type,
+            'created_at' => $formUpload->created_at->toDayDateTimeString(),
         ];
+    }
+
+    public function includeUploader(FormUpload $formUpload)
+    {
+        if ($formUpload->uploader) {
+            return $this->item($formUpload->uploader, new UserTransformer);
+        }
     }
 }

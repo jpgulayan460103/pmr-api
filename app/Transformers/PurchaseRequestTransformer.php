@@ -36,6 +36,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'form_routes',
         'procurement_type',
         'mode_of_procurement',
+        'form_uploads',
     ];
     
     /**
@@ -45,11 +46,11 @@ class PurchaseRequestTransformer extends TransformerAbstract
      */
     public function transform($table)
     {
-        $uuid_last = explode("-",$table->purchase_request_uuid);
+        $uuid_last = explode("-",$table->uuid);
         return [
             'id' => $table->id,
-            'purchase_request_uuid' => $table->purchase_request_uuid,
-            'uuid' => $table->purchase_request_uuid,
+            'uuid' => $table->uuid,
+            'uuid' => $table->uuid,
             'uuid_last' => end($uuid_last),
             'purchase_request_number' => $table->purchase_request_number,
             'purpose' => $table->purpose,
@@ -73,7 +74,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'charge_to' => $table->charge_to,
             'alloted_amount' => $table->alloted_amount,
             'sa_or' => $table->sa_or,
-            'file' => route('api.purchase-requests.pdf', ['id' => $table->purchase_request_uuid]),
+            'file' => route('api.purchase-requests.pdf', ['id' => $table->uuid]),
             'particulars' => $table->purpose, // set common field for all forms
             'process_complete_status' => $table->process_complete_status == 1,
             'process_complete_date' => $table->process_complete_date,
@@ -141,6 +142,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->form_routes) {
             return $this->collection($table->form_routes, new FormRouteTransformer);
+        }
+    }
+    public function includeFormUploads($table)
+    {
+        if ($table->form_uploads) {
+            return $this->collection($table->form_uploads, new FormUploadTransformer);
         }
     }
 }

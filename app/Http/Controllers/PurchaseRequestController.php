@@ -96,7 +96,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by, bac_task";
+        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();
@@ -153,9 +153,9 @@ class PurchaseRequestController extends Controller
         // return $purchase_request;
         // return view('pdf.purchase-request', $purchase_request);
         if($request['view']){
-            return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+            return $pdf->stream('purchase-request-'.$purchase_request['uuid'].'.pdf');
         }
-        return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        return $pdf->download('purchase-request-'.$purchase_request['uuid'].'.pdf');
     }
 
     public function validatePdfPreview(CreatePurchaseRequest $request)

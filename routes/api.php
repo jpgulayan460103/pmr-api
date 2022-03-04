@@ -81,6 +81,7 @@ Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
 
     Route::group(['prefix' => '/uploads'], function () {
         Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
+        Route::delete('/{type}/{id}', [FormUploadController::class, 'destroy']);
     });
 });
 

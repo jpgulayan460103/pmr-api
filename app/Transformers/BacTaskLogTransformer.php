@@ -26,7 +26,7 @@ class BacTaskLogTransformer extends TransformerAbstract
         "notice_to_proceed" => "Notice to Proceed",
         "estimated_ldd" => "Estimated LDD",
         "abstract_of_qoutations" => "Abstract of Quotations",
-        // "purchase_request.purchase_request_uuid" => "Purchase Request",
+        // "purchase_request.uuid" => "Purchase Request",
     ];
     protected $defaultIncludes = [
         //

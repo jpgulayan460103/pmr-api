@@ -19,10 +19,12 @@ class CreateFormUploadsTable extends Migration
             $table->string('upload_type')->nullable();
             $table->string('title')->nullable();
             $table->string('filename')->nullable();
+            $table->string('filesize')->nullable();
             $table->string('file_directory')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('form_uploadable_id')->nullable();
             $table->string('form_uploadable_type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

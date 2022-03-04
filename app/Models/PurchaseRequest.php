@@ -17,7 +17,7 @@ class PurchaseRequest extends Model
 {
     use HasFactory, LogsActivity;
     protected $fillable = [
-        'purchase_request_uuid',
+        'uuid',
         'purchase_request_number', //BUDRP-PR-2022-02-00001
         'purpose',
         'title',
@@ -52,7 +52,7 @@ class PurchaseRequest extends Model
     ];
 
     protected static $logAttributesToIgnore = [
-        'purchase_request_uuid',
+        'uuid',
         'procurement_type_id',
         'process_complete_date',
         'process_complete_status',
@@ -74,7 +74,7 @@ class PurchaseRequest extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->purchase_request_uuid = (string) Str::uuid();
+            $model->uuid = (string) Str::uuid();
             $model->status = 'Pending';
         });
         self::updating(function($model) {
@@ -133,6 +133,10 @@ class PurchaseRequest extends Model
     public function form_routes()
     {
         return $this->morphMany(FormRoute::class, 'form_routable');
+    }
+    public function form_uploads()
+    {
+        return $this->morphMany(FormUpload::class, 'form_uploadable')->orderBy('id','desc');
     }
 
     public function quotations()

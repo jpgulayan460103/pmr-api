@@ -20,6 +20,7 @@ class AddTableForeignKeys extends Migration
 
         Schema::table('form_processes', function (Blueprint $table) {
             $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->index(['form_processable_id', 'form_processable_type']);
         });
 
         Schema::table('form_routes', function (Blueprint $table) {
@@ -30,6 +31,12 @@ class AddTableForeignKeys extends Migration
             $table->foreign('origin_office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('from_office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('to_office_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->index(['form_routable_id', 'form_routable_type']);
+        });
+        
+        Schema::table('form_uploads', function (Blueprint $table) {
+            $table->index(['form_uploadable_id', 'form_uploadable_type']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
 
@@ -123,6 +130,7 @@ class AddTableForeignKeys extends Migration
 
         Schema::table('form_processes', function (Blueprint $table) {
             $table->dropForeign(['office_id']);
+            $table->dropIndex(['form_processable_id', 'form_processable_type']);
         });
 
         Schema::table('form_routes', function (Blueprint $table) {
@@ -131,6 +139,12 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['origin_office_id']);
             $table->dropForeign(['from_office_id']);
             $table->dropForeign(['to_office_id']);
+            $table->dropIndex(['form_routable_id', 'form_routable_type']);
+        });
+        
+        Schema::table('form_uploads', function (Blueprint $table) {
+            $table->dropIndex(['form_uploadable_id', 'form_uploadable_type']);
+            $table->dropForeign(['user_id']);
         });
 
         Schema::table('items', function (Blueprint $table) {

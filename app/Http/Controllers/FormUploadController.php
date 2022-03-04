@@ -8,10 +8,17 @@ use App\Transformers\FormUploadTransformer;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FormUploadRequest;
 use App\Models\PurchaseRequest;
+use App\Repositories\FormUploadRepository;
 use Illuminate\Support\Facades\Auth;
 
 class FormUploadController extends Controller
 {
+    private $formUploadRepository;
+
+    public function __construct(FormUploadRepository $formUploadRepository)
+    {
+        $this->formUploadRepository = $formUploadRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,32 +47,8 @@ class FormUploadController extends Controller
      */
     public function store(FormUploadRequest $request, $type, $id)
     {
-        $user = Auth::user();
-        $file = $request->file;
-        $path = Storage::putFile('public/test', $file);
-        $url = Storage::url($path);
-        $classname = "";
-        switch ($type) {
-            case 'purchase-request':
-                $classname = new PurchaseRequest;
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-        FormUpload::create([
-            'upload_type' => $type,
-            'title' => $request->meta['description'],
-            'filename' => $file->getClientOriginalName(),
-            'file_directory' => $url,
-            'user_id' => $user->id,
-            'form_uploadable_id' => $id,
-            'form_uploadable_type' => get_class($classname),
-        ]);
+        $url = $this->formUploadRepository->upload($type, $id);
         return $url;
-        return $path;
-        return $request->all();
     }
 
     /**
@@ -108,8 +91,8 @@ class FormUploadController extends Controller
      * @param  \App\Models\FormUpload  $formUpload
      * @return \Illuminate\Http\Response
      */
-    public function destroy(FormUpload $formUpload)
+    public function destroy($type,$id)
     {
-        //
+        $this->formUploadRepository->delete($id);
     }
 }

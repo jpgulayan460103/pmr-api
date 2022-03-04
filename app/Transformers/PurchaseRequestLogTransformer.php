@@ -27,7 +27,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         "fund_cluster" => "Fund Cluster",
         "end_user.name" => "End User",
         "alloted_amount" => "ABC (PHP)",
-        "purchase_request_uuid" => "UUID",
+        "uuid" => "UUID",
         "approved_by.name" => "Approved By",
         "purchase_request_number" => "PR Number",
         "requested_by.name" => "Requested By",
