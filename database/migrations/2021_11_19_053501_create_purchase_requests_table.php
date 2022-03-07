@@ -38,6 +38,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->unsignedBigInteger('requested_by_id')->nullable();
             $table->unsignedBigInteger('approved_by_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

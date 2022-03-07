@@ -30,6 +30,7 @@ class CreateBacTasksTable extends Migration
             $table->string("estimated_ldd")->nullable();
             $table->string("abstract_of_qoutations")->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -77,7 +77,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $this->modelQuery()->orderBy($filters['sortColumn'],$filters['sortOrder']);
         }
         $this->modelQuery()->orderBy('id','desc');
-        return $this->modelQuery()->simplePaginate($this->perPage);
+        return $this->modelQuery()->paginate($this->perPage);
     }
 
     public function create($data)

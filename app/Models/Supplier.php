@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SupplierContact;
 use App\Models\SupplierCategory;
 use App\Models\Quotation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'name',
         'address',

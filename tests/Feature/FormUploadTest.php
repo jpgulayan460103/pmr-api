@@ -21,18 +21,17 @@ class FormUploadTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        Storage::fake('avatars');
+        Storage::fake('tests');
  
         $file = UploadedFile::fake()->image('avatar.jpg');
  
-        $response = $this->post('/api/forms/uploads/purchase-request', [
-            'avatar' => $file,
+        $response = $this->post('/api/forms/uploads/purchase_request/1', [
+            'file' => $file,
+            'meta' => [
+                'description' => 'test file'
+            ]
         ]);
 
-        // $response->assertStatus(200);
- 
-        Storage::disk('avatars')->assertExists($file->hashName());
+        $response->assertStatus(200);
     }
 }
-//avatars/KCa3fObkSknsd87sN0NbDRrceXH5i0SOQpkhFJ0k.jpg
-//avatars/KCa3fObkSknsd87sN0NbDRrceXH5i0SOQpkhFJ0k.jp

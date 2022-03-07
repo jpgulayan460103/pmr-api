@@ -4,14 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
+use App\Models\FormUpload;
 use App\Transformers\PurchaseRequestLogTransformer;
 use App\Repositories\PurchaseRequestRepository;
 use App\Transformers\PurchaseRequestItemLogTransformer;
+use App\Transformers\AuditTrailTransformer;
 use App\Transformers\BacTaskLogTransformer;
+use App\Transformers\FormUploadLogTransformer;
 use Illuminate\Support\Facades\DB;
 
 class AuditTrailController extends Controller
 {
+    public function index(Request $request)
+    {
+        DB::enableQueryLog();
+        $logs = ActivityLog::with(
+            [
+                'user.user_information',
+                'subject' => function($query) {
+                    $query->withTrashed();
+                },
+            ]
+        )->orderBy('id','desc')->paginate(200);
+        // return DB::getQueryLog();
+        // return $logs;
+        return fractal($logs, new AuditTrailTransformer)->parseIncludes('subject.parent,user.user_information');
+    }
+
     public function purchaseRequest(Request $request, $id)
     {
         $purchase_request = (new PurchaseRequestRepository())->attach('bac_task')->getById($id);
@@ -19,30 +38,59 @@ class AuditTrailController extends Controller
         $purchase_request_log = ActivityLog::with(
                 [
                     'user.user_information',
-                    'subject'
+                    'subject' => function($query) {
+                        $query->withTrashed();
+                    },
                 ]
             )
             ->where('subject_type','App\\Models\\PurchaseRequest')
             ->where('subject_id',$id)
             ->get();
+        $purchase_request_log = fractal($purchase_request_log, new PurchaseRequestLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+
+        //items
+        $items_logs = $this->purchaseRequestItem($request, $id);
+
+        $merged = array_merge($items_logs['data'], $purchase_request_log['data']);
+        usort($merged, function($a, $b) {
+            return ($b['id'] - $a['id']);
+        });
+
+        $purchase_request_log = [
+            'data' => $merged
+        ];
+        //end items
+
+
+        //bac
         // if($request->type && $request->type == "procurement"){
             if($purchase_request->bac_task){
-                $bac_log = $this->bacTask($purchase_request);
-                // return $bac_log;
-                $purchase_request_log = fractal($purchase_request_log, new PurchaseRequestLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+                $bac_log = $this->bacTask($request, $purchase_request);
                 $merged = array_merge($bac_log['data'], $purchase_request_log['data']);
-
                 usort($merged, function($a, $b) {
-                    return ($a['id'] - $b['id']);
+                    return ($b['id'] - $a['id']);
                 });
 
-                return [
+                $purchase_request_log = [
                     'data' => $merged
                 ];
-
             }
         // }
-        return fractal($purchase_request_log, new PurchaseRequestLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+        //end bac
+
+        //uploads
+        // $uploads = $this->formUploads($request, 'purchase_request' , $id);
+
+        // $merged = array_merge($uploads['data'], $purchase_request_log['data']);
+        // usort($merged, function($a, $b) {
+        //     return ($b['id'] - $a['id']);
+        // });
+
+        // $purchase_request_log = [
+        //     'data' => $merged
+        // ];
+        //end uploads
+        return $purchase_request_log;
     }
 
     public function purchaseRequestItem(Request $request, $id)
@@ -63,7 +111,7 @@ class AuditTrailController extends Controller
         return fractal($log, new PurchaseRequestItemLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
     }
 
-    public function bacTask($purchase_request)
+    public function bacTask(Request $request, $purchase_request)
     {
         $model = (get_class($purchase_request->bac_task));
         $log = ActivityLog::with(
@@ -77,5 +125,24 @@ class AuditTrailController extends Controller
             ->get();
         // return $log;
         return fractal($log, new BacTaskLogTransformer)->parseIncludes('user.user_information,subject.purchase_request')->toArray();
+    }
+
+    public function formUploads(Request $request, $type, $id)
+    {
+        $form_uploads = FormUpload::where('upload_type', $type)->where('form_uploadable_id', $id)->withTrashed()->select('id')->pluck('id');
+        $log = ActivityLog::with(
+            [
+                'user.user_information',
+                'subject' => function($query) {
+                    $query->withTrashed();
+                },
+            ]
+        )
+        ->whereIn('subject_id',$form_uploads)
+        ->where('subject_type','App\Models\FormUpload')
+        ->get();
+        // return $log;
+        return fractal($log, new FormUploadLogTransformer)->parseIncludes('user.user_information,subject.parent')->toArray();
+        return $form_uploads;
     }
 }

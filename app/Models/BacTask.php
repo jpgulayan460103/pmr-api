@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Models\PurchaseRequest;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class BacTask extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'purchase_request_id',
         'bac_task_uuid',
@@ -39,6 +40,7 @@ class BacTask extends Model
         'created_at',
         'bac_task_uuid',
         'updated_at',
+        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

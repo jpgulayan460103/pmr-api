@@ -4,6 +4,8 @@ namespace App\Transformers;
 
 use App\Models\FormUpload;
 use League\Fractal\TransformerAbstract;
+use App\Transformers\PurchaseRequestTransformer;
+use App\Transformers\UserTransformer;
 
 class FormUploadTransformer extends TransformerAbstract
 {
@@ -22,7 +24,8 @@ class FormUploadTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'uploader'
+        'uploader',
+        'parent'
     ];
     
     /**
@@ -38,6 +41,7 @@ class FormUploadTransformer extends TransformerAbstract
             'upload_uuid' => $formUpload->upload_uuid,
             'upload_type' => $formUpload->upload_type,
             'title' => $formUpload->title,
+            'display_log' => $formUpload->title,
             'filename' => $formUpload->filename,
             'filesize' => $formUpload->filesize,
             'file_directory' => url($formUpload->file_directory),
@@ -54,4 +58,20 @@ class FormUploadTransformer extends TransformerAbstract
             return $this->item($formUpload->uploader, new UserTransformer);
         }
     }
+
+    public function includeParent(FormUpload $formUpload)
+    {
+        if ($formUpload->form_uploadable) {
+            switch ($formUpload->upload_type) {
+                case 'purchase_request':
+                    return $this->item($formUpload->form_uploadable, new PurchaseRequestTransformer);
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+    }
+    
 }

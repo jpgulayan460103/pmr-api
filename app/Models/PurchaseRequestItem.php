@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
+use App\Models\PurchaseRequest;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -64,5 +65,9 @@ class PurchaseRequestItem extends Model
     public function unit_of_measure()
     {
         return $this->belongsTo(Library::class);
+    }
+    public function purchase_request()
+    {
+        return $this->belongsTo(PurchaseRequest::class, 'purchase_request_id');
     }
 }

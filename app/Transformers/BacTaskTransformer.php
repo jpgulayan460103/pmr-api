@@ -23,7 +23,8 @@ class BacTaskTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'purchase_request'
+        'purchase_request',
+        'parent',
     ];
     
     /**
@@ -54,6 +55,12 @@ class BacTaskTransformer extends TransformerAbstract
     }
 
     public function includePurchaseRequest(BacTask $table)
+    {
+        if ($table->purchase_request) {
+            return $this->item($table->purchase_request, new PurchaseRequestTransformer);
+        }
+    }
+    public function includeParent(BacTask $table)
     {
         if ($table->purchase_request) {
             return $this->item($table->purchase_request, new PurchaseRequestTransformer);

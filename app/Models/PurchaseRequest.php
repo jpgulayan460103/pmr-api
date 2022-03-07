@@ -11,11 +11,12 @@ use App\Models\Library;
 use App\Models\UserOffice;
 use App\Models\Quotation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class PurchaseRequest extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'uuid',
         'purchase_request_number', //BUDRP-PR-2022-02-00001
@@ -65,6 +66,7 @@ class PurchaseRequest extends Model
         'status',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;
