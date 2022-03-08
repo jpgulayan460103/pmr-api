@@ -15,13 +15,23 @@ class ProcurementModeOfPaymentSeeder extends Seeder
     public function run()
     {
         $mode_of_procurements = [
-            'Public Bidding',
-            'Domestic and Foreign Procurement',
-            'Limited Source Bidding',
-            'Direct Contracting',
-            'Repeat Order',
-            'Shopping',
-            'Negotiated Procurement',
+            "Agency to Agency",
+            "Direct Contracting",
+            "Direct Retail Purchase of POL Products and Airline Tickets",
+            "Domestic and Foreign Procurement",
+            "Emergency Cases",
+            "Highly Technical Consultant",
+            "Lease of Real Property and Venues",
+            "Limited Source Bidding",
+            "Negotiated Procurement",
+            "Public Bidding",
+            "Repeat Order",
+            "Scientific, Scholarly, or Artistic Work, Exclusive Technology and Media Services",
+            "Shopping A",
+            "Shopping B",
+            "Small Value Procurement",
+            "Two (2) Failed Bidding",
+            
         ];
 
         foreach ($mode_of_procurements as $mode_of_procurement) {
