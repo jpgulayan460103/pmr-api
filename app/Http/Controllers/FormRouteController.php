@@ -151,7 +151,7 @@ class FormRouteController extends Controller
                 $step++;
             }
             $lastRoute = $formRoutes[count($formRoutes) - 1];
-            if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
+            if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user."){
                 $form = $formRoute->form_routable;
                 $this->formRouteRepository->completeForm($form);
                 $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
@@ -172,7 +172,13 @@ class FormRouteController extends Controller
             $formRoute->form_process->save();
             // event(new NewMessage(['test' => 'asdasd']));
             DB::commit();
-            return $formRoute;
+            return [
+                'form_route' => $formRoute,
+                'next_route' => isset($nextRoute) ? $nextRoute : [
+                    'office_name' => "Procurement Section",
+                    'description' => "Procurement Process"
+                ],
+            ];
         } catch (\Throwable $th) {
             throw $th;
         }

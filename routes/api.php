@@ -30,7 +30,8 @@ use App\Http\Controllers\FormUploadController;
 Route::middleware('auth:api')->get('/user', [UserController::class, 'auth']);
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/active-directory/login', [AuthController::class, 'adLogin']);
 Route::get('/logger/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);

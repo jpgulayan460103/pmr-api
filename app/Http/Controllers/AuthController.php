@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Repositories\AuthRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -46,6 +47,14 @@ class AuthController extends Controller
     {
         $ldap_auth = $this->authRepository->ldapAuth($request);
         return response()->json($ldap_auth, $ldap_auth['status_code']);
+    }
+
+    public function logout()
+    {
+        if(Auth::check()){
+            $user = Auth::user();
+            $this->authRepository->revokeExistingTokens($user);
+        }
     }
 
 }
