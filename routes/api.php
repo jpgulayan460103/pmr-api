@@ -92,6 +92,11 @@ Route::group(['prefix' => '/next-numbers'], function () {
     Route::get('/purchase-request', [PurchaseRequestController::class, 'getNextNumber']);
 });
 
+Route::group(['prefix' => '/users'], function () {
+    Route::post('/{id}/permissions', [UserController::class, 'updatePermission']);
+    Route::get('/{id}/permissions', [UserController::class, 'updatePermission']);
+});
+
 Route::resources([
     // 'purchase-requests' => PurchaseRequestController::class,
     'purchase-orders' => PurchaseOrderController::class,

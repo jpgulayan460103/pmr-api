@@ -27,8 +27,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group')->getAll($request);
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group');
+        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles')->getAll($request);
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles');
     }
 
     /**
@@ -62,15 +62,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->attach('user_information,user_offices,permissions')->getById($id);
-        // return $user;
-        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions');
+        $user = $this->userRepository->attach('user_information,user_offices,permissions,roles')->getById($id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions,roles');
     }
 
     public function auth()
     {
         $auth_user = Auth::user();
-        $user = $this->userRepository->attach('user_information,user_offices.office,permissions')->getById($auth_user->id);
+        $user = $this->userRepository->attach('user_information,user_offices.office,permissions,roles')->getById($auth_user->id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices.office,permissions,roles');
         // sleep(5);
         return $user;
     }
@@ -114,5 +114,15 @@ class UserController extends Controller
         $user = $this->userRepository->create($request->all());
         $token = (new AuthRepository)->getAccessToken(['username' => $user->username, 'password' => ''], $user); // with refresh token
         return response()->json($token);  
+    }
+
+    public function updatePermission(Request $request, $id)
+    {
+        // return $request->all();
+        $user = User::find($id);
+        // $user->permissions()->delete();
+        $user->revokePermissionTo($user->permissions);
+        $user->givePermissionTo(request('permissions'));
+        return $user->permissions;
     }
 }

@@ -6,6 +6,7 @@ use League\Fractal\TransformerAbstract;
 use App\Transformers\UserInformationTransformer;
 use App\Transformers\UserOfficeTransformer;
 use App\Transformers\PermissionTransformer;
+use App\Transformers\RoleTransformer;
 use App\Transformers\UserGroupTransformer;
 use App\Models\User;
 
@@ -29,6 +30,7 @@ class UserTransformer extends TransformerAbstract
         'user_information',
         'user_offices',
         'permissions',
+        'roles',
         'user_groups',
     ];
     
@@ -64,6 +66,12 @@ class UserTransformer extends TransformerAbstract
     {
         if ($table->permissions) {
             return $this->collection($table->permissions, new PermissionTransformer);
+        }
+    }
+    public function includeRoles(User $table)
+    {
+        if ($table->roles) {
+            return $this->collection($table->roles, new RoleTransformer);
         }
     }
     public function includeUserGroups(User $table)

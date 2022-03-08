@@ -6,6 +6,7 @@ use App\Models\Library;
 use App\Models\User;
 use App\Models\UserOffice;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 
 class UserOfficeSampleSeeder extends Seeder
 {
@@ -22,6 +23,7 @@ class UserOfficeSampleSeeder extends Seeder
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
+        
         UserOffice::create([
             "office_id" => $office->id,
             "user_id" => $user->id,
@@ -37,6 +39,8 @@ class UserOfficeSampleSeeder extends Seeder
             'email_address' => '',
             'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('super-admin');
 
 
         $office = Library::where('library_type','user_section')->whereTitle('PS')->first();
@@ -60,6 +64,8 @@ class UserOfficeSampleSeeder extends Seeder
             'email_address' => '',
             'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
 
 
         $office = Library::where('library_type','user_section')->whereTitle('PPD')->first();
@@ -83,6 +89,8 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+
+        $user->givePermissionTo(Permission::all()->pluck('name'));
         
         $office = Library::where('library_type','user_section')->whereTitle('OARDA')->first();
         $user = User::create([
@@ -128,6 +136,7 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
         
         $office = Library::where('library_type','user_section')->whereTitle('BACS')->first();
         $user = User::create([
@@ -150,6 +159,7 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
         
         $office = Library::where('library_type','user_section')->whereTitle('BS')->first();
         $user = User::create([
@@ -171,6 +181,7 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
         
         $office = Library::where('library_type','user_section')->whereTitle('ORD')->first();
         $user = User::create([
@@ -192,6 +203,7 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
         
         $office = Library::where('library_type','user_section')->whereTitle('ICTMS')->first();
         $user = User::create([
@@ -217,5 +229,6 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
     }
 }
