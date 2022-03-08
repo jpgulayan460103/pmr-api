@@ -26,6 +26,15 @@ class AuthController extends Controller
             return response()->json($ldap_auth, $ldap_auth['status_code']);
         }
         if($authenticator['status'] == "ok"){
+            // activity('user_login')
+            // ->causedBy($user)
+            // ->withProperties(
+            //     [
+            //         'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            //         'user_ip' => $_SERVER['REMOTE_ADDR'],
+            //     ]
+            // )
+            // ->log('edited');
             $this->authRepository->revokeExistingTokens($user);
             $token = $this->authRepository->getAccessToken($request->only('username', 'password'), $user); // with refresh token
             return response()->json($token);   
