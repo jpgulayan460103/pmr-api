@@ -23,10 +23,16 @@ class PurchaseRequestController extends Controller
     public function __construct(PurchaseRequestRepository $purchaseRequestRepository)
     {
         $this->purchaseRequestRepository = $purchaseRequestRepository;
-        // $this->middleware('auth:api');
-        // $this->middleware('role_or_permission:super-admin|purchase.requests.create', ['only' => ['store']]);
-        // $this->middleware('role_or_permission:super-admin|purchase.requests.update',   ['only' => ['update']]);
-        $this->middleware('permission:purchase.requests.view',   ['only' => ['show', 'index']]);
+        $this->middleware('auth:api', [
+            'except' => [
+                'pdf',
+                'validatePdfPreview',
+                'generatePdfPreview',
+            ]
+        ]);
+        $this->middleware('role_or_permission:super-admin|purchase.requests.create', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|purchase.requests.update',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|purchase.requests.view|procurement.view',   ['only' => ['show', 'index']]);
     }
 
 

@@ -27,29 +27,24 @@ use App\Http\Controllers\FormUploadController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', [UserController::class, 'auth']);
+Route::get('/user', [UserController::class, 'auth']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
-
-Route::post('/register', [UserController::class, 'register']);
 Route::post('/active-directory/login', [AuthController::class, 'adLogin']);
-Route::get('/logger/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);
-Route::get('/logger/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
-Route::get('/logger/all', [AuditTrailController::class, 'index']);
-Route::get('/logger/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
-Route::middleware(['auth:api'])->group(function () {
-    Route::resources([
-        'purchase-requests' => PurchaseRequestController::class,
-        'purchase-orders' => PurchaseOrderController::class,
-        'items' => ItemController::class,
-        'users' => UserController::class,
-        'user_offices' => UserOfficeController::class,
-        'form-routes' => FormRouteController::class,
-        'suppliers' => SupplierController::class,
-        'quotations' => QuotationController::class,
-    ]);
-});
+Route::post('/register', [UserController::class, 'register']);
+
+
+Route::resources([
+    'purchase-requests' => PurchaseRequestController::class,
+    'purchase-orders' => PurchaseOrderController::class,
+    'items' => ItemController::class,
+    'users' => UserController::class,
+    'user_offices' => UserOfficeController::class,
+    'form-routes' => FormRouteController::class,
+    'suppliers' => SupplierController::class,
+    'quotations' => QuotationController::class,
+]);
 
 Route::group(['prefix' => '/libraries'], function () {
     Route::get('/', [LibraryController::class, 'index']);
@@ -67,11 +62,11 @@ Route::group(['prefix' => '/pdf'], function () {
 });
 
 
-Route::group(['prefix' => '/purchase-requests', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => '/purchase-requests'], function () {
     Route::post('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
 });
 
-Route::group(['prefix' => '/forms', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => '/forms'], function () {
     Route::put('/process/{id}', [FormProcessController::class, 'update']);
     Route::get('/routes/{id}', [FormRouteController::class, 'show']);
     Route::group(['prefix' => '/routes'], function () {
@@ -97,12 +92,10 @@ Route::group(['prefix' => '/users'], function () {
     Route::get('/{id}/permissions', [UserController::class, 'updatePermission']);
 });
 
-Route::resources([
-    // 'purchase-requests' => PurchaseRequestController::class,
-    'purchase-orders' => PurchaseOrderController::class,
-    'items' => ItemController::class,
-    'users' => UserController::class,
-    'user_offices' => UserOfficeController::class,
-    // 'form-routes' => FormRouteController::class,
-]);
+Route::group(['prefix' => '/logger'], function () {
+    Route::get('/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);
+    Route::get('/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
+    Route::get('/all', [AuditTrailController::class, 'index']);
+    Route::get('/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
+});
 

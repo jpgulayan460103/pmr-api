@@ -19,6 +19,11 @@ class UserController extends Controller
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->middleware('auth:api', ['except' => ['register']]);
+        $this->middleware('role_or_permission:super-admin|users.permission.update', ['only' => ['updatePermission']]);
+        $this->middleware('role_or_permission:super-admin|users.delete', ['only' => ['destroy']]);
+        $this->middleware('role_or_permission:super-admin|users.view', ['only' => ['index','show']]);
+        $this->middleware('role_or_permission:super-admin|users.update', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.

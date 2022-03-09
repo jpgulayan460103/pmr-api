@@ -15,6 +15,7 @@ class FormProcessController extends Controller
     public function __construct(FormProcessRepository $formProcessRepository)
     {
         $this->formProcessRepository = $formProcessRepository;
+        $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
