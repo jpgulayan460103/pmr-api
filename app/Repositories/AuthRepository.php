@@ -39,7 +39,7 @@ class AuthRepository implements AuthRepositoryInterface
         }
 
         if($user->account_type == "app_account"){
-            if (!Auth::attempt($request->only('username', 'password'))) {
+            if (!Auth::guard('web')->attempt($request->only('username', 'password'))) {
                 return [
                     'status' => 'error',
                     'message' => "Invalid login details",
