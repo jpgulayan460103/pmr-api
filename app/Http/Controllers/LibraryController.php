@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\DB;
 
 class LibraryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['only' => ['store', 'update']]);
+        $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
+    }
     /**
      * Display a listing of the resource.
      *
