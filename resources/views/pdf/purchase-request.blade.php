@@ -153,7 +153,15 @@
                     <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
                 @endforeach
-                @for($i = 0; $i<=(21 - $count_items); $i ++)
+                <tr>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"><b>*** NOTHING FOLLOWS ***</b></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                @for($i = 0; $i<=(19 - $count_items); $i ++)
                 <tr>
                     <td style="text-align: center">&nbsp;</td>
                     <td style="text-align: center;"></td>

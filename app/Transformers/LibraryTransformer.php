@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\UserOfficeTransformer;
 use App\Models\Library;
+use Illuminate\Support\Str;
 class LibraryTransformer extends TransformerAbstract
 {
     /**
@@ -40,6 +41,7 @@ class LibraryTransformer extends TransformerAbstract
             'name' => $table->name,
             'text' => $table->name,
             'library_type' => $table->library_type,
+            'library_type_str' => Str::headline($table->library_type),
             'key' => $table->id,
         ];
     }

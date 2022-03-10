@@ -42,7 +42,6 @@ class PermissionSeeder extends Seeder
             'procurement.attachment.view',
             'procurement.view',
             'purchase.requests.all',
-            'purchase.requests.approve',
             'purchase.requests.attachments.create',
             'purchase.requests.attachments.delete',
             'purchase.requests.attachments.view',
