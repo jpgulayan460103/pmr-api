@@ -91,6 +91,7 @@ class UserOfficeSampleSeeder extends Seeder
         ]);
 
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
         $office = Library::where('library_type','user_section')->whereTitle('OARDA')->first();
         $user = User::create([
@@ -113,6 +114,8 @@ class UserOfficeSampleSeeder extends Seeder
             "user_id" => $user->id,
             "designation" => "Test Account",
         ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
 
         $office = Library::where('library_type','user_section')->whereTitle('OARDO')->first();
@@ -137,6 +140,7 @@ class UserOfficeSampleSeeder extends Seeder
             "designation" => "Test Account",
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
         $office = Library::where('library_type','user_section')->whereTitle('BACS')->first();
         $user = User::create([
@@ -160,6 +164,7 @@ class UserOfficeSampleSeeder extends Seeder
             "designation" => "Test Account",
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
         $office = Library::where('library_type','user_section')->whereTitle('BS')->first();
         $user = User::create([
@@ -182,6 +187,7 @@ class UserOfficeSampleSeeder extends Seeder
             "designation" => "Test Account",
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
         $office = Library::where('library_type','user_section')->whereTitle('ORD')->first();
         $user = User::create([
@@ -204,6 +210,7 @@ class UserOfficeSampleSeeder extends Seeder
             "designation" => "Test Account",
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
         
         $office = Library::where('library_type','user_section')->whereTitle('ICTMS')->first();
         $user = User::create([
@@ -230,5 +237,6 @@ class UserOfficeSampleSeeder extends Seeder
             "designation" => "Test Account",
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
     }
 }

@@ -19,9 +19,9 @@ class FormUploadController extends Controller
     {
         $this->formUploadRepository = $formUploadRepository;
         $this->middleware('auth:api');
-        $this->middleware('role_or_permission:super-admin|purchase.requests.attachments.create',   ['only' => ['store']]);
-        $this->middleware('role_or_permission:super-admin|purchase.requests.attachments.view',   ['only' => ['show', 'index']]);
-        $this->middleware('role_or_permission:super-admin|purchase.requests.attachments.delete',   ['only' => ['destroy']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.create|purchase.requests.all',   ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.view|purchase.requests.all',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.delete',   ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.

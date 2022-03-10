@@ -19,9 +19,9 @@ class AuditTrailController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->middleware('role_or_permission:super-admin|purchase.requests.create', ['only' => ['store']]);
-        $this->middleware('role_or_permission:super-admin|purchase.requests.update',   ['only' => ['update']]);
-        $this->middleware('role_or_permission:super-admin|activitylogs.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.create|purchase.requests.all', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.update|purchase.requests.all',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|activitylogs.view|activitylogs.all',   ['only' => ['show', 'index']]);
     }
     public function index(Request $request)
     {

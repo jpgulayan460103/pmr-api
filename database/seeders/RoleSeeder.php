@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
@@ -23,6 +24,9 @@ class RoleSeeder extends Seeder
             $role = Role::create([
                 'name' => $role
             ]);
+            if($role != "user"){
+                // $role->givePermissionTo(Permission::all()->pluck('name'));
+            }
             echo "Inserted Role -> ".$role->name."\n";
         }
     }

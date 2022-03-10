@@ -20,10 +20,10 @@ class UserController extends Controller
     {
         $this->userRepository = $userRepository;
         $this->middleware('auth:api', ['except' => ['register']]);
-        $this->middleware('role_or_permission:super-admin|users.permission.update', ['only' => ['updatePermission']]);
-        $this->middleware('role_or_permission:super-admin|users.delete', ['only' => ['destroy']]);
-        $this->middleware('role_or_permission:super-admin|users.view', ['only' => ['index','show']]);
-        $this->middleware('role_or_permission:super-admin|users.update', ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.permission.update|users.all', ['only' => ['updatePermission']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.delete|users.all', ['only' => ['destroy']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.view|users.all', ['only' => ['index','show']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.update|users.all', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.
@@ -123,11 +123,9 @@ class UserController extends Controller
 
     public function updatePermission(Request $request, $id)
     {
-        // return $request->all();
         $user = User::find($id);
-        // $user->permissions()->delete();
-        $user->revokePermissionTo($user->permissions);
-        $user->givePermissionTo(request('permissions'));
+        $user->syncPermissions(request('permissions'));
+        $user->syncRoles(request('role'));
         return $user->permissions;
     }
 }
