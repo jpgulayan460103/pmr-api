@@ -33,7 +33,7 @@ class AuditTrailController extends Controller
                     $query->withTrashed();
                 },
             ]
-        )->orderBy('id','desc')->paginate(20);
+        )->orderBy('id','desc')->get();
         // return DB::getQueryLog();
         // return $logs;
         return fractal($logs, new AuditTrailTransformer)->parseIncludes('subject.parent,user.user_information');

@@ -49,6 +49,8 @@ Route::resources([
 Route::group(['prefix' => '/libraries'], function () {
     Route::get('/', [LibraryController::class, 'index']);
     Route::get('/{type}', [LibraryController::class, 'show']);
+    Route::put('/{type}/{id}', [LibraryController::class, 'update']);
+    Route::post('/{type}', [LibraryController::class, 'store']);
 });
 
 Route::group(['prefix' => '/pdf'], function () {

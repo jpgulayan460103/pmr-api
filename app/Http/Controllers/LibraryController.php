@@ -42,9 +42,14 @@ class LibraryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $type)
     {
-        //
+        $library = Library::create([
+            'library_type' => $type,
+            'name' => $request->name,
+            'title' => $request->title,
+            'parent_id' => $request->parent_id,
+        ]);
     }
 
     /**
@@ -82,9 +87,10 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Library $library)
+    public function update(Request $request, $type, $id)
     {
-        //
+        $library = Library::where('library_type', $type)->where('id',$id)->first();
+        $library->update($request->all());
     }
 
     /**
