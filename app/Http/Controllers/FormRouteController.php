@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
 use App\Models\Library;
 use App\Repositories\LibraryRepository;
-use Illuminate\Support\Facades\Route;
 
 class FormRouteController extends Controller
 {
@@ -140,7 +139,7 @@ class FormRouteController extends Controller
     {
         DB::beginTransaction();
         try {
-            $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
             $step = 0;
@@ -176,15 +175,21 @@ class FormRouteController extends Controller
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
             $user = Auth::user();
-            event(new NewMessage(['sender_id' => $user->id, 'message_type' => 'new_forwarded_form']));
-            DB::commit();
-            return [
+            
+            $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
+            $return = [
                 'form_route' => $formRoute,
                 'next_route' => isset($nextRoute) ? $nextRoute : [
-                    'office_name' => "Procurement Section",
+                    'office_name' => $procurement_office->name,
+                    'office_id' => $procurement_office->id,
                     'description' => "Procurement Process"
                 ],
+                'message_type' => 'approved_form',
+                'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id
             ];
+            event(new NewMessage($return));
+            DB::commit();
+            return $return;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -192,10 +197,10 @@ class FormRouteController extends Controller
 
     public function reject(Request $request, $id)
     {
-        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+        $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);
         $user = Auth::user();
         $data = $request->all();
-        $data = $this->formRouteRepository->returnToRejecter($id, $data);
+        $data = $this->formRouteRepository->returnTo($id, $data);
         $data['status'] = "with_issues";
         $data['remarks_by_id'] = $user->id;
         $data['remarks'] = request('remarks');
@@ -203,8 +208,19 @@ class FormRouteController extends Controller
         $this->formRouteRepository->create($data);
         $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
         $user = Auth::user();
-        event(new NewMessage(['sender_id' => $user->id,'message_type' => 'new_rejected_form']));
-        return Route::current()->gatherMiddleware();
+        $return = [
+            'form_route' => $formRoute,
+            'next_route' => [
+                'office_name' => $office->name,
+                'office_id' => $office->id,
+                'description' => "Returned to ".$office->name."."
+            ],
+            'message_type' => 'rejected_form',
+            'notify_offices' => $office->id,
+            'from_user' => $user,
+        ];
+        event(new NewMessage($return));
+        return $return;
     }
 
 

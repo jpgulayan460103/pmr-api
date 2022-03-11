@@ -10,6 +10,7 @@ use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class LibraryController extends Controller
 {
@@ -28,8 +29,10 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        $library = $this->libraryRepository->getLibraries();
-        return fractal($library, new LibraryTransformer)->parseIncludes('children');
+        if ($librariesRedis = Redis::get('libraries.all')) {
+            return json_decode($librariesRedis);
+        }
+        return (new LibraryRepository)->cacheRedis();
     }
 
     /**
@@ -57,6 +60,9 @@ class LibraryController extends Controller
             'parent_id' => $request->parent_id,
         ];
         $library = $this->libraryRepository->create($data);
+        
+        (new LibraryRepository)->cacheRedis();
+
         return $library;
     }
 
@@ -77,8 +83,15 @@ class LibraryController extends Controller
 
     public function showItems(Request $request)
     {
-        $item = (new ItemRepository)->getAll();
-        return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        $items = (new ItemRepository)->getAll();
+        if ($itemsRedis = Redis::get('libraries.items')) {
+            return json_decode($itemsRedis);
+        }
+        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        Redis::set('libraries.items', $items->toJson());
+        return $items;
+
+
     }
 
     /**
@@ -102,6 +115,7 @@ class LibraryController extends Controller
     public function update(Request $request, $type, $id)
     {
         $this->libraryRepository->update($id, $request->all());
+        return (new LibraryRepository)->cacheRedis();
     }
 
     /**

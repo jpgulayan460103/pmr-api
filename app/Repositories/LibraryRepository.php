@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Library;
 use App\Repositories\Interfaces\LibraryRepositoryInterface;
 use App\Repositories\HasCrud;
+use App\Transformers\LibraryTransformer;
+use Illuminate\Support\Facades\Redis;
 
 class LibraryRepository implements LibraryRepositoryInterface
 {
@@ -38,6 +40,14 @@ class LibraryRepository implements LibraryRepositoryInterface
     public function getBy($field, $value)
     {
         return $this->modelQuery()->orderBy('name')->where($field, $value)->get();
+    }
+
+    public function cacheRedis()
+    {
+        $library = $this->getLibraries();
+        $library = fractal($library, new LibraryTransformer)->parseIncludes('children');
+        Redis::set('libraries.all', $library->toJson());
+        return $library;
     }
     
 }

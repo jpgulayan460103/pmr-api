@@ -146,7 +146,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form->save();
     }
 
-    public function returnToRejecter($id, $data)
+    public function returnTo($id, $data)
     {
         
         $form_route = $this->getById($id);
