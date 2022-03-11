@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
 use App\Models\Library;
 use App\Repositories\LibraryRepository;
+use Illuminate\Support\Facades\Route;
 
 class FormRouteController extends Controller
 {
@@ -174,7 +175,8 @@ class FormRouteController extends Controller
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
-            // event(new NewMessage(['test' => 'asdasd']));
+            $user = Auth::user();
+            event(new NewMessage(['sender_id' => $user->id, 'message_type' => 'new_forwarded_form']));
             DB::commit();
             return [
                 'form_route' => $formRoute,
@@ -200,7 +202,9 @@ class FormRouteController extends Controller
         $office = (new LibraryRepository)->getById($data['to_office_id']);
         $this->formRouteRepository->create($data);
         $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
-        // event(new NewMessage(['test' => 'asdasd']));
+        $user = Auth::user();
+        event(new NewMessage(['sender_id' => $user->id,'message_type' => 'new_rejected_form']));
+        return Route::current()->gatherMiddleware();
     }
 
 
