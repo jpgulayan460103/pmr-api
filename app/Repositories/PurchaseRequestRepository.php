@@ -74,7 +74,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
         if(isset($filters['sortColumn']) && isset($filters['sortOrder'])){
             $filters['sortOrder'] = $filters['sortOrder'] ==  'ascend' ? 'ASC' : 'DESC';  
-            $this->modelQuery()->orderBy($filters['sortColumn'],$filters['sortOrder']);
+            $this->modelQuery()->orderBy($filters['sortColumn'], $filters['sortOrder']);
         }
         $this->modelQuery()->orderBy('id','desc');
         return $this->modelQuery()->paginate($this->perPage);

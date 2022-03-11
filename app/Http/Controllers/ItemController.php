@@ -27,7 +27,7 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
-        $items = $this->itemRepository->getAllPaginated($request);
+        $items = $this->itemRepository->getAllPaginated();
         return fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 
@@ -104,7 +104,7 @@ class ItemController extends Controller
 
     public function all(Request $request)
     {
-        $item = $this->itemRepository->getAll($request);
+        $item = $this->itemRepository->getAll();
         return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 }

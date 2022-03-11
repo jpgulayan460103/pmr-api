@@ -16,6 +16,7 @@ class LibraryRepository implements LibraryRepositoryInterface
         }
         $this->model($library);
         $this->perPage(200);
+        $this->attach('parent,children');
     }
 
     public function getUserSectionBy($field, $value)
@@ -26,6 +27,17 @@ class LibraryRepository implements LibraryRepositoryInterface
     public function getUserDivisionBy($field, $value)
     {
         return $this->modelQuery()->where('library_type','user_division')->where($field, $value)->first();
+    }
+
+    public function getLibraries()
+    {
+        return $this->modelQuery()->orderBy('library_type')->orderBy('name')->get();
+    }
+
+
+    public function getBy($field, $value)
+    {
+        return $this->modelQuery()->orderBy('name')->where($field, $value)->get();
     }
     
 }

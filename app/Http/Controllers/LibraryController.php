@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Library;
 use App\Models\Item;
 use App\Repositories\ItemRepository;
+use App\Repositories\LibraryRepository;
 use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
 use Illuminate\Http\Request;
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\DB;
 class LibraryController extends Controller
 {
 
-    public function __construct()
+    private $libraryRepository;
+    public function __construct(LibraryRepository $libraryRepository)
     {
+        $this->libraryRepository = $libraryRepository;
         $this->middleware('auth:api', ['only' => ['store', 'update']]);
         $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
     }
@@ -25,10 +28,7 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        DB::enableQueryLog();
-        $library = Library::with('parent','children')->orderBy('library_type')->orderBy('name')->get();
-        // return DB::getQueryLog();
-        // return $library;
+        $library = $this->libraryRepository->getLibraries();
         return fractal($library, new LibraryTransformer)->parseIncludes('children');
     }
 
@@ -50,12 +50,14 @@ class LibraryController extends Controller
      */
     public function store(Request $request, $type)
     {
-        $library = Library::create([
+        $data = [
             'library_type' => $type,
             'name' => $request->name,
             'title' => $request->title,
             'parent_id' => $request->parent_id,
-        ]);
+        ];
+        $library = $this->libraryRepository->create($data);
+        return $library;
     }
 
     /**
@@ -64,15 +66,19 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Library $library, $type)
+    public function show(Request $request, $type)
     {
         if($type == "items"){
-            $itemRepository = new ItemRepository(new Item);
-            $item = $itemRepository->getAll($request);
-            return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+            return $this->showItems($request);
         }
-        $library = $library->orderBy('name')->whereLibraryType($type)->get();
-        return fractal($library, new LibraryTransformer);
+        $library = $this->libraryRepository->getBy('library_type', $type);
+        return fractal($library, new LibraryTransformer)->parseIncludes('children');
+    }
+
+    public function showItems(Request $request)
+    {
+        $item = (new ItemRepository)->getAll();
+        return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
     }
 
     /**
@@ -95,8 +101,7 @@ class LibraryController extends Controller
      */
     public function update(Request $request, $type, $id)
     {
-        $library = Library::where('library_type', $type)->where('id',$id)->first();
-        $library->update($request->all());
+        $this->libraryRepository->update($id, $request->all());
     }
 
     /**

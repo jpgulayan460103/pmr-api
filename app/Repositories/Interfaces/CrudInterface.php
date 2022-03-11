@@ -8,9 +8,9 @@ interface CrudInterface {
 
     public function modelQuery();
     
-    public function getAll($request);
+    public function getAll();
 
-    public function getAllPaginated($request);
+    public function getAllPaginated();
  
     public function getById($id);
 

@@ -24,7 +24,7 @@ class PurchaseOrderController extends Controller
     public function index(Request $request)
     {
         $this->purchaseOrderRepository->attach('purchase_request,purchase_order_delieveries');
-        return $this->purchaseOrderRepository->getAllPaginated($request);
+        return $this->purchaseOrderRepository->getAllPaginated();
     }
 
     /**

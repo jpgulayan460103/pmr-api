@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles')->getAll($request);
+        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles')->getAll();
         return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles');
     }
 
@@ -123,7 +123,7 @@ class UserController extends Controller
 
     public function updatePermission(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = $this->userRepository->getById($id);
         $user->syncPermissions(request('permissions'));
         $user->syncRoles(request('role'));
         return $user->permissions;

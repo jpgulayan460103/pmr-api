@@ -44,13 +44,13 @@ Trait HasCrud {
         return $this;
     }
 
-    public function getAll($request) : object
+    public function getAll() : object
     {
         return $this->modelQuery()->get();
     }
 
 
-    public function getAllPaginated($request) : object
+    public function getAllPaginated() : object
     {
         return $this->modelQuery()->paginate($this->perPage);
     }
