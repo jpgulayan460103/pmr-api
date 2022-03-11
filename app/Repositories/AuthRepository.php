@@ -122,7 +122,7 @@ class AuthRepository implements AuthRepositoryInterface
     {
         $password = $user->type == "app_account" ? $credentials['password'] : config('services.ad.default_password');
         $oauth = DB::table('oauth_clients')->where('id',2)->first();
-        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+        $response = Http::withOptions(['verify' => false])->asForm()->post(config('services.passport.endpoint'), [
             'grant_type' => 'password',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,
@@ -137,7 +137,7 @@ class AuthRepository implements AuthRepositoryInterface
     public function refreshToken(Request $request)
     {
         $oauth = DB::table('oauth_clients')->where('id',2)->first();
-        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+        $response = Http::withOptions(['verify' => false])->asForm()->post(config('services.passport.endpoint'), [
             'grant_type' => 'refresh_token',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,
