@@ -5,4 +5,5 @@ php artisan test --filter PurchaseRequestTest
 php artisan test --filter SupplierTest
 php artisan test --filter QuotationTest
 php artisan test --filter FormUploadTest
+redis-cli flushall
 PAUSE 

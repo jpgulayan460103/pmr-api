@@ -15,8 +15,25 @@ class Library extends Model
         'library_type',
         'name',
         'title',
+        'is_active',
         'parent_id',
     ];
+
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->is_active = 1;
+        });
+        self::updating(function($model) {
+
+        });
+    }
 
     protected $with = array('parent');
 

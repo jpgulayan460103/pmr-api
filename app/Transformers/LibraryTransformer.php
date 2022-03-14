@@ -39,6 +39,7 @@ class LibraryTransformer extends TransformerAbstract
             'value' => $table->name,
             'title' => $table->title,
             'name' => $table->name,
+            'is_active' => $table->is_active,
             'text' => $table->name,
             'library_type' => $table->library_type,
             'library_type_str' => Str::headline($table->library_type),

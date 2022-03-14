@@ -14,6 +14,7 @@ class UserRepository implements UserRepositoryInterface
     use HasCrud {
         create as mCreate;
         update as mUpdate;
+        getAll as mGetAll;
     }
     public function __construct(User $user = null)
     {
@@ -81,6 +82,11 @@ class UserRepository implements UserRepositoryInterface
             ];
             return $new_item;
         })->toArray();
+    }
+
+    public function getAll()
+    {
+        return $this->modelQuery()->where('username',"<>","admin")->get();
     }
 
     

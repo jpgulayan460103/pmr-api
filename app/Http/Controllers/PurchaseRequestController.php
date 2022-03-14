@@ -53,6 +53,9 @@ class PurchaseRequestController extends Controller
             $user = Auth::user();
             $offices_ids = $user->user_offices->pluck('office_id');
             $filters['offices_ids'] = $offices_ids;
+            if($user->hasRole('super-admin')){
+                unset($filters['offices_ids']);
+            }
         }
         request()->has('purpose') ? $filters['purpose'] = request('purpose') : "";
         request()->has('title') ? $filters['title'] = request('title') : "";

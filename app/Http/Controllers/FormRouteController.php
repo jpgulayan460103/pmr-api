@@ -130,6 +130,9 @@ class FormRouteController extends Controller
         $offices_ids = $user->user_offices->pluck('office_id')->toArray();
         $groups_ids = $user->user_groups->pluck('group_id')->toArray();
         $filters['offices_ids'] = array_merge($groups_ids, $offices_ids);
+        if($user->hasRole('super-admin')){
+            unset($filters['offices_ids']);
+        }
         $routes = $this->formRouteRepository->attach($this->attach)->getForApproval($filters);
         // return $routes;
         return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);

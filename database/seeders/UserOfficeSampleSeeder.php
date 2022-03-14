@@ -17,6 +17,24 @@ class UserOfficeSampleSeeder extends Seeder
      */
     public function run()
     {
+        $user = User::create([
+            "username" => "admin",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        
+        $user->user_information()->create([
+            'firstname' => 'admin_f',
+            'middlename' => 'admin_m',
+            'lastname' => 'admin_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('super-admin');
+
+
         $office = Library::where('library_type','user_section')->whereTitle('ICTMS')->first();
         $user = User::create([
             "username" => "ict",
@@ -40,7 +58,7 @@ class UserOfficeSampleSeeder extends Seeder
             'position_id' => Library::where('library_type','user_position')->first()->id,
         ]);
         $user->givePermissionTo(Permission::all()->pluck('name'));
-        $user->assignRole('super-admin');
+        $user->assignRole('admin');
 
 
         $office = Library::where('library_type','user_section')->whereTitle('PS')->first();

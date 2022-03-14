@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\FormUpload;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -17,9 +18,9 @@ class FormUploadTest extends TestCase
      *
      * @return void
      */
-    public function test_purchase_request()
+    public function test_add_purchase_request()
     {
-        $user = User::with('user_offices.office')->where('username','budget')->first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         Storage::fake('tests');
  
@@ -32,6 +33,15 @@ class FormUploadTest extends TestCase
             ]
         ]);
 
+        $response->assertStatus(200);
+    }
+
+    public function test_delete_purchase_request()
+    {
+        $uploaded = FormUpload::first();
+        $user = User::with('user_offices.office')->where('username','ict')->first();
+        Passport::actingAs($user);
+        $response = $this->delete('/api/forms/uploads/purchase_request/'.$uploaded->id);
         $response->assertStatus(200);
     }
 }

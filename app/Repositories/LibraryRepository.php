@@ -23,17 +23,17 @@ class LibraryRepository implements LibraryRepositoryInterface
 
     public function getUserSectionBy($field, $value)
     {
-        return $this->modelQuery()->where('library_type','user_section')->where($field, $value)->first();
+        return $this->modelQuery()->where('is_active',1)->where('library_type','user_section')->where($field, $value)->first();
     }
 
     public function getUserDivisionBy($field, $value)
     {
-        return $this->modelQuery()->where('library_type','user_division')->where($field, $value)->first();
+        return $this->modelQuery()->where('is_active',1)->where('library_type','user_division')->where($field, $value)->first();
     }
 
     public function getLibraries()
     {
-        return $this->modelQuery()->orderBy('library_type')->orderBy('name')->get();
+        return $this->modelQuery()->where('is_active',1)->orderBy('library_type')->orderBy('name')->get();
     }
 
 

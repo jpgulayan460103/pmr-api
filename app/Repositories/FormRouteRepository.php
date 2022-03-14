@@ -47,7 +47,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     {
         $user = Auth::user();
         $results = $this->modelQuery()->where('form_routes.status', $type);
-        $results->where('remarks_by_id',$user->id);
+        if(!$user->hasRole('super-admin')){
+            $results->where('remarks_by_id',$user->id);
+        }
         if($type == "approved"){
             $results->where('remarks','<>','Finalization from the end user.');
         }
@@ -66,7 +68,6 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             }
         );
         $results = $this->filters($results, $filters);
-        $results->whereIn('to_office_id',$filters['offices_ids']);
         $results = $results->paginate($this->perPage);
         return $results;
     }
@@ -104,6 +105,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
         if(isset($filters['forwarded_remarks'])){
             $results->where('forwarded_remarks', 'like', "%".$filters['forwarded_remarks']."%");
+        }
+        if(isset($filters['offices_ids'])){
+            $results->whereIn('to_office_id',$filters['offices_ids']);
         }
         return $results;
     }
