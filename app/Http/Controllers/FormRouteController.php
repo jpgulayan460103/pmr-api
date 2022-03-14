@@ -143,6 +143,7 @@ class FormRouteController extends Controller
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
             $step = 0;
+            $form_status = $formRoute->status;
             foreach ($formRoutes as $key => $route) {
                 if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
                     $formRoutes[$key]['status'] = "approved";
@@ -155,8 +156,8 @@ class FormRouteController extends Controller
                 $step++;
             }
             $lastRoute = $formRoutes[count($formRoutes) - 1];
+            $form = $formRoute->form_routable;
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user."){
-                $form = $formRoute->form_routable;
                 $this->formRouteRepository->completeForm($form);
                 $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
             }else{
@@ -184,8 +185,10 @@ class FormRouteController extends Controller
                     'office_id' => $procurement_office->id,
                     'description' => "Procurement Process"
                 ],
-                'message_type' => 'approved_form',
-                'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id
+                'notification_type' => 'approved_form',
+                'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id,
+                'notification_title' => $form['uuid'],
+                'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
             ];
             event(new NewMessage($return));
             DB::commit();
@@ -208,6 +211,7 @@ class FormRouteController extends Controller
         $this->formRouteRepository->create($data);
         $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
         $user = Auth::user();
+        $form = $formRoute->form_routable;
         $return = [
             'form_route' => $formRoute,
             'next_route' => [
@@ -215,9 +219,11 @@ class FormRouteController extends Controller
                 'office_id' => $office->id,
                 'description' => "Returned to ".$office->name."."
             ],
-            'message_type' => 'rejected_form',
+            'notification_type' => 'rejected_form',
             'notify_offices' => $office->id,
             'from_user' => $user,
+            'notification_title' => $form['uuid'],
+            'notification_message' => request('remarks'),
         ];
         event(new NewMessage($return));
         return $return;

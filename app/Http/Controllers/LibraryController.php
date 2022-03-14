@@ -83,10 +83,10 @@ class LibraryController extends Controller
 
     public function showItems(Request $request)
     {
-        $items = (new ItemRepository)->getAll();
         if ($itemsRedis = Redis::get('libraries.items')) {
             return json_decode($itemsRedis);
         }
+        $items = (new ItemRepository)->getAll();
         $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
         Redis::set('libraries.items', $items->toJson());
         return $items;
