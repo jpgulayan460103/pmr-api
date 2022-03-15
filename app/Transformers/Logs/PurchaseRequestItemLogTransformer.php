@@ -1,19 +1,26 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Logs;
 
 use App\Models\ActivityLog;
-use App\Models\FormUpload;
 use League\Fractal\TransformerAbstract;
-use App\Transformers\PurchaseRequestTransformer;
+use App\Transformers\PurchaseRequestItemTransformer;
+use App\Transformers\UserTransformer;
 
-class FormUploadLogTransformer extends TransformerAbstract
+class PurchaseRequestItemLogTransformer extends TransformerAbstract
 {
     protected $labels = [
-        "title" => "Title",
-        "upload_uuid" => "Upload ID",
-        "file_directory" => "File",
-        "form_uploadable.uuid" => "Form ID",
+        "item_id" => "Item ID",
+        "quantity" => "Quantity",
+        "item_code" => "Item Code",
+        "item_name" => "Item Name",
+        "unit_cost" => "Unit Cost",
+        "total_unit_cost" => "Total Unit Cost",
+        "unit_of_measure.name" => "Unit of Measure",
+        "purchase_request_id" => "pr_id",
+        "unit_of_measure_id" => "Unit of Measure",
+        "deleted_at" => "Deleted At",
+        "is_ppmp" => "Is in PPMP",
     ];
     /**
      * List of resources to automatically include
@@ -71,13 +78,12 @@ class FormUploadLogTransformer extends TransformerAbstract
         }
         foreach ($logger as $key => $property) {
             if(isset($this->labels[$key])){
-                if($key == 'file_directory'){
+                if($key == 'is_ppmp'){
                     $properties['changes'][] = [
                         'label' => $this->labels[$key],
                         'key' => "logger_$key",
-                        'old' => isset($properties['old'][$key]) ? url($properties['old'][$key]) : "",
-                        'new' => isset($properties['attributes'][$key]) ? url($properties['attributes'][$key]) : "",
-                        'is_url' => true,
+                        'old' => isset($properties['old'][$key]) ? ($properties['old'][$key] == true ? "Yes" : "No") : "",
+                        'new' => isset($properties['attributes'][$key]) ? ($properties['attributes'][$key] == true ? "Yes" : "No") : "",
                     ];
                 }else{
                     $properties['changes'][] = [
@@ -85,7 +91,6 @@ class FormUploadLogTransformer extends TransformerAbstract
                         'key' => "logger_$key",
                         'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
                         'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
-                        'is_url' => false,
                     ];
                 }
             }
@@ -104,7 +109,7 @@ class FormUploadLogTransformer extends TransformerAbstract
     public function includeSubject(ActivityLog $table)
     {
         if ($table->subject) {
-            return $this->item($table->subject, new FormUploadTransformer);
+            return $this->item($table->subject, new PurchaseRequestItemTransformer);
         }
     }
 }

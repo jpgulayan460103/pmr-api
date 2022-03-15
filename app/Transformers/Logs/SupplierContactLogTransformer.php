@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Logs;
 
 use App\Models\ActivityLog;
+use App\Transformers\SupplierTransformer;
 use League\Fractal\TransformerAbstract;
-use App\Transformers\BacTaskTransformer;
 
-class BacTaskLogTransformer extends TransformerAbstract
+class SupplierContactLogTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -14,19 +14,10 @@ class BacTaskLogTransformer extends TransformerAbstract
      * @var array
      */
     protected $labels = [
-        "preproc_conference" => "Pre-Proc Conference",
-        "post_of_ib" => "Ads/Post of IB",
-        "prebid_conf" => "Pre-bid Conf",
-        "eligibility_check" => "Pre-bid Conf",
-        "open_of_bids" => "Sub/Open of Bids",
-        "bid_evaluation" => "Bid Evaluation",
-        "post_qual" => "Post Qual",
-        "notice_of_award" => "Notice of Award",
-        "contract_signing" => "Contract Signing",
-        "notice_to_proceed" => "Notice to Proceed",
-        "estimated_ldd" => "Estimated LDD",
-        "abstract_of_qoutations" => "Abstract of Quotations",
-        // "purchase_request.uuid" => "Purchase Request",
+        "name" => "Contact Person",
+        "email_address" => "Email Address",
+        "contact_number" => "Contact Person",
+        "supplier.name" => "Supplier Name",
     ];
     protected $defaultIncludes = [
         //
@@ -84,16 +75,10 @@ class BacTaskLogTransformer extends TransformerAbstract
         return $properties['changes'];
     }
 
-    public function includeUser(ActivityLog $table)
-    {
-        if ($table->user) {
-            return $this->item($table->user, new UserTransformer);
-        }
-    }
     public function includeSubject(ActivityLog $table)
     {
         if ($table->subject) {
-            return $this->item($table->subject, new BacTaskTransformer);
+            return $this->item($table->subject, new SupplierTransformer);
         }
     }
 }

@@ -16,11 +16,11 @@ class CreateSupplierContactsTable extends Migration
         Schema::create('supplier_contacts', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->string('address')->nullable();
             $table->string('email_address')->nullable();
             $table->string('contact_number')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

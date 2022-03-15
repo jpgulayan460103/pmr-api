@@ -55,9 +55,14 @@ Trait HasCrud {
         return $this->modelQuery()->paginate($this->perPage);
     }
  
-    public function getById($id) : object
+    public function getById($id)
     {
-        return $this->modelQuery()->where('id',$id)->first();
+        $model = $this->modelQuery()->where('id',$id)->first();
+        if($model){
+            return $model;
+        }else{
+            abort(404);
+        }
     }
 
     public function getByUuid($uuid) : object

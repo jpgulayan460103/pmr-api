@@ -21,14 +21,14 @@ class SupplierTest extends TestCase
     public $faker;
     public function __construct() {
         parent::__construct();
-        $this->faker = \Faker\Factory::create();
+        $this->faker = \Faker\Factory::create("en_PH");
     }
     public function test_create_supplier()
     {
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $response = $this->post('/api/suppliers',[
-            'name' => $this->faker->name,
+            'name' => $this->faker->company." ".$this->faker->companySuffix,
             'address' => $this->faker->address,
             'categories' => $this->faker->randomElements(Library::where('library_type','procurement_type')->get()->pluck('id'),2),
             'contacts' => [
@@ -66,7 +66,7 @@ class SupplierTest extends TestCase
         $contact_1['address'] = $this->faker->address;
         $contact_1['email_address'] = $this->faker->email();
         $response = $this->put('/api/suppliers/'.SupplierTest::$supplier_id,[
-            'name' => $this->faker->name,
+            'name' => $this->faker->company." ".$this->faker->companySuffix,
             'address' => $this->faker->address,
             'categories' => $this->faker->randomElements(Library::where('library_type','procurement_type')->get()->pluck('id'),2),
             'contacts' => [

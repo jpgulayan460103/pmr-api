@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Models\FormUpload;
-use App\Transformers\PurchaseRequestLogTransformer;
 use App\Repositories\PurchaseRequestRepository;
-use App\Transformers\PurchaseRequestItemLogTransformer;
 use App\Transformers\AuditTrailTransformer;
-use App\Transformers\BacTaskLogTransformer;
-use App\Transformers\FormUploadLogTransformer;
+use App\Transformers\Logs\BacTaskLogTransformer;
+use App\Transformers\Logs\FormUploadLogTransformer;
+use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
+use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use Illuminate\Support\Facades\DB;
 
 class AuditTrailController extends Controller

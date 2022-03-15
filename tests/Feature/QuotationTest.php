@@ -25,7 +25,7 @@ class QuotationTest extends TestCase
     public $faker;
     public function __construct() {
         parent::__construct();
-        $this->faker = \Faker\Factory::create();
+        $this->faker = \Faker\Factory::create("en_PH");
     }
 
     public function test_create_quotation()

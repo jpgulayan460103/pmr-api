@@ -8,13 +8,25 @@ use App\Models\SupplierContact;
 use App\Models\SupplierCategory;
 use App\Models\Quotation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Supplier extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'name',
         'address',
+    ];
+
+    protected static $logAttributes = [
+        '*',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     public function contacts()

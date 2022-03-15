@@ -41,6 +41,7 @@ class SupplierTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'name' => $table->name,
+            'display_log' => $table->name,
             'address' => $table->address,
         ];
     }

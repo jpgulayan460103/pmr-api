@@ -6,10 +6,14 @@ use App\Models\ActivityLog;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Transformers\PurchaseRequestItemTransformer;
-use App\Transformers\PurchaseRequestItemLogTransformer;
-use App\Transformers\BacTaskLogTransformer;
 use App\Transformers\FormUploadTransformer;
 use App\Transformers\BacTaskTransformer;
+use App\Transformers\Logs\BacTaskLogTransformer;
+use App\Transformers\Logs\FormUploadLogTransformer;
+use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
+use App\Transformers\Logs\PurchaseRequestLogTransformer;
+use App\Transformers\Logs\SupplierContactLogTransformer;
+use App\Transformers\Logs\SupplierLogTransformer;
 use App\Transformers\UserTransformer;
 
 
@@ -69,6 +73,14 @@ class AuditTrailTransformer extends TransformerAbstract
                 $properties = (new BacTaskLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the BAC data of the purchase request";
                 break;
+            case 'App\Models\SupplierContact':
+                $properties = (new SupplierContactLogTransformer)->addLabels($activityLog->properties);
+                $description_str = ucfirst($activityLog->description)." the contact persons of a supplier";
+                break;
+            case 'App\Models\Supplier':
+                $properties = (new SupplierLogTransformer)->addLabels($activityLog->properties);
+                $description_str = ucfirst($activityLog->description)." the supplier";
+                break;
             
             default:
                 $description_str = $activityLog->description;
@@ -110,6 +122,12 @@ class AuditTrailTransformer extends TransformerAbstract
                     break;
                 case 'App\Models\BacTask':
                     return $this->item($activityLog->subject, new BacTaskTransformer);
+                    break;
+                case 'App\Models\SupplierContact':
+                    return $this->item($activityLog->subject, new SupplierContactTransformer);
+                    break;
+                case 'App\Models\Supplier':
+                    return $this->item($activityLog->subject, new SupplierTransformer);
                     break;
                 
                 default:
