@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'http://pmr-api.test/laravel-websockets/*',
+        'http://172.31.176.50/pmr-api/public/laravel-websockets/*',
+        '*/laravel-websockets/*',
     ];
 }

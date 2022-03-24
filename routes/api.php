@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
+use App\Models\PurchaseOrder;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,7 @@ Route::group(['prefix' => '/pdf'], function () {
     
     Route::get('/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
+    Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
 });
 
 

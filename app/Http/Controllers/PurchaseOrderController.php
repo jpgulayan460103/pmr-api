@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PurchaseOrder;
 use App\Repositories\PurchaseOrderRepository;
 use Illuminate\Http\Request;
+use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 
 class PurchaseOrderController extends Controller
 {
@@ -14,7 +15,7 @@ class PurchaseOrderController extends Controller
     public function __construct(PurchaseOrderRepository $purchaseOrderRepository)
     {
         $this->purchaseOrderRepository = $purchaseOrderRepository;
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -91,5 +92,13 @@ class PurchaseOrderController extends Controller
     public function destroy(PurchaseOrder $purchaseOrder)
     {
         //
+    }
+
+    public function pdf(Request $request)
+    {
+        $pdf = FacadesPdf::loadView('pdf.purchase-order');
+        $pdf = FacadesPdf::loadView('pdf.disbursement-voucher');
+        // return view('pdf.purchase-order');
+        return $pdf->stream('purchase-order.pdf');
     }
 }
