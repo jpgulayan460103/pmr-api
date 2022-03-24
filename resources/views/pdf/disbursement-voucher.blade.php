@@ -40,113 +40,69 @@
 </div> -->
 <div id="po-container">
         <table id="po-table">
-            <thead>
-                <tr>
-                    <td colspan="6" style="border: 0;text-align:right">Appendix 61</td>
-                </tr>
-                <tr>
-                    <th colspan="6" style="border: 0;height:25pt">PURCHASE ORDER</th>
-                </tr>
-                <tr>
-                    <th colspan="6" style="border: 0;height:25pt">Department of Social Welfare and Development Field Office XI</th>
-                </tr>
-                <tr>
-                    <th colspan="6" style="border: 0;height:25pt">Entity Name</th>
-                </tr>
-                <tr>
-                    <td colspan="3">Supplier: </td>
-                    <td colspan="3">P.O. No. </td>
-                </tr>
-                <tr>
-                    <td colspan="3">Address: </td>
-                    <td colspan="3">Date: </td>
-                </tr>
-                <tr>
-                    <td colspan="3">TIN: </td>
-                    <td colspan="3">Mode of Procurement: </td>
-                </tr>
-                <tr>
-                    <td colspan="6">
-                        Gentlemen: <br>
-                        Please furnish this Office the following articles subject to the terms and conditions contained herein:
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">Place of Delivery: </td>
-                    <td colspan="3">Date of Delivery: </td>
-                </tr>
-                <tr>
-                    <td colspan="3">Delivery Term: </td>
-                    <td colspan="3">Payment Term: </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center">Stock/ Property No.</td>
-                    <td style="text-align: center; width: 30pt;">Unit</td>
-                    <td style="text-align: center; width: 220pt;">Item Description</td>
-                    <td style="text-align: center; ">Quantity</td>
-                    <td style="text-align: center;">Unit Cost</td>
-                    <td style="text-align: center;">Total Cost</td>
-                </tr>
-            </thead>
             <tbody>
-                @for($i = 0; $i<=(19 - 2); $i ++)
                 <tr>
-                    <td style="text-align: center">&nbsp;</td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: right;"></td>
-                    <td style="text-align: right;"></td>
+                    <td colspan="6" style="border: 0;text-align:right">Appendix 32</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center;">Department of Social Welfare and Development Field Office XI</td>
+                    <td colspan="2">Fund Cluster</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: center;">Entity Name</td>
+                    <td colspan="2">Fund Cluster</td>
+                </tr>
+                <tr>
+                    <td colspan="4" rowspan="2" style="text-align: center;">DISBURSEMENT  VOUCHER</td>
+                    <td colspan="2">Date</td>
+                </tr>
+                <tr>
+                    <td colspan="2">DV No.</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">Mode of Payment</td>
+                    <td colspan="4" style="border-bottom: 0;border-right: 0;">
+                        <input type="checkbox" name="" id="">MDS Check
+                        <input type="checkbox" name="" id="">Commercial Check
+                        <input type="checkbox" name="" id="">ADA
+                    </td>
+                    <td style="border-bottom: 0;border-left: 0;"><input type="checkbox" name="" id="">Others (Please specify)	</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="border-top: 0;border-right: 0;">&nbsp;</td>
+                    <td style="border-top: 0;border-left: 0;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Payee:</td>
+                    <td colspan="3">TIN/Employee No.</td>
+                    <td colspan="2">ORS/BURS No.:</td>
+                </tr>
+                <tr>
+                    <td colspan="6">Address:</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">Particulars</td>
+                    <td style="text-align: center;" colspan="2">Responsibility Center</td>
+                    <td style="text-align: center;" colspan="2">MFO/PAP</td>
+                    <td style="text-align: center;" colspan="2">Amount</td>
+                </tr>
+                @for($i = 0; $i<=(4); $i ++)
+                <tr>
+                    <td style="text-align: center; border-bottom: 0;border-top: 0;">&nbsp;</td>
+                    <td style="border-bottom: 0;border-top: 0;" colspan="2"></td>
+                    <td style="border-bottom: 0;border-top: 0;" colspan="2"></td>
+                    <td style="border-bottom: 0;border-top: 0;" colspan="2"></td>
                 </tr>
                 @endfor
+                <tr>
+                    <td style="text-align: center;">Amount Due</td>
+                    <td style="text-align: center;" colspan="2"></td>
+                    <td style="text-align: center;" colspan="2"></td>
+                    <td style="text-align: center;" colspan="2"></td>
+                </tr>
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="6">(Total Amount in Words)</td>
-                </tr>
-                <tr>
-                    <td colspan="6" style="border-bottom: 0;"><br>&nbsp;&nbsp;&nbsp;&nbsp; In case of failure to make the full delivery within the time specified above, a penalty of one-tenth (1/10) of one percent for every day of delay shall be imposed on the undelivered item/s.</td>
-                </tr>
-                <tr>
-                    <td style="border-bottom: 0;border-top: 0;; border-right: 0" colspan="3"><br>Conforme:<br /><br />&nbsp;</td>
-                    <td colspan="3" style="border-bottom: 0;border-top: 0;; border-left: 0"><br>Very truly yours,<br /><br />&nbsp;</td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; border-right: 0" colspan="3">NAME</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; border-left: 0; width: 220pt;">NAME</td>
-                </tr>
-                <tr>
-                    <td style=" text-align: center; border-top: 0; border-bottom: 0; border-right: 0" colspan="3">Signature over Printed Name of Supplier</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0; border-bottom: 0; border-left: 0">Signature over Printed Name of Authorized Official</td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; border-right: 0" colspan="3">Date</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; border-left: 0; width: 220pt;">Designation</td>
-                </tr>
-                <tr>
-                    <td style=" text-align: center; border-top: 0; border-right: 0" colspan="3">Date</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0; border-left: 0">Designation</td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; border-top: 0; border-bottom: 0" colspan="3">Fund Cluster: </td>
-                    <td colspan="3" style="font-weight: bold; border-top: 0; border-bottom: 0; width: 220pt;">ORS/BURS No.</td>
-                </tr>
-                <tr>
-                    <td style="border-top: 0;border-bottom: 0;font-weight: bold;" colspan="3">Fund Available: </td>
-                    <td colspan="3" style="border-top: 0;border-bottom: 0;font-weight: bold;">Date of the ORS/BURS:</td>
-                </tr>
-                <tr>
-                    <td style="border-top: 0; border-bottom: 0; border-right: 0;;font-weight: bold;" colspan="2"></td>
-                    <td style="border-top: 0;border-left: 0;font-weight: bold;text-align:center"></td>
-                    <td colspan="3" style="border-top: 0; border-bottom: 0;font-weight: bold;">Amount:</td>
-                </tr>
-                <tr>
-                    <td style="border-top: 0; border-right: 0;;font-weight: bold;" colspan="2"></td>
-                    <td style="border-top: 0;border-left: 0;font-weight: bold;text-align:center">Signature over Printed Name of Chief Accountant/Head of Accounting Division/Unit</td>
-                    <td colspan="3" style="border-top: 0;font-weight: bold;"></td>
-                </tr>
-            </tfoot>
         </table>
+
 </div>
 </body>
 </html>
