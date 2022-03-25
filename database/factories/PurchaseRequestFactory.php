@@ -26,7 +26,7 @@ class PurchaseRequestFactory extends Factory
             'status' => "Pending",
             'pr_date' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'mode_of_procurement' => $this->faker->word,
-            'uacs_code' => $this->faker->word,
+            'uacs_code_id' => $this->faker->word,
             'charge_to' => $this->faker->word,
             'alloted_amount' => $this->faker->randomNumber,
             'sa_or' => $this->faker->name,

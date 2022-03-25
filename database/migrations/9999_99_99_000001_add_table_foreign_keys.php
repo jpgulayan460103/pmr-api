@@ -61,6 +61,7 @@ class AddTableForeignKeys extends Migration
             $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('procurement_type_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('mode_of_procurement_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('uacs_code_id')->references('id')->on('libraries')->onDelete('cascade');
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {
@@ -168,6 +169,7 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['end_user_id']);
             $table->dropForeign(['procurement_type_id']);
             $table->dropForeign(['mode_of_procurement_id']);
+            $table->dropForeign(['uacs_code_id']);
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {

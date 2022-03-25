@@ -31,7 +31,7 @@ class PurchaseRequest extends Model
         'status',
         'pr_date',
         'mode_of_procurement_id',
-        'uacs_code',
+        'uacs_code_id',
         'charge_to',
         'alloted_amount',
         'sa_or',
@@ -50,6 +50,7 @@ class PurchaseRequest extends Model
         'procurement_type.parent.name',
         'procurement_type.name',
         'mode_of_procurement.name',
+        'uacs_code.name',
     ];
 
     protected static $logAttributesToIgnore = [
@@ -62,6 +63,7 @@ class PurchaseRequest extends Model
         'requested_by_id',
         'approved_by_id',
         'mode_of_procurement_id',
+        'uacs_code_id',
         'id',
         'status',
         'created_at',
@@ -109,6 +111,11 @@ class PurchaseRequest extends Model
         return $this->belongsTo(Library::class)->withDefault(true);
     }
     public function mode_of_procurement()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function uacs_code()
     {
         return $this->belongsTo(Library::class);
     }

@@ -36,6 +36,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'form_routes',
         'procurement_type',
         'mode_of_procurement',
+        'uacs_code',
         'form_uploads',
     ];
     
@@ -70,7 +71,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'requested_by_id' => $table->requested_by_id,
             'approved_by_id' => $table->approved_by_id,
             'mode_of_procurement_id' => $table->mode_of_procurement_id,
-            'uacs_code' => $table->uacs_code,
+            'uacs_code_id' => $table->uacs_code_id,
             'charge_to' => $table->charge_to,
             'alloted_amount' => $table->alloted_amount,
             'sa_or' => $table->sa_or,
@@ -112,6 +113,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->mode_of_procurement) {
             return $this->item($table->mode_of_procurement, new LibraryTransformer);
+        }
+    }
+    public function includeUacsCode($table)
+    {
+        if ($table->uacs_code) {
+            return $this->item($table->uacs_code, new LibraryTransformer);
         }
     }
     public function includeEndUser($table)

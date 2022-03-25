@@ -41,7 +41,7 @@ class UpdatePurchaseRequest extends FormRequest
                 // 'center_code' => 'required',
                 'charge_to' => 'required',
                 'alloted_amount' => 'required',
-                'uacs_code' => 'required',
+                'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
                 'sa_or' => 'required',
                 // 'purchase_request_number' => 'required|unique:purchase_requests,purchase_request_number',
             ];
@@ -82,7 +82,7 @@ class UpdatePurchaseRequest extends FormRequest
             // 'center_code.required' => 'The office/section is required.',
             // 'charge_to.required' => 'The office/section is required.',
             // 'alloted_amount.required' => 'The office/section is required.',
-            // 'uacs_code.required' => 'The office/section is required.',
+            'uacs_code_id.required' => 'The office/section is required.',
             // 'sa_or.required' => 'The office/section is required.',
         ];
     }

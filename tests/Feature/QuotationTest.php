@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Library;
 use App\Models\PurchaseRequest;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
@@ -63,7 +64,7 @@ class QuotationTest extends TestCase
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/quotations/'.QuotationTest::$quotation_id,[
-            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
+            'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
             'sa_or' => $this->faker->numerify('sa-####-####-###'),

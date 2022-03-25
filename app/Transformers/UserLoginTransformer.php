@@ -21,7 +21,7 @@ class UserLoginTransformer extends TransformerAbstract
         "pr_date" => "PR Date",
         "purpose" => "Particulars",
         "charge_to" => "Charge To",
-        "uacs_code" => "UACS Code",
+        "uacs_code.name" => "UACS Code",
         "total_cost" => "Total Cost",
         "center_code" => "Responsibility Center Code",
         "fund_cluster" => "Fund Cluster",

@@ -26,7 +26,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->unsignedBigInteger('procurement_type_id')->nullable();
             $table->unsignedBigInteger('mode_of_procurement_id')->nullable();
             $table->unsignedBigInteger('bac_task_id')->nullable();
-            $table->string('uacs_code')->nullable();
+            $table->unsignedBigInteger('uacs_code_id')->nullable();
             $table->string('fund_cluster')->nullable();
             $table->string('center_code')->nullable();
             $table->string('charge_to')->nullable();

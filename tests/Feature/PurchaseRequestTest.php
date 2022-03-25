@@ -164,7 +164,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
-            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
+            'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
             'sa_or' => $this->faker->numerify('sa-####-####-###'),
@@ -199,7 +199,7 @@ class PurchaseRequestTest extends TestCase
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
             'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,
-            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
+            'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 1000000),
             'sa_or' => $this->faker->numerify('sa-####-####-###'),
@@ -387,7 +387,7 @@ class PurchaseRequestTest extends TestCase
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.PurchaseRequestTest::$purchase_request_id,[
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
-            'uacs_code' => $this->faker->numerify('uacs-####-####-###'),
+            'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
             'sa_or' => $this->faker->numerify('sa-####-####-###'),

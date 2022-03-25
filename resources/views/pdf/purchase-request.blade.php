@@ -91,7 +91,7 @@
                     <div>
                         <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
                         <span>&emsp;<b style="font-size: 9pt;">Amount:</b> {{ number_format($alloted_amount, 2) }}</span><br>
-                        <span>&emsp;<b style="font-size: 9pt;">UACS Code:</b> {{ $uacs_code }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">UACS Code:</b> {{ $uacs_code['name'] }}</span><br>
                         <span>&emsp;<b style="font-size: 9pt;">SA/OR:</b> {{ $sa_or }}</span><br> 
                     </div>
                     @endif

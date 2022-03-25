@@ -43,7 +43,7 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $attach = 'end_user, procurement_type, mode_of_procurement';
+        $attach = 'end_user, procurement_type, mode_of_procurement, uacs_code';
         $filters = [];
         if(request('type') == "all"){
         }elseif(request('type') == "procurement"){
@@ -109,7 +109,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, items.unit_of_measure, requested_by, approved_by, bac_task";
+        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, uacs_code, items.unit_of_measure, requested_by, approved_by, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();
