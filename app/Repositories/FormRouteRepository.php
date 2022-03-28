@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FormRouteRepository implements FormRouteRepositoryInterface
 {
