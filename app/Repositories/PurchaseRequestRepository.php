@@ -38,8 +38,8 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(isset($filters['title'])){
             $this->modelQuery()->where('title', 'like', "%".$filters['title']."%");
         }
-        if(isset($filters['total_cost'])){
-            $this->modelQuery()->where('total_cost', $filters['total_cost']);
+        if(isset($filters['total_cost']) && isset($filters['total_cost_op'])){
+            $this->modelQuery()->where('total_cost', $filters['total_cost_op'], $filters['total_cost']);
         }
         if(isset($filters['status'])){
             $this->modelQuery()->whereIn('status', $filters['status']);
@@ -77,7 +77,8 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             $this->modelQuery()->orderBy($filters['sortColumn'], $filters['sortOrder']);
         }
         $this->modelQuery()->orderBy('id','desc');
-        return $this->modelQuery()->paginate($this->perPage);
+        $result = $this->modelQuery()->paginate($this->perPage);
+        return $result;
     }
 
     public function create($data)

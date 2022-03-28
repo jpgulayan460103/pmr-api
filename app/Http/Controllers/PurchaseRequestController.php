@@ -60,6 +60,7 @@ class PurchaseRequestController extends Controller
         request()->has('purpose') ? $filters['purpose'] = request('purpose') : "";
         request()->has('title') ? $filters['title'] = request('title') : "";
         request()->has('total_cost') ? $filters['total_cost'] = request('total_cost') : "";
+        request()->has('total_cost_op') ? $filters['total_cost_op'] = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" ): "";
         request()->has('status') ? $filters['status'] = request('status') : "";
         request()->has('pr_date') ? $filters['pr_date'] = request('pr_date') : "";
         request()->has('sa_or') ? $filters['sa_or'] = request('sa_or') : "";
