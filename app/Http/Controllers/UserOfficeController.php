@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserOffice;
+use App\Repositories\UserRepository;
 use App\Transformers\UserOfficeTransformer;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class UserOfficeController extends Controller
      */
     public function index()
     {
-        $user_offices =  UserOffice::with('user.user_information','office')->get();
+        $user_offices =  (new UserRepository())->getOffices();
         return fractal($user_offices, new UserOfficeTransformer)->parseIncludes('user.user_information,office');
 
     }

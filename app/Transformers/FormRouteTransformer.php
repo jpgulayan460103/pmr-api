@@ -32,6 +32,7 @@ class FormRouteTransformer extends TransformerAbstract
         'to_office',
         'form_process',
         'user',
+        'parent'
     ];
     
     /**
@@ -49,6 +50,7 @@ class FormRouteTransformer extends TransformerAbstract
             'status' => $table->status,
             'status_str' => Str::headline($table->status),
             'remarks' => $table->remarks,
+            'display_log' => $table->remarks,
             'forwarded_remarks' => $table->forwarded_remarks,
             'forwarded_by_id' => $table->forwarded_by_id,
             'remarks_by_id' => $table->remarks_by_id,
@@ -64,10 +66,16 @@ class FormRouteTransformer extends TransformerAbstract
         ];
     }
 
+    public function includeParent(FormRoute $table)
+    {
+        if ($table->form_routable) {
+            return $this->formRoutable($table);
+        }
+    }
     public function includeFormRoutable(FormRoute $table)
     {
         if ($table->form_routable) {
-            return $this->item($table->form_routable, new PurchaseRequestTransformer);
+            return $this->formRoutable($table);
         }
     }
     public function includeEndUser(FormRoute $table)
@@ -98,6 +106,19 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->user) {
             return $this->item($table->user, new UserTransformer);
+        }
+    }
+
+    private function formRoutable(FormRoute $table)
+    {
+        switch ($table->route_type) {
+            case 'purchase_request':
+                return $this->item($table->form_routable, new PurchaseRequestTransformer);
+                break;
+            
+            default:
+                # code...
+                break;
         }
     }
 }

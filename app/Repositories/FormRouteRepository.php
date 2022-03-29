@@ -56,7 +56,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
         $results = $this->filters($results, $filters);
         $results->orderBy('id','desc');
-        $results = $results->paginate($this->perPage);
+        $results = $results->paginate(20);
         return $results;   
     }
 
@@ -69,7 +69,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             }
         );
         $results = $this->filters($results, $filters);
-        $results = $results->paginate($this->perPage);
+        $results = $results->paginate(20);
         return $results;
     }
 

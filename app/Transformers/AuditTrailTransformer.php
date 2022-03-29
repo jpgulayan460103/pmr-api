@@ -9,6 +9,7 @@ use App\Transformers\PurchaseRequestItemTransformer;
 use App\Transformers\FormUploadTransformer;
 use App\Transformers\BacTaskTransformer;
 use App\Transformers\Logs\BacTaskLogTransformer;
+use App\Transformers\Logs\FormRouteLogTransformer;
 use App\Transformers\Logs\FormUploadLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
@@ -81,6 +82,11 @@ class AuditTrailTransformer extends TransformerAbstract
                 $properties = (new SupplierLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the supplier";
                 break;
+            case 'App\Models\FormRoute':
+                $properties = (new FormRouteLogTransformer)->addLabels($activityLog);
+                // $properties = $activityLog->properties;
+                $description_str = ucfirst($activityLog->description)." the form route";
+                break;
             
             default:
                 $description_str = $activityLog->description;
@@ -128,6 +134,9 @@ class AuditTrailTransformer extends TransformerAbstract
                     break;
                 case 'App\Models\Supplier':
                     return $this->item($activityLog->subject, new SupplierTransformer);
+                    break;
+                case 'App\Models\FormRoute':
+                    return $this->item($activityLog->subject, new FormRouteTransformer);
                     break;
                 
                 default:

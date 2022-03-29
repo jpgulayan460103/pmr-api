@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Models\UserGroup;
+use App\Models\UserOffice;
 use App\Models\UserInformation;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\HasCrud;
@@ -87,6 +87,11 @@ class UserRepository implements UserRepositoryInterface
     public function getAll()
     {
         return $this->modelQuery()->where('username',"<>","admin")->get();
+    }
+
+    public function getOffices()
+    {
+        return UserOffice::with('user.user_information','office')->get();
     }
 
     
