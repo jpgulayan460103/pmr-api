@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Repositories\AuthRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use WhichBrowser\Parser;
 
 class AuthController extends Controller
 {
@@ -27,14 +28,27 @@ class AuthController extends Controller
             return response()->json($ldap_auth, $ldap_auth['status_code']);
         }
         if($authenticator['status'] == "ok"){
+            $result = new Parser($_SERVER['HTTP_USER_AGENT']);
             activity('user_login')
             ->causedBy($user)
             ->withProperties(
                 [
                     [
-                        'label' => "User agent",
-                        'key' => "user_agent",
-                        'old' => $_SERVER['HTTP_USER_AGENT'],
+                        'label' => "Device Type",
+                        'key' => "user_device",
+                        'old' => $result->device->type,
+                        'new' => "",
+                    ],
+                    [
+                        'label' => "Device OS",
+                        'key' => "user_os",
+                        'old' => $result->os->toString(),
+                        'new' => "",
+                    ],
+                    [
+                        'label' => "Browser",
+                        'key' => "user_browser",
+                        'old' => $result->browser->name . ' ' . $result->browser->version->toString(),
                         'new' => "",
                     ],
                     [
@@ -63,15 +77,28 @@ class AuthController extends Controller
     {
         if(Auth::check()){
             $user = Auth::user();
+            $result = new Parser($_SERVER['HTTP_USER_AGENT']);
             $this->authRepository->revokeExistingTokens($user);
             activity('user_logout')
             ->causedBy($user)
             ->withProperties(
                 [
                     [
-                        'label' => "User agent",
-                        'key' => "user_agent",
-                        'old' => $_SERVER['HTTP_USER_AGENT'],
+                        'label' => "Device Type",
+                        'key' => "user_device",
+                        'old' => $result->device->type,
+                        'new' => "",
+                    ],
+                    [
+                        'label' => "Device OS",
+                        'key' => "user_os",
+                        'old' => $result->os->toString(),
+                        'new' => "",
+                    ],
+                    [
+                        'label' => "Browser",
+                        'key' => "user_browser",
+                        'old' => $result->browser->name . ' ' . $result->browser->version->toString(),
                         'new' => "",
                     ],
                     [
