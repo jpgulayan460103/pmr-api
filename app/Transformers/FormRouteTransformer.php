@@ -62,6 +62,7 @@ class FormRouteTransformer extends TransformerAbstract
             'form_process_id' => $table->form_process_id,
             'action_taken' => $table->action_taken,
             'created_at' => $table->created_at->toDayDateTimeString(),
+            'created_at_date' => $table->created_at->toDateString(),
             'updated_at' => $table->updated_at->toDayDateTimeString(),
         ];
     }

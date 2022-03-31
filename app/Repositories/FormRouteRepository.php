@@ -55,14 +55,13 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             $results->where('remarks','<>','Finalization from the end user.');
         }
         $results = $this->filters($results, $filters);
-        $results->orderBy('id','desc');
         $results = $results->paginate(20);
         return $results;   
     }
 
-    public function getForApproval($filters)
+    public function getPending($filters)
     {
-        $results = $this->modelQuery()->orderBy('id','desc');
+        $results = $this->modelQuery();
         $results->where(function($query) {
             $query->where('form_routes.status','pending')
                   ->orWhere('form_routes.status','with_issues');
@@ -75,40 +74,70 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function filters($results, $filters)
     {
-        if(isset($filters['title']) || isset($filters['purpose']) ){
+        if(
+            isset($filters['title']) ||
+            isset($filters['purpose']) ||
+            isset($filters['sortColumn']) ||
+            (isset($filters['total_cost']) && isset($filters['total_cost_op']))
+        ){
             $results->join('purchase_requests', 'form_routes.form_routable_id', '=', 'purchase_requests.id');
-            $results->select('form_routes.*','purchase_requests.title', 'purchase_requests.purpose');
+            $results->select('form_routes.*','purchase_requests.title', 'purchase_requests.purpose', 'purchase_requests.total_cost');
             if(isset($filters['title'])){
                 $results->where('title','like',"%".$filters['title']."%");
             }
             if(isset($filters['purpose'])){
                 $results->where('purpose','like',"%".$filters['purpose']."%");
             }
+
+            if(isset($filters['total_cost']) && isset($filters['total_cost_op'])){
+                $total_cost_op = $filters['total_cost_op'] == "<=" ? $filters['total_cost_op'] : ">=" ;
+                $results->where('total_cost', $total_cost_op, $filters['total_cost']);
+            }
+
+
+            if(isset($filters['sortColumn']) && isset($filters['sortOrder'])){
+                $table = "form_routes.";
+                $column = $filters['sortColumn'];
+                switch ($column) {
+                    case 'title':
+                    case 'purpose':
+                    case 'total_cost':
+                        $table = "purchase_requests.";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                $filters['sortOrder'] = $filters['sortOrder'] ==  'ascend' ? 'ASC' : 'DESC';  
+                $results->orderBy($table.$column, $filters['sortOrder']);
+            }else{
+                $results->orderBy('id','desc');
+            }
         }
         if(isset($filters['end_user_id'])){
-            $results->whereIn('origin_office_id', $filters['end_user_id']);
+            $results->whereIn('form_routes.origin_office_id', $filters['end_user_id']);
         }
         if(isset($filters['created_at']) && $filters['created_at'] != array() && count($filters['created_at']) == 2){
-            $results->whereBetween('created_at', [
+            $results->whereBetween('form_routes.created_at', [
                 Carbon::parse($filters['created_at'][0]),
                 Carbon::parse($filters['created_at'][1])->addDay()->subSecond()
             ]);
         }
         if(isset($filters['updated_at']) && $filters['updated_at'] != array() && count($filters['updated_at']) == 2){
-            $results->whereBetween('updated_at', [
+            $results->whereBetween('form_routes.updated_at', [
                 Carbon::parse($filters['updated_at'][0]),
                 Carbon::parse($filters['updated_at'][1])->addDay()->subSecond()
             ]);
         }
 
         if(isset($filters['remarks'])){
-            $results->where('remarks', 'like', "%".$filters['remarks']."%");
+            $results->where('form_routes.remarks', 'like', "%".$filters['remarks']."%");
         }
         if(isset($filters['forwarded_remarks'])){
-            $results->where('forwarded_remarks', 'like', "%".$filters['forwarded_remarks']."%");
+            $results->where('form_routes.forwarded_remarks', 'like', "%".$filters['forwarded_remarks']."%");
         }
         if(isset($filters['offices_ids'])){
-            $results->whereIn('to_office_id',$filters['offices_ids']);
+            $results->whereIn('form_routes.to_office_id',$filters['offices_ids']);
         }
         return $results;
     }

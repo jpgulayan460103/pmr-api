@@ -133,8 +133,9 @@ class FormRouteController extends Controller
         if($user->hasRole('super-admin')){
             unset($filters['offices_ids']);
         }
-        $routes = $this->formRouteRepository->attach($this->attach)->getForApproval($filters);
-        // return $routes;
+        $filters['total_cost'] = request('total_cost');
+        $filters['total_cost_op'] = $filters['total_cost_op'] = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
+        $routes = $this->formRouteRepository->attach($this->attach)->getPending($filters);
         return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
     }
 
@@ -190,11 +191,11 @@ class FormRouteController extends Controller
                 ],
                 'notification_type' => 'approved_form',
                 'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id,
-                'notification_title' => $form['uuid'],
+                'notification_title' => "New forwarded purchase request",
                 'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
             ];
-            event(new NewMessage($return));
             DB::commit();
+            event(new NewMessage($return));
             return $return;
         } catch (\Throwable $th) {
             throw $th;
@@ -203,33 +204,39 @@ class FormRouteController extends Controller
 
     public function reject(Request $request, $id)
     {
-        $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);
-        $user = Auth::user();
-        $data = $request->all();
-        $data = $this->formRouteRepository->returnTo($id, $data);
-        $data['status'] = "with_issues";
-        $data['remarks_by_id'] = $user->id;
-        $data['remarks'] = request('remarks');
-        $office = (new LibraryRepository)->getById($data['to_office_id']);
-        $this->formRouteRepository->create($data);
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
-        $user = Auth::user();
-        $form = $formRoute->form_routable;
-        $return = [
-            'form_route' => $formRoute,
-            'next_route' => [
-                'office_name' => $office->name,
-                'office_id' => $office->id,
-                'description' => "Returned to ".$office->name."."
-            ],
-            'notification_type' => 'rejected_form',
-            'notify_offices' => $office->id,
-            'from_user' => $user,
-            'notification_title' => $form['uuid'],
-            'notification_message' => request('remarks'),
-        ];
-        event(new NewMessage($return));
-        return $return;
+        DB::beginTransaction();
+        try {
+            $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);
+            $user = Auth::user();
+            $data = $request->all();
+            $data = $this->formRouteRepository->returnTo($id, $data);
+            $data['status'] = "with_issues";
+            $data['remarks_by_id'] = $user->id;
+            $data['remarks'] = request('remarks');
+            $office = (new LibraryRepository)->getById($data['to_office_id']);
+            $this->formRouteRepository->create($data);
+            $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
+            $user = Auth::user();
+            $form = $formRoute->form_routable;
+            $return = [
+                'form_route' => $formRoute,
+                'next_route' => [
+                    'office_name' => $office->name,
+                    'office_id' => $office->id,
+                    'description' => "Returned to ".$office->name."."
+                ],
+                'notification_type' => 'rejected_form',
+                'notify_offices' => $office->id,
+                'from_user' => $user,
+                'notification_title' => "New disapproved purchase request",
+                'notification_message' => request('remarks'),
+            ];
+            event(new NewMessage($return));
+            DB::commit();
+            return $return;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
 
