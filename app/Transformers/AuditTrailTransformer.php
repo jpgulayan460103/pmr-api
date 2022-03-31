@@ -16,6 +16,7 @@ use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use App\Transformers\Logs\SupplierContactLogTransformer;
 use App\Transformers\Logs\SupplierLogTransformer;
 use App\Transformers\UserTransformer;
+use Illuminate\Support\Str;
 
 
 class AuditTrailTransformer extends TransformerAbstract
@@ -48,8 +49,10 @@ class AuditTrailTransformer extends TransformerAbstract
     {
         $properties = json_decode($activityLog->properties);
         $description_str = "";
+        $log_type = "";
         switch ($activityLog->subject_type) {
             case 'App\Models\FormUpload':
+                $log_type = "form_upload";
                 $properties = (new FormUploadLogTransformer)->addLabels($activityLog);
                 if($activityLog->description == "created"){
                     $description_str = "Uploaded an attachment.";
@@ -58,10 +61,12 @@ class AuditTrailTransformer extends TransformerAbstract
                 }
                 break;
             case 'App\Models\PurchaseRequest':
+                $log_type = "purchase_request";
                 $properties = (new PurchaseRequestLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the purchase request.";
                 break;
             case 'App\Models\PurchaseRequestItem':
+                $log_type = "purchase_request_item";
                 $properties = (new PurchaseRequestItemLogTransformer)->addLabels($activityLog);
                 if($activityLog->description == "created"){
                     $description_str = "Added an item of the purchase request.";
@@ -71,30 +76,36 @@ class AuditTrailTransformer extends TransformerAbstract
                 // $description_str = ucfirst($activityLog->description)." an item of the purchase request.";
                 break;
             case 'App\Models\BacTask':
+                $log_type = "bac_task";
                 $properties = (new BacTaskLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the BAC data of the purchase request";
                 break;
             case 'App\Models\SupplierContact':
+                $log_type = "supplier_contact_person";
                 $properties = (new SupplierContactLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the contact persons of a supplier";
                 break;
             case 'App\Models\Supplier':
+                $log_type = "supplier";
                 $properties = (new SupplierLogTransformer)->addLabels($activityLog->properties);
                 $description_str = ucfirst($activityLog->description)." the supplier";
                 break;
             case 'App\Models\FormRoute':
+                $log_type = "form_routing";
                 $properties = (new FormRouteLogTransformer)->addLabels($activityLog);
                 // $properties = $activityLog->properties;
                 $description_str = ucfirst($activityLog->description)." the form route";
                 break;
             
             default:
+                $log_type = $activityLog->log_name;
                 $description_str = $activityLog->description;
                 break;
         }
         return [
             'id' => $activityLog->id,
             'key' => $activityLog->id,
+            'log_type' => Str::headline($log_type),
             'log_name' => $activityLog->log_name,
             'description' => $activityLog->description,
             'description_str' => $description_str,

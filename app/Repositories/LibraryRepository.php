@@ -37,8 +37,8 @@ class LibraryRepository implements LibraryRepositoryInterface
     }
 
 
-    public function getBy($field, $value)
-    {
+    public function getBy($field, $value, $type = 'item', $operation = "="): object
+    {        
         return $this->modelQuery()->orderBy('name')->where($field, $value)->get();
     }
 

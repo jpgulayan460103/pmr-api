@@ -16,7 +16,7 @@ interface CrudInterface {
 
     public function getByUuid($uuid);
  
-    public function getBy($field, $value);
+    public function getBy($field, $value, $type = 'item', $operation = "=");
     
     public function create(array $data);
 

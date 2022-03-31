@@ -6,8 +6,10 @@ use App\Models\Library;
 use App\Models\Item;
 use App\Repositories\ItemRepository;
 use App\Repositories\LibraryRepository;
+use App\Repositories\UserRepository;
 use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
@@ -74,8 +76,17 @@ class LibraryController extends Controller
      */
     public function show(Request $request, $type)
     {
-        if($type == "items"){
-            return $this->showItems($request);
+        switch ($type) {
+            case 'items':
+                return $this->showItems($request);
+                break;
+            case 'users':
+                return $this->showUsers($request);
+                break;
+            
+            default:
+                # code...
+                break;
         }
         $library = $this->libraryRepository->getBy('library_type', $type);
         return fractal($library, new LibraryTransformer)->parseIncludes('children');
@@ -86,12 +97,21 @@ class LibraryController extends Controller
         if ($itemsRedis = Redis::get('libraries.items')) {
             return json_decode($itemsRedis);
         }
-        $items = (new ItemRepository)->getAll();
+        $items = (new ItemRepository)->attach('unit_of_measure,item_category')->getAll();
         $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
         Redis::set('libraries.items', $items->toJson());
         return $items;
+    }
 
-
+    public function showUsers(Request $request)
+    {
+        if ($usersRedis = Redis::get('libraries.users')) {
+            return json_decode($usersRedis);
+        }
+        $users = (new UserRepository())->attach('user_information')->getAll();
+        $users = fractal($users, new UserTransformer)->parseIncludes('user_information');
+        Redis::set('libraries.users', $users->toJson());
+        return $users;
     }
 
     /**

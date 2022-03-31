@@ -25,7 +25,6 @@ class AuditTrailController extends Controller
     }
     public function index(Request $request)
     {
-        DB::enableQueryLog();
         $logs = ActivityLog::with(
             [
                 'user.user_information',
@@ -33,9 +32,52 @@ class AuditTrailController extends Controller
                     $query->withTrashed();
                 },
             ]
-        )->orderBy('id','desc')->get();
-        // return DB::getQueryLog();
-        // return $logs;
+        );
+        if(request()->has('causer_id') && request('causer_id') != []){
+            $logs->whereIn('causer_id', request('causer_id'));
+        }
+        if(request()->has('log_type') && request('log_type') != []){
+            $log_types = request('log_type');
+            $logs->where(function ($query) use ($log_types) {
+                foreach ($log_types as $log_type) {
+                    switch ($log_type) {
+                        case 'bac_task':
+                            $query->orWhere('subject_type', '');
+                            break;
+                        case 'form_routing':
+                            $query->orWhere('subject_type', 'App\Models\FormRoute');
+                            break;
+                        case 'form_upload':
+                            $query->orWhere('subject_type', 'App\Models\FormUpload');
+                            break;
+                        case 'purchase_request':
+                            $query->orWhere('subject_type', 'App\Models\PurchaseRequest');
+                            break;
+                        case 'purchase_request_item':
+                            $query->orWhere('subject_type', 'App\Models\PurchaseRequestItem');
+                            break;
+                        case 'supplier':
+                            $query->orWhere('subject_type', 'App\Models\Supplier');
+                            break;
+                        case 'supplier_contact_person':
+                            $query->orWhere('subject_type', 'App\Models\SupplierContact');
+                            break;
+                        case 'user_login':
+                            $query->orWhere('log_name', $log_type);
+                            break;
+                        case 'user_logout':
+                            $query->orWhere('log_name', $log_type);
+                            break;
+                        
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+            });
+        }
+        $logs->orderBy('id','desc');
+        $logs = $logs->paginate(100);
         return fractal($logs, new AuditTrailTransformer)->parseIncludes('subject.parent,user.user_information');
     }
 

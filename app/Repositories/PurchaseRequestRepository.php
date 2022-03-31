@@ -32,49 +32,53 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
     public function search($filters)
     {
-        if(isset($filters['purpose'])){
-            $this->modelQuery()->where('purpose', 'like', "%".$filters['purpose']."%");
+        if(isset($filters['offices_ids'])){
+            $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
         }
-        if(isset($filters['title'])){
-            $this->modelQuery()->where('title', 'like', "%".$filters['title']."%");
+        if(request()->has('purpose')){
+            $this->modelQuery()->where('purpose', 'like', "%".request('purpose')."%");
         }
-        if(isset($filters['total_cost']) && isset($filters['total_cost_op'])){
-            $this->modelQuery()->where('total_cost', $filters['total_cost_op'], $filters['total_cost']);
+        if(request()->has('title')){
+            $this->modelQuery()->where('title', 'like', "%".request('title')."%");
+        }
+        if(request()->has('total_cost') && request()->has('total_cost_op')){
+            $total_cost_op = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
+            $this->modelQuery()->where('total_cost', $total_cost_op, request('total_cost'));
+        }
+        if(request()->has('status')){
+            $this->modelQuery()->whereIn('status', request('status'));
         }
         if(isset($filters['status'])){
             $this->modelQuery()->whereIn('status', $filters['status']);
         }
-        if(isset($filters['offices_ids'])){
-            $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
+        if(request()->has('sa_or')){
+            $this->modelQuery()->where('sa_or', 'like', "%".request('sa_or')."%");
         }
-        if(isset($filters['sa_or'])){
-            $this->modelQuery()->where('sa_or', 'like', "%".$filters['sa_or']."%");
+        if(request()->has('purchase_request_number')){
+            $this->modelQuery()->where('purchase_request_number', 'like', "%".request('purchase_request_number')."%");
         }
-        if(isset($filters['purchase_request_number'])){
-            $this->modelQuery()->where('purchase_request_number', 'like', "%".$filters['purchase_request_number']."%");
+        if(request()->has('end_user_id')){
+            $this->modelQuery()->whereIn('end_user_id', request('end_user_id'));
         }
-        if(isset($filters['end_user_id'])){
-            $this->modelQuery()->whereIn('end_user_id', $filters['end_user_id']);
+        if(request()->has('procurement_type_id')){
+            $this->modelQuery()->whereIn('procurement_type_id', request('procurement_type_id'));
         }
-        if(isset($filters['procurement_type_id'])){
-            $this->modelQuery()->whereIn('procurement_type_id', $filters['procurement_type_id']);
+        if(request()->has('mode_of_procurement_id')){
+            $this->modelQuery()->whereIn('mode_of_procurement_id', request('mode_of_procurement_id'));
         }
-        if(isset($filters['mode_of_procurement_id'])){
-            $this->modelQuery()->whereIn('mode_of_procurement_id', $filters['mode_of_procurement_id']);
-        }
-        if(isset($filters['purchase_request_type_category'])){
-            $procurement_type_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',$filters['purchase_request_type_category'])->pluck('id');
+        if(request()->has('purchase_request_type_category')){
+            $procurement_type_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',request('purchase_request_type_category'))->pluck('id');
             $this->modelQuery()->whereIn('procurement_type_id', $procurement_type_ids);
         }
-        if(isset($filters['pr_date'])){
-            $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][0]))->toDateString();
-            $pr_date[] = Carbon::parse(str_replace('"', '', $filters['pr_date'][1]))->toDateString();
+        if(request()->has('pr_date')){
+            $pr_date[] = Carbon::parse(str_replace('"', '', request('pr_date')[0]))->toDateString();
+            $pr_date[] = Carbon::parse(str_replace('"', '', request('pr_date')[1]))->toDateString();
             $this->modelQuery()->whereBetween('pr_date', $pr_date);
         }
 
-        if(isset($filters['sortColumn']) && isset($filters['sortOrder'])){
-            $filters['sortOrder'] = $filters['sortOrder'] ==  'ascend' ? 'ASC' : 'DESC';  
-            $this->modelQuery()->orderBy($filters['sortColumn'], $filters['sortOrder']);
+        if(request()->has('sortColumn') && request()->has('sortOrder')){
+            $sortOrder = request('sortOrder') ==  'ascend' ? 'ASC' : 'DESC';  
+            $this->modelQuery()->orderBy(request('sortColumn'), $sortOrder);
         }
         $this->modelQuery()->orderBy('id','desc');
         $result = $this->modelQuery()->paginate(20);

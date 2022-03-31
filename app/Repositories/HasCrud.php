@@ -70,9 +70,19 @@ Trait HasCrud {
         return $this->modelQuery()->where($this->uuid,$uuid)->first();
     }
 
-    public function getBy($field, $value) : object
+    public function getBy($field, $value, $type = 'item', $operation = "=") : object
     {
-        return $this->modelQuery()->where($field, $value)->first();
+        $query = "";
+        if($operation == "like"){
+            $query = $this->modelQuery()->where($field, $operation, "%".$value."%");
+        }else{
+            $query = $this->modelQuery()->where($field, $operation, $value);
+        }
+        if($type == "collection"){
+            return $query->get();
+        }else{
+            return $query->first();
+        }
     }
 
     public function create($data) : object

@@ -54,22 +54,6 @@ class PurchaseRequestController extends Controller
                 unset($filters['offices_ids']);
             }
         }
-        request()->has('purpose') ? $filters['purpose'] = request('purpose') : "";
-        request()->has('title') ? $filters['title'] = request('title') : "";
-        request()->has('total_cost') ? $filters['total_cost'] = request('total_cost') : "";
-        request()->has('total_cost_op') ? $filters['total_cost_op'] = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" ): "";
-        request()->has('status') ? $filters['status'] = request('status') : "";
-        request()->has('pr_date') ? $filters['pr_date'] = request('pr_date') : "";
-        request()->has('sa_or') ? $filters['sa_or'] = request('sa_or') : "";
-        request()->has('purchase_request_number') ? $filters['purchase_request_number'] = request('purchase_request_number') : "";
-        request()->has('end_user_id') ? $filters['end_user_id'] = request('end_user_id') : "";
-        request()->has('procurement_type_id') ? $filters['procurement_type_id'] = request('procurement_type_id') : "";
-        request()->has('mode_of_procurement_id') ? $filters['mode_of_procurement_id'] = request('mode_of_procurement_id') : "";
-        request()->has('purchase_request_type_category') ? $filters['purchase_request_type_category'] = request('purchase_request_type_category') : "";
-        request()->has('sortColumn') ? $filters['sortColumn'] = request('sortColumn') : "";
-        request()->has('sortOrder') ? $filters['sortOrder'] = request('sortOrder') : "";
-        // return $filters;
-
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->search($filters);
         // return $purchase_request;
