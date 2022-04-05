@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
+use App\Http\Controllers\ReportController;
 use App\Models\PurchaseOrder;
 
 /*
@@ -101,5 +102,9 @@ Route::group(['prefix' => '/logger'], function () {
     Route::get('/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
     Route::get('/all', [AuditTrailController::class, 'index']);
     Route::get('/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
+});
+
+Route::group(['prefix' => '/reports'], function () {
+    Route::get('/purchase-request', [ReportController::class, 'purchaseRequest']);
 });
 
