@@ -46,7 +46,7 @@ class FormProcessDisapproveTest extends TestCase
             'sa_or' => $this->faker->numerify('sa-####-####-###'),
             'items' => [
                 [
-                    'item_name' => "Item Test 1",
+                    'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
@@ -54,7 +54,7 @@ class FormProcessDisapproveTest extends TestCase
                     'is_ppmp' => true,
                 ],
                 [
-                    'item_name' => "Item Test 2",
+                    'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
                     'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
