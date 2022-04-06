@@ -27,7 +27,8 @@ class ReportController extends Controller
         $most_quantity_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'quantity');
         $most_cost_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'cost');
         $procurement_types = $this->reportRepository->procurementTypes($date, 'yearly');
-        // return $procurementTypes;
+        $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, 'yearly');
+        // return $mode_of_procurements;
         return [
             'approved_month' => $approved_month,
             'approved_year' => $approved_year,
@@ -37,6 +38,7 @@ class ReportController extends Controller
             'most_quantity_items' => $most_quantity_items,
             'most_cost_items' => $most_cost_items,
             'procurement_types' => $procurement_types,
+            'mode_of_procurements' => $mode_of_procurements,
         ];
     }
 }

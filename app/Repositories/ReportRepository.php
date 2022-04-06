@@ -133,6 +133,60 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
+    public function modeOfProcurements($date, $freq)
+    {
+        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+
+        $types = PurchaseRequest::with('mode_of_procurement')->where('status', "approved");
+        $types->select(
+            DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
+            'mode_of_procurement_id'
+        );
+
+        switch ($freq) {
+            case 'monthly':
+                $types->whereBetween('pr_date', [
+                    $first_day_month,
+                    $last_day_month,
+                ]);
+                $start_day = $first_day_month;
+                $end_day = $last_day_month;
+                break;
+            case 'yearly':
+                $types->whereBetween('pr_date', [
+                    $first_day_year,
+                    $last_day_year,
+                ]);
+                $start_day = $first_day_year;
+                $end_day = $last_day_year;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        $types->groupBy('mode_of_procurement_id');
+        $types = $types->get();
+        $total = $this->totalPurchaseRequest('approved', $freq, $date);
+        $total = $total['total'];
+        foreach ($types as $key => $type) {
+            $type->key = ++$key;
+            $type->mode_of_procurement_id = $type->mode_of_procurement->id;
+            $type->name = $type->mode_of_procurement->name;
+            $type->mode_of_procurement_percentage = round((($type->sum_cost / $total) * 100), 2);
+            unset($type->mode_of_procurement);
+        }
+        return [
+            'types' => $types,
+            'start_day' => $start_day->format("F d, Y"),
+            'end_day' => $end_day->format("F d, Y"),
+        ];
+    }
+
     public function mostRequestedItems($date, $freq, $type)
     {
         $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
