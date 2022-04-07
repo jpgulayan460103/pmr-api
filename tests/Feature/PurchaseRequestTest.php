@@ -36,7 +36,8 @@ class PurchaseRequestTest extends TestCase
         $response = $this->post('/api/purchase-requests',[
             'title' => $this->faker->text(200),
             'purpose' => $this->faker->text(200),
-            'pr_date' => Carbon::now(),
+            // 'pr_date' => Carbon::now(),
+            'pr_date' => $this->faker->dateTimeThisYear(date('Y-m-d', strtotime('Dec 31'))),
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
             'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,

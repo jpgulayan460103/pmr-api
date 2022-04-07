@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
-class ADGSSFormProcessApproveTest extends TestCase
+class AdGssFormProcessApproveTest extends TestCase
 {
     /**
      * A basic feature test example.
@@ -31,11 +31,14 @@ class ADGSSFormProcessApproveTest extends TestCase
         $user = User::with('user_offices.office')->where('username','gss')->first();
         Passport::actingAs($user);
         $office = $user->user_offices;
+        $user_office = Library::with('children')->where('library_type', 'user_division')->where('title','ad')->first();
+        $user_office_id = $this->faker->randomElement($user_office->children()->where('title',"<>","PS")->pluck('id'));
         $response = $this->post('/api/purchase-requests',[
             'title' => $this->faker->text(200),
             'purpose' => $this->faker->text(200),
-            'pr_date' => $this->faker->dateTimeThisYear(),
-            'end_user_id' => Library::find($office[0]['office_id'])->id,
+            'pr_date' => $this->faker->dateTimeThisYear(date('Y-m-d', strtotime('Dec 31'))),
+            // 'end_user_id' => Library::find($office[0]['office_id'])->id,
+            'end_user_id' => $user_office_id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
             'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,
             'items' => [
@@ -58,7 +61,7 @@ class ADGSSFormProcessApproveTest extends TestCase
             ]
         ]);
         $purchase_request = $response->decodeResponseJson();
-        ADGSSFormProcessApproveTest::$purchase_request_id = $purchase_request['id'];
+        AdGssFormProcessApproveTest::$purchase_request_id = $purchase_request['id'];
         $response->assertStatus(201);
     }
 
@@ -66,7 +69,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','gss')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -75,7 +78,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -84,7 +87,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.ADGSSFormProcessApproveTest::$purchase_request_id,[
+        $response = $this->put('/api/purchase-requests/'.AdGssFormProcessApproveTest::$purchase_request_id,[
             'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
@@ -97,7 +100,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ad')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -106,7 +109,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','bacs')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -115,7 +118,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','oarda')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -124,7 +127,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -132,7 +135,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.ADGSSFormProcessApproveTest::$purchase_request_id,[
+        $response = $this->put('/api/purchase-requests/'.AdGssFormProcessApproveTest::$purchase_request_id,[
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
             'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
@@ -150,7 +153,7 @@ class ADGSSFormProcessApproveTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ord')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ADGSSFormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',AdGssFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }

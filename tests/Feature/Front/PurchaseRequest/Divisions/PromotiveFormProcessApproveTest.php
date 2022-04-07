@@ -31,11 +31,14 @@ class PromotiveFormProcessApproveTest extends TestCase
         $user = User::with('user_offices.office')->where('username','slpmo')->first();
         Passport::actingAs($user);
         $office = $user->user_offices;
+        $user_office = Library::with('children')->where('library_type', 'user_division')->where('title','Promotive')->first();
+        $user_office_id = $this->faker->randomElement($user_office->children()->pluck('id'));
         $response = $this->post('/api/purchase-requests',[
             'title' => $this->faker->text(200),
             'purpose' => $this->faker->text(200),
-            'pr_date' => $this->faker->dateTimeThisYear(),
-            'end_user_id' => Library::find($office[0]['office_id'])->id,
+            'pr_date' => $this->faker->dateTimeThisYear(date('Y-m-d', strtotime('Dec 31'))),
+            // 'end_user_id' => Library::find($office[0]['office_id'])->id,
+            'end_user_id' => $user_office_id,
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDO')->first()->id,
             'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,
             'items' => [

@@ -59,7 +59,7 @@ class FormProcessApproveTwgTest extends TestCase
             ]
         ]);
         $purchase_request = $response->decodeResponseJson();
-        FormProcessApproveTest::$purchase_request_id = $purchase_request['id'];
+        FormProcessApproveTwgTest::$purchase_request_id = $purchase_request['id'];
         $response->assertStatus(201);
     }
 
@@ -67,7 +67,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -76,9 +76,9 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $response = $this->put('api/forms/process/'.FormProcessApproveTest::$purchase_request_id,[
+        $response = $this->put('api/forms/process/'.FormProcessApproveTwgTest::$purchase_request_id,[
             'action_type' => "twg",
-            'id' => FormProcessApproveTest::$purchase_request_id,
+            'id' => FormProcessApproveTwgTest::$purchase_request_id,
             'technical_working_group_id' => Library::where('library_type','technical_working_group')->where('name','Information Technology')->first()->id,
             'type' => "twg",
             'updater' => "procurement",
@@ -90,7 +90,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -100,7 +100,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','twgict')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -109,7 +109,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTest::$purchase_request_id,[
+        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTwgTest::$purchase_request_id,[
             'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
             'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
@@ -122,7 +122,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -132,7 +132,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ppd')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -141,7 +141,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','bacs')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -150,8 +150,8 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
-        $purchase_request = PurchaseRequest::find(FormProcessApproveTest::$purchase_request_id);
-        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTest::$purchase_request_id,[
+        $purchase_request = PurchaseRequest::find(FormProcessApproveTwgTest::$purchase_request_id);
+        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTwgTest::$purchase_request_id,[
             'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDO')->first()->id,
             'id' => $purchase_request->id,
             'end_user_id' => $purchase_request->end_user_id,
@@ -166,7 +166,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','oardo')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -175,7 +175,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
@@ -183,7 +183,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTest::$purchase_request_id,[
+        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTwgTest::$purchase_request_id,[
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
             'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
@@ -201,7 +201,7 @@ class FormProcessApproveTwgTest extends TestCase
     {
         $user = User::with('user_offices.office')->where('username','ord')->first();
         Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTest::$purchase_request_id)->first();
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }

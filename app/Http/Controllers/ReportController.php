@@ -23,17 +23,19 @@ class ReportController extends Controller
         $approved_year = $this->reportRepository->totalPurchaseRequest('approved','yearly', $date);
         $pending_month = $this->reportRepository->totalPurchaseRequest('pending','monthly', $date);
         $pending_year = $this->reportRepository->totalPurchaseRequest('pending','yearly', $date);
-        $yearly = $this->reportRepository->perMonthPurchaseRequest();
+        $per_section = $this->reportRepository->perSectionPurchaseRequest('pending','yearly', $date);
+        $yearly = $this->reportRepository->perMonthPurchaseRequest($date);
         $most_quantity_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'quantity');
         $most_cost_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'cost');
         $procurement_types = $this->reportRepository->procurementTypes($date, 'yearly');
         $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, 'yearly');
-        // return $mode_of_procurements;
+        // return $per_section;
         return [
             'approved_month' => $approved_month,
             'approved_year' => $approved_year,
             'pending_month' => $pending_month,
             'pending_year' => $pending_year,
+            'per_section' => $per_section,
             'yearly' => $yearly,
             'most_quantity_items' => $most_quantity_items,
             'most_cost_items' => $most_cost_items,

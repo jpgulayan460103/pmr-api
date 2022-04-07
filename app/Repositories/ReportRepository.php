@@ -49,32 +49,102 @@ class ReportRepository implements ReportRepositoryInterface
         }
         $total = $total->first();
         return [
-            'total' => $total->sum_cost,
+            'data' => $total->sum_cost,
             'start_day' => $start_day->format("F d, Y"),
             'end_day' => $end_day->format("F d, Y"),
         ];
     }
 
-    public function perMonthPurchaseRequest()
+    public function perMonthPurchaseRequest($date)
     {
 
         $data = array();
         for ($i = 1; $i <= 12; $i++) {
-            $year = Carbon::now()->copy()->format('Y');
+            $year = Carbon::parse($date)->copy()->format('Y');
             $month = Carbon::create($year, $i, 1, 0, 0, 0);
             $approved_totals = $this->totalPurchaseRequest("approved", 'monthly', $month->toDateString());
             $pending_totals = $this->totalPurchaseRequest("pending", 'monthly', $month->toDateString());
             $data[] = [
                 "month_short" => $month->shortMonthName,
                 "month_full" => $month->monthName,
-                "approved" => $approved_totals['total'] ? $approved_totals['total'] : 0,
-                "pending" => $pending_totals['total'] ? $pending_totals['total'] : 0,
+                "approved" => $approved_totals['data'] ? $approved_totals['data'] : 0,
+                "pending" => $pending_totals['data'] ? $pending_totals['data'] : 0,
             ];
         }
         return [
-            "summary" => $data,
+            "data" => $data,
             'start_day' => $data[0]['month_full']." 1, $year",
             'end_day' => $data[11]['month_full']." 31, $year",
+        ];
+    }
+
+    
+    public function perSectionPurchaseRequest($type, $freq, $date)
+    {
+        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+
+        $types = PurchaseRequest::with('end_user.parent')->where('status', "approved");
+        $types->select(
+            DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
+            'end_user_id'
+        );
+
+        switch ($freq) {
+            case 'monthly':
+                $types->whereBetween('pr_date', [
+                    $first_day_month,
+                    $last_day_month,
+                ]);
+                $start_day = $first_day_month;
+                $end_day = $last_day_month;
+                break;
+            case 'yearly':
+                $types->whereBetween('pr_date', [
+                    $first_day_year,
+                    $last_day_year,
+                ]);
+                $start_day = $first_day_year;
+                $end_day = $last_day_year;
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        $types->groupBy('end_user_id');
+        $types = $types->get();
+        $total = $this->totalPurchaseRequest('approved', $freq, $date);
+        $total = $total['data'];
+        foreach ($types as $key => $type) {
+            $type->key = ++$key;
+            $type->section_name = $type->end_user->name;
+            $type->section_title = $type->end_user->title;
+            $type->section_id = $type->end_user->id;
+            $type->division_id = $type->end_user->parent->id;
+            $type->division_name = $type->end_user->parent->name;
+            $type->division_title = $type->end_user->parent->title;
+            switch ($type->section_title) {
+                case 'OARDA':
+                case 'OARDO':
+                case 'ORD':
+                    $type->division_id = $type->section_id;
+                    $type->division_name = $type->section_name;
+                    $type->division_title = $type->section_title;
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            unset($type->end_user);
+        }
+        return [
+            'data' => $types,
+            'start_day' => $start_day->format("F d, Y"),
+            'end_day' => $end_day->format("F d, Y"),
         ];
     }
 
@@ -116,7 +186,7 @@ class ReportRepository implements ReportRepositoryInterface
         $types->groupBy('procurement_type_id');
         $types = $types->get();
         $total = $this->totalPurchaseRequest('approved', $freq, $date);
-        $total = $total['total'];
+        $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
             $type->name = $type->procurement_type->name;
@@ -127,7 +197,7 @@ class ReportRepository implements ReportRepositoryInterface
             unset($type->procurement_type);
         }
         return [
-            'types' => $types,
+            'data' => $types,
             'start_day' => $start_day->format("F d, Y"),
             'end_day' => $end_day->format("F d, Y"),
         ];
@@ -172,7 +242,7 @@ class ReportRepository implements ReportRepositoryInterface
         $types->groupBy('mode_of_procurement_id');
         $types = $types->get();
         $total = $this->totalPurchaseRequest('approved', $freq, $date);
-        $total = $total['total'];
+        $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
             $type->mode_of_procurement_id = $type->mode_of_procurement->id;
@@ -181,7 +251,7 @@ class ReportRepository implements ReportRepositoryInterface
             unset($type->mode_of_procurement);
         }
         return [
-            'types' => $types,
+            'data' => $types,
             'start_day' => $start_day->format("F d, Y"),
             'end_day' => $end_day->format("F d, Y"),
         ];
@@ -238,7 +308,7 @@ class ReportRepository implements ReportRepositoryInterface
             $item->ave_sum_cost = $item->sum_cost / $item->sum_quantity;
         }
         return [
-            'items' => $items,
+            'data' => $items,
             'start_day' => $start_day->format("F d, Y"),
             'end_day' => $end_day->format("F d, Y"),
         ];
