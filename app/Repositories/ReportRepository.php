@@ -126,20 +126,27 @@ class ReportRepository implements ReportRepositoryInterface
             $type->division_id = $type->end_user->parent->id;
             $type->division_name = $type->end_user->parent->name;
             $type->division_title = $type->end_user->parent->title;
-            switch ($type->section_title) {
-                case 'OARDA':
-                case 'OARDO':
-                case 'ORD':
-                    $type->division_id = $type->section_id;
-                    $type->division_name = $type->section_name;
-                    $type->division_title = $type->section_title;
-                    break;
+            // switch ($type->end_user->parent->title) {
+            //     case 'OARDA':
+            //     case 'OARDO':
+            //     case 'ORD':
+            //         $rd = (new LibraryRepository())->getUserDivisionBy('title', $type->end_user->parent->title);
+            //         if($rd){
+            //             $type->division_id = $rd->id;
+            //             $type->division_name = $rd->name;
+            //             $type->division_title = $rd->title;
+            //         }else{
+            //             $type->division_id = $type->id;
+            //             $type->division_name =    $type->section_name;
+            //             $type->division_title = $type->title;
+            //         }
+            //         break;
                 
-                default:
-                    # code...
-                    break;
-            }
-            unset($type->end_user);
+            //     default:
+            //         # code...
+            //         break;
+            // }
+            // unset($type->end_user);
         }
         return [
             'data' => $types,
@@ -295,7 +302,7 @@ class ReportRepository implements ReportRepositoryInterface
                 # code...
                 break;
         }
-        $items->limit(10);
+        $items->limit(100);
         $items->groupBy('purchase_request_items.item_name');
         if($type == "quantity"){
             $items->orderBy('sum_quantity','DESC');

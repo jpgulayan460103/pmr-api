@@ -381,16 +381,16 @@ class UserOfficeSampleSeeder extends Seeder
         $user->assignRole('admin');
 
 
-        $office = Library::where('library_type','user_section')->whereTitle('PPPPMD - DavCity')->first();
+        $office = Library::where('library_type','user_section')->whereTitle('PPPPMD - davao city')->first();
         $user = User::create([
-            "username" => "ppppmd - davcity",
+            "username" => "ppppmd - davao city",
             "password" => config('services.ad.default_password'),
             "account_type" => "app_account",
         ]);
         $user->user_information()->create([
-            'firstname' => 'ppppmd - davcity_f',
-            'middlename' => 'ppppmd - davcity_m',
-            'lastname' => 'ppppmd - davcity_l',
+            'firstname' => 'ppppmd - davao city_f',
+            'middlename' => 'ppppmd - davao city_m',
+            'lastname' => 'ppppmd - davao city_l',
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
@@ -559,6 +559,150 @@ class UserOfficeSampleSeeder extends Seeder
             'firstname' => 'gss_f',
             'middlename' => 'gss_m',
             'lastname' => 'gss_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('PSWDO - Davao City')->first();
+        $user = User::create([
+            "username" => "pswdo - davao city",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - davao city_f',
+            'middlename' => 'pswdo - davao city_m',
+            'lastname' => 'pswdo - davao city_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('PSWDO - De Oro')->first();
+        $user = User::create([
+            "username" => "pswdo - de oro",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - de oro_f',
+            'middlename' => 'pswdo - de oro_m',
+            'lastname' => 'pswdo - de oro_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('PSWDO - Del Norte')->first();
+        $user = User::create([
+            "username" => "pswdo - del norte",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - del norte_f',
+            'middlename' => 'pswdo - del norte_m',
+            'lastname' => 'pswdo - del norte_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('PSWDO - Del Sur')->first();
+        $user = User::create([
+            "username" => "pswdo - del sur",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - del sur_f',
+            'middlename' => 'pswdo - del sur_m',
+            'lastname' => 'pswdo - del sur_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('pswdo - occidental')->first();
+        $user = User::create([
+            "username" => "pswdo - occidental",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - occidental_f',
+            'middlename' => 'pswdo - occidental_m',
+            'lastname' => 'pswdo - occidental_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
+        $office = Library::where('library_type','user_section')->whereTitle('pswdo - oriental')->first();
+        $user = User::create([
+            "username" => "pswdo - oriental",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'pswdo - oriental_f',
+            'middlename' => 'pswdo - oriental_m',
+            'lastname' => 'pswdo - oriental_l',
             'user_dn' => '',
             'cellphone_number' => '',
             'email_address' => '',
