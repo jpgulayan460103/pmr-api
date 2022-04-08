@@ -18,17 +18,27 @@ class ReportController extends Controller
 
     public function purchaseRequest(Request $request)
     {
-        $date = Carbon::now();
-        $approved_month = $this->reportRepository->totalPurchaseRequest('approved','monthly', $date);
-        $approved_year = $this->reportRepository->totalPurchaseRequest('approved','yearly', $date);
-        $pending_month = $this->reportRepository->totalPurchaseRequest('pending','monthly', $date);
-        $pending_year = $this->reportRepository->totalPurchaseRequest('pending','yearly', $date);
-        $per_section = $this->reportRepository->perSectionPurchaseRequest('pending','yearly', $date);
-        $yearly = $this->reportRepository->perMonthPurchaseRequest($date);
-        $most_quantity_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'quantity');
-        $most_cost_items = $this->reportRepository->mostRequestedItems($date, 'yearly', 'cost');
-        $procurement_types = $this->reportRepository->procurementTypes($date, 'yearly');
-        $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, 'yearly');
+        $dateRange = $request->month ? $request->month : Carbon::now();
+        if(is_array($dateRange)){
+            $type =  "custom";
+            $date = $dateRange[0];
+        }else{
+            $type =  "monthly";
+            $date = Carbon::now();
+        }
+
+        $end_user_id = $request->end_user_id;
+        
+        $approved_month = $this->reportRepository->totalPurchaseRequest('approved', $type, $date, $dateRange, $end_user_id);
+        $approved_year = $this->reportRepository->totalPurchaseRequest('approved','yearly', $date, $dateRange, $end_user_id);
+        $pending_month = $this->reportRepository->totalPurchaseRequest('pending',$type, $date, $dateRange, $end_user_id);
+        $pending_year = $this->reportRepository->totalPurchaseRequest('pending','yearly', $date, $dateRange, $end_user_id);
+        $per_section = $this->reportRepository->perSectionPurchaseRequest('pending', $type, $date, $dateRange, $end_user_id);
+        $yearly = $this->reportRepository->perMonthPurchaseRequest($date, $end_user_id);
+        $most_quantity_items = $this->reportRepository->mostRequestedItems($date, $type, 'quantity', $dateRange, $end_user_id);
+        $most_cost_items = $this->reportRepository->mostRequestedItems($date, $type, 'cost', $dateRange, $end_user_id);
+        $procurement_types = $this->reportRepository->procurementTypes($date, $type, $dateRange, $end_user_id);
+        $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, $type, $dateRange, $end_user_id);
         // return $per_section;
         return [
             'approved_month' => $approved_month,

@@ -12,12 +12,21 @@ use Illuminate\Support\Facades\DB;
 class ReportRepository implements ReportRepositoryInterface
 {
 
-    public function totalPurchaseRequest($type, $freq, $date)
+    public function totalPurchaseRequest($type, $freq, $date, $dateRange = [], $end_user_id = null)
     {
-        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
-        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
-        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
-        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
+
         $start_day = "";
         $end_day = "";
 
@@ -25,6 +34,9 @@ class ReportRepository implements ReportRepositoryInterface
         $total->select(
             DB::raw('ROUND(SUM(total_cost), 2) as sum_cost')
         );
+        if($end_user_id){
+            $total->where('end_user_id', $end_user_id);
+        }
         switch ($freq) {
             case 'monthly':
                 $total->whereBetween('pr_date', [
@@ -42,7 +54,11 @@ class ReportRepository implements ReportRepositoryInterface
                 $start_day = $first_day_year;
                 $end_day = $last_day_year;
                 break;
-            
+            case 'custom':
+                $total->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
+                break;
             default:
                 # code...
                 break;
@@ -55,15 +71,15 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function perMonthPurchaseRequest($date)
+    public function perMonthPurchaseRequest($date, $end_user_id = null)
     {
 
         $data = array();
         for ($i = 1; $i <= 12; $i++) {
             $year = Carbon::parse($date)->copy()->format('Y');
             $month = Carbon::create($year, $i, 1, 0, 0, 0);
-            $approved_totals = $this->totalPurchaseRequest("approved", 'monthly', $month->toDateString());
-            $pending_totals = $this->totalPurchaseRequest("pending", 'monthly', $month->toDateString());
+            $approved_totals = $this->totalPurchaseRequest("approved", 'monthly', $month->toDateString(), [], $end_user_id);
+            $pending_totals = $this->totalPurchaseRequest("pending", 'monthly', $month->toDateString(), [], $end_user_id);
             $data[] = [
                 "month_short" => $month->shortMonthName,
                 "month_full" => $month->monthName,
@@ -79,18 +95,30 @@ class ReportRepository implements ReportRepositoryInterface
     }
 
     
-    public function perSectionPurchaseRequest($type, $freq, $date)
+    public function perSectionPurchaseRequest($type, $freq, $date, $dateRange = [], $end_user_id = null)
     {
-        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
-        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
-        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
-        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
 
-        $types = PurchaseRequest::with('end_user.parent')->where('status', "approved");
+        $types = PurchaseRequest::with('end_user.parent');
         $types->select(
-            DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
+            DB::raw('ROUND(SUM(CASE WHEN status = "approved" THEN total_cost ELSE 0 END), 2) as approved'),
+            DB::raw('ROUND(SUM(CASE WHEN status = "pending" THEN total_cost ELSE 0 END), 2) as pending'),
             'end_user_id'
         );
+        if($end_user_id){
+            $types->where('end_user_id', $end_user_id);
+        }
 
         switch ($freq) {
             case 'monthly':
@@ -109,14 +137,18 @@ class ReportRepository implements ReportRepositoryInterface
                 $start_day = $first_day_year;
                 $end_day = $last_day_year;
                 break;
-            
+            case 'custom':
+                $types->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
+                break;
             default:
                 # code...
                 break;
         }
         $types->groupBy('end_user_id');
         $types = $types->get();
-        $total = $this->totalPurchaseRequest('approved', $freq, $date);
+        $total = $this->totalPurchaseRequest('approved', $freq, $date, $dateRange, $end_user_id);
         $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
@@ -146,7 +178,7 @@ class ReportRepository implements ReportRepositoryInterface
             //         # code...
             //         break;
             // }
-            // unset($type->end_user);
+            unset($type->end_user);
         }
         return [
             'data' => $types,
@@ -155,18 +187,29 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function procurementTypes($date, $freq)
+    public function procurementTypes($date, $freq, $dateRange = [], $end_user_id = null)
     {
-        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
-        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
-        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
-        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
 
         $types = PurchaseRequest::with('procurement_type.parent')->where('status', "approved");
         $types->select(
             DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
             'procurement_type_id'
         );
+        if($end_user_id){
+            $types->where('end_user_id', $end_user_id);
+        }
 
         switch ($freq) {
             case 'monthly':
@@ -185,6 +228,11 @@ class ReportRepository implements ReportRepositoryInterface
                 $start_day = $first_day_year;
                 $end_day = $last_day_year;
                 break;
+            case 'custom':
+                $types->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
+                break;
             
             default:
                 # code...
@@ -192,7 +240,7 @@ class ReportRepository implements ReportRepositoryInterface
         }
         $types->groupBy('procurement_type_id');
         $types = $types->get();
-        $total = $this->totalPurchaseRequest('approved', $freq, $date);
+        $total = $this->totalPurchaseRequest('approved', $freq, $date, $dateRange, $end_user_id);
         $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
@@ -210,18 +258,30 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function modeOfProcurements($date, $freq)
+    public function modeOfProcurements($date, $freq, $dateRange = [], $end_user_id = null)
     {
-        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
-        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
-        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
-        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
+
 
         $types = PurchaseRequest::with('mode_of_procurement')->where('status', "approved");
         $types->select(
             DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
             'mode_of_procurement_id'
         );
+        if($end_user_id){
+            $types->where('end_user_id', $end_user_id);
+        }
 
         switch ($freq) {
             case 'monthly':
@@ -240,6 +300,11 @@ class ReportRepository implements ReportRepositoryInterface
                 $start_day = $first_day_year;
                 $end_day = $last_day_year;
                 break;
+            case 'custom':
+                $types->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
+                break;
             
             default:
                 # code...
@@ -248,7 +313,7 @@ class ReportRepository implements ReportRepositoryInterface
 
         $types->groupBy('mode_of_procurement_id');
         $types = $types->get();
-        $total = $this->totalPurchaseRequest('approved', $freq, $date);
+        $total = $this->totalPurchaseRequest('approved', $freq, $date, $dateRange, $end_user_id);
         $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
@@ -264,12 +329,20 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function mostRequestedItems($date, $freq, $type)
+    public function mostRequestedItems($date, $freq, $type, $dateRange = [], $end_user_id = null)
     {
-        $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
-        $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
-        $first_day_year = Carbon::parse($date)->copy()->startOfYear();
-        $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
         $start_day = "";
         $end_day = "";
 
@@ -280,6 +353,9 @@ class ReportRepository implements ReportRepositoryInterface
             DB::raw('ROUND(SUM(total_unit_cost), 2) as sum_cost'),
             DB::raw('SUM(quantity) as sum_quantity')
         );
+        if($end_user_id){
+            $items->where('end_user_id', $end_user_id);
+        }
         switch ($freq) {
             case 'monthly':
                 $items->whereBetween('pr_date', [
@@ -296,6 +372,11 @@ class ReportRepository implements ReportRepositoryInterface
                 ]);
                 $start_day = $first_day_year;
                 $end_day = $last_day_year;
+                break;
+            case 'custom':
+                $items->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
                 break;
             
             default:
