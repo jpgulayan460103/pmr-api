@@ -195,7 +195,11 @@ class FormRouteController extends Controller
                 'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
             ];
             DB::commit();
-            event(new NewMessage($return));
+            try {
+                event(new NewMessage($return));
+            } catch (\Throwable $th) {
+                // return $th;
+            }
             return $return;
         } catch (\Throwable $th) {
             throw $th;
@@ -231,8 +235,12 @@ class FormRouteController extends Controller
                 'notification_title' => "New disapproved purchase request",
                 'notification_message' => request('remarks'),
             ];
-            event(new NewMessage($return));
             DB::commit();
+            try {
+                event(new NewMessage($return));
+            } catch (\Throwable $th) {
+                // return $th;
+            }
             return $return;
         } catch (\Throwable $th) {
             throw $th;
