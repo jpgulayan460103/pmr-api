@@ -41,7 +41,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(request()->has('title') && request('title') != ""){
             $this->modelQuery()->where('title', 'like', "%".request('title')."%");
         }
-        if(request()->has('total_cost') && request()->has('total_cost_op') && request('total') != "" && request('total_cost_op') != ""){
+        if(request()->has('total_cost') && request()->has('total_cost_op') && request('total_cost') != "" && request('total_cost_op') != ""){
             $total_cost_op = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
             $this->modelQuery()->where('total_cost', $total_cost_op, request('total_cost'));
         }
