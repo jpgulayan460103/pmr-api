@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FormRouteRepository implements FormRouteRepositoryInterface
 {
@@ -20,34 +21,125 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $this->perPage(200);
     }
 
+    public function getCurrentRoute($process_id)
+    {
+        return $this->model->where('form_process_id', $process_id)->orderBy('id','desc')->first();
+    }
+
     public function purchaseRequest($purchase_request, $formProcess, $step = 0){
         $user = Auth::user();
         $data = [
             "route_type" => "purchase_request",
             "status" => "pending",
-            "remarks" => "For approval",
+            "remarks" => "Finalization from the end user.",
             "remarks_by_id" => $user->id,
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
             "form_process_id" => $formProcess['id'],
+            "owner_id" => $user->id,
+            "forwarded_by_id" => $user->id,
         ];
         $created_route = $purchase_request->form_routes()->create($data);
         return $created_route;
     }
 
-    public function approve()
+    public function getProcessed($type, $filters)
     {
-        # code...
+        $user = Auth::user();
+        $results = $this->modelQuery()->where('form_routes.status', $type);
+        if(!$user->hasRole('super-admin')){
+            $results->where('remarks_by_id',$user->id);
+        }
+        if($type == "approved"){
+            $results->where('remarks','<>','Finalization from the end user.');
+        }
+        $results = $this->filters($results, $filters);
+        $results = $results->paginate(20);
+        return $results;   
     }
 
-
-    public function getForApproval($request, $filters)
+    public function getPending($filters)
     {
-        return $this->modelQuery()->where(function($query) {
-            $query->where('status','pending')
-                  ->orWhere('status','with_issues');
-            })->whereIn('to_office_id',$filters['offices_ids'])->get();
+        $results = $this->modelQuery();
+        $results->where(function($query) {
+            $query->where('form_routes.status','pending')
+                  ->orWhere('form_routes.status','with_issues');
+            }
+        );
+        $results = $this->filters($results, $filters);
+        $results = $results->paginate(20);
+        return $results;
+    }
+
+    public function filters($results, $filters)
+    {
+        if(
+            isset($filters['title']) ||
+            isset($filters['purpose']) ||
+            isset($filters['sortColumn']) ||
+            (isset($filters['total_cost']) && isset($filters['total_cost_op']))
+        ){
+            $results->join('purchase_requests', 'form_routes.form_routable_id', '=', 'purchase_requests.id');
+            $results->select('form_routes.*','purchase_requests.title', 'purchase_requests.purpose', 'purchase_requests.total_cost');
+            if(isset($filters['title'])){
+                $results->where('title','like',"%".$filters['title']."%");
+            }
+            if(isset($filters['purpose'])){
+                $results->where('purpose','like',"%".$filters['purpose']."%");
+            }
+
+            if(isset($filters['total_cost']) && isset($filters['total_cost_op'])){
+                $total_cost_op = $filters['total_cost_op'] == "<=" ? $filters['total_cost_op'] : ">=" ;
+                $results->where('total_cost', $total_cost_op, $filters['total_cost']);
+            }
+
+
+            if(isset($filters['sortColumn']) && isset($filters['sortOrder'])){
+                $table = "form_routes.";
+                $column = $filters['sortColumn'];
+                switch ($column) {
+                    case 'title':
+                    case 'purpose':
+                    case 'total_cost':
+                        $table = "purchase_requests.";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                $filters['sortOrder'] = $filters['sortOrder'] ==  'ascend' ? 'ASC' : 'DESC';  
+                $results->orderBy($table.$column, $filters['sortOrder']);
+            }else{
+                $results->orderBy('id','desc');
+            }
+        }
+        if(isset($filters['end_user_id'])){
+            $results->whereIn('form_routes.origin_office_id', $filters['end_user_id']);
+        }
+        if(isset($filters['created_at']) && $filters['created_at'] != array() && count($filters['created_at']) == 2){
+            $results->whereBetween('form_routes.created_at', [
+                Carbon::parse($filters['created_at'][0]),
+                Carbon::parse($filters['created_at'][1])->addDay()->subSecond()
+            ]);
+        }
+        if(isset($filters['updated_at']) && $filters['updated_at'] != array() && count($filters['updated_at']) == 2){
+            $results->whereBetween('form_routes.updated_at', [
+                Carbon::parse($filters['updated_at'][0]),
+                Carbon::parse($filters['updated_at'][1])->addDay()->subSecond()
+            ]);
+        }
+
+        if(isset($filters['remarks'])){
+            $results->where('form_routes.remarks', 'like', "%".$filters['remarks']."%");
+        }
+        if(isset($filters['forwarded_remarks'])){
+            $results->where('form_routes.forwarded_remarks', 'like', "%".$filters['forwarded_remarks']."%");
+        }
+        if(isset($filters['offices_ids'])){
+            $results->whereIn('form_routes.to_office_id',$filters['offices_ids']);
+        }
+        return $results;
     }
 
 
@@ -64,14 +156,16 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $data = [
             "route_type" => $formRoute->route_type,
             "status" => "pending",
-            "remarks" => (isset($remarks) || $remarks != "") ? $remarks : "For approval",
-            "remarks_by_id" => $user->id,
+            "remarks" => $nextRoute['description'],
+            "forwarded_remarks" => (isset($remarks) && $remarks != "") ? $remarks : null,
+            "forwarded_by_id" => $user->id,
             "origin_office_id" => $formRoute->origin_office_id,
             "from_office_id" => $formRoute->to_office_id,
             "to_office_id" => $nextRoute['office_id'],
             "form_process_id" => $formRoute->form_process_id,
             "form_routable_id" => $formRoute->form_routable_id,
             "form_routable_type" => $formRoute->form_routable_type,
+            "owner_id" => $formRoute->owner_id,
         ];
         $created_route = $this->create($data);
         return $created_route;
@@ -86,7 +180,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form->save();
     }
 
-    public function returnToRejecter($id, $data)
+    public function returnTo($id, $data)
     {
         
         $form_route = $this->getById($id);
@@ -98,8 +192,12 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             'form_routable_id'=> $form_route->form_routable_id,
             'form_routable_type'=> $form_route->form_routable_type,
             'form_process_id'=> $form_route->form_process_id,
+            'owner_id'=> $form_route->owner_id,
             'to_office_id'=> isset($data['to_office_id']) ? $data['to_office_id'] : $form_route->origin_office_id,
         ];
         return $data;
     }
+
+
+
 }

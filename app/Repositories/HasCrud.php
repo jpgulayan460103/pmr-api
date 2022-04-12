@@ -44,20 +44,25 @@ Trait HasCrud {
         return $this;
     }
 
-    public function getAll($request) : object
+    public function getAll() : object
     {
         return $this->modelQuery()->get();
     }
 
 
-    public function getAllPaginated($request) : object
+    public function getAllPaginated() : object
     {
         return $this->modelQuery()->paginate($this->perPage);
     }
  
-    public function getById($id) : object
+    public function getById($id)
     {
-        return $this->modelQuery()->where('id',$id)->first();
+        $model = $this->modelQuery()->where('id',$id)->first();
+        if($model){
+            return $model;
+        }else{
+            abort(404);
+        }
     }
 
     public function getByUuid($uuid) : object
@@ -65,9 +70,19 @@ Trait HasCrud {
         return $this->modelQuery()->where($this->uuid,$uuid)->first();
     }
 
-    public function getBy($field, $value) : object
+    public function getBy($field, $value, $type = 'item', $operation = "=") : object
     {
-        return $this->modelQuery()->where($field, $value)->first();
+        $query = "";
+        if($operation == "like"){
+            $query = $this->modelQuery()->where($field, $operation, "%".$value."%");
+        }else{
+            $query = $this->modelQuery()->where($field, $operation, $value);
+        }
+        if($type == "collection"){
+            return $query->get();
+        }else{
+            return $query->first();
+        }
     }
 
     public function create($data) : object

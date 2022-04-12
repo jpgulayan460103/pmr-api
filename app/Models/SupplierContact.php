@@ -5,15 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Supplier;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class SupplierContact extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'name',
-        'address',
         'email_address',
+        'contact_number',
         'supplier_id',
+    ];
+
+    protected static $logAttributes = [
+        '*',
+        'supplier.name'
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'supplier_id',
+        'updated_at',
+        'deleted_at',
     ];
 
     public function supplier()

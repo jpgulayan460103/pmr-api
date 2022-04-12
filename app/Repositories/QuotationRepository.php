@@ -59,12 +59,14 @@ class QuotationRepository implements QuotationRepositoryInterface
     {
         DB::beginTransaction();
         try {
-            $items = $this->updateItems($id);
             if(request()->has('items') && request('items') != array()){
+                $items = $this->updateItems($id);
                 $data['total_amount'] = $items['total_amount'];
             }
             $quotation = $this->mUpdate($id, $data);
-            $quotation->items()->saveMany($items['items']);
+            if(request()->has('items') && request('items') != array()){
+                $quotation->items()->saveMany($items['items']);
+            }
             DB::commit();
             return $quotation;
         } catch (\Throwable $th) {
@@ -79,19 +81,17 @@ class QuotationRepository implements QuotationRepositoryInterface
         $item_ids_form = array();
         $item_ids = QuotationItem::where('quotation_id',$id)->pluck('id')->toArray();
         $new_items = array();
-        if(request()->has('items') && request('items') != array()){
-            foreach (request('items') as $key => $item) {
-                $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
-                $total_amount += $item['total_unit_cost'];
-                if(isset($item['id'])){
-                    QuotationItem::find($item['id'])->update($item);
-                    $item_ids_form[] = $item['id']; 
-                }else{
-                    $new_items[$key] = new QuotationItem($item);
-                }
+        foreach (request('items') as $key => $item) {
+            $item['total_unit_cost'] = $item['unit_cost'] * $item['quantity'];
+            $total_amount += $item['total_unit_cost'];
+            if(isset($item['id'])){
+                QuotationItem::find($item['id'])->update($item);
+                $item_ids_form[] = $item['id']; 
+            }else{
+                $new_items[$key] = new QuotationItem($item);
             }
-            $this->removeItems($item_ids,$item_ids_form);
         }
+        $this->removeItems($item_ids,$item_ids_form);
         return [
             'items' => $new_items,
             'total_amount' => $total_amount,

@@ -9,7 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\UserInformation;
-use App\Models\Signatory;
+use App\Models\UserOffice;
+use App\Models\UserGroup;
 
 class User extends Authenticatable
 {
@@ -57,6 +58,11 @@ class User extends Authenticatable
         return $this->hasOne(UserInformation::class);
     }
 
+    public function information()
+    {
+        return $this->hasOne(UserInformation::class);
+    }
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
@@ -67,8 +73,13 @@ class User extends Authenticatable
         return $this->where('username', $username)->first();
     }
 
-    public function signatories()
+    public function user_offices()
     {
-        return $this->hasMany(Signatory::class);
+        return $this->hasMany(UserOffice::class);
+    }
+
+    public function user_groups()
+    {
+        return $this->hasMany(UserGroup::class);
     }
 }

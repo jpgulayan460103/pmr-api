@@ -23,7 +23,8 @@ class UserInformationTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'section'
+        'section',
+        'position',
     ];
     
     /**
@@ -40,10 +41,11 @@ class UserInformationTransformer extends TransformerAbstract
             'middlename' => $table->middlename,
             'lastname' => $table->lastname,
             'user_dn' => $table->user_dn,
-            'signatory_id' => $table->signatory_id,
+            'user_office_id' => $table->user_office_id,
             'cellphone_number' => $table->cellphone_number,
             'email_address' => $table->email_address,
             'section_id' => $table->section_id,
+            'position_id' => $table->position_id,
             'key' => $table->id,
         ];
     }
@@ -52,6 +54,12 @@ class UserInformationTransformer extends TransformerAbstract
     {
         if ($table->section) {
             return $this->item($table->section, new LibraryTransformer);
+        }
+    }
+    public function includePosition(UserInformation $table)
+    {
+        if ($table->position) {
+            return $this->item($table->position, new LibraryTransformer);
         }
     }
 }

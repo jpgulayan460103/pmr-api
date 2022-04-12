@@ -18,8 +18,10 @@ class CreateLibrariesTable extends Migration
             $table->string('name')->nullable();
             $table->string('library_type')->nullable();
             $table->string('title')->nullable();
+            $table->boolean('is_active')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('parent_id')->references('id')->on('libraries')->onDelete('cascade');
         });
     }

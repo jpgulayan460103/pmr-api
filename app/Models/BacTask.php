@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Models\PurchaseRequest;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class BacTask extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'purchase_request_id',
         'bac_task_uuid',
@@ -26,6 +28,23 @@ class BacTask extends Model
         'estimated_ldd',
         'abstract_of_qoutations',
     ];
+
+    protected static $logAttributes = [
+        '*',
+        'purchase_request.uuid',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'purchase_request_id',
+        'id',
+        'created_at',
+        'bac_task_uuid',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     public static function boot()
     {

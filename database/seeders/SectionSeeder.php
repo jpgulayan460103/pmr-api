@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Library;
 use App\Models\User;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 use Illuminate\Database\Seeder;
 use League\Csv\Reader;
 
@@ -40,18 +40,6 @@ class SectionSeeder extends Seeder
 
             $username = isset($res[3]) ? $res[3] : "";
             $user = User::where('username', $username)->first();
-            if($user && $username != ""){
-                $title = isset($res[4]) ? $res[4] : "";
-                $designation = isset($res[5]) ? $res[5] : "";
-                $signatory_type = isset($res[6]) ? $res[6] : "";
-                Signatory::create([
-                    'office_id' => $lib->id,
-                    'user_id' => $user->id,
-                    'designation' => $designation,
-                    'title' => $title,
-                    'signatory_type' => $signatory_type,
-                ]);
-            }
         }
     }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepository;
 use App\Models\User;
@@ -18,6 +19,11 @@ class UserController extends Controller
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->middleware('auth:api', ['except' => ['register']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.permission.update|users.all', ['only' => ['updatePermission']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.delete|users.all', ['only' => ['destroy']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.view|users.all', ['only' => ['index','show']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.update|users.all', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.
@@ -26,8 +32,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->getAll($request);
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section');
+        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles')->getAll();
+        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles');
     }
 
     /**
@@ -50,7 +56,7 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request)
     {
-        return $this->userRepository->register($request->all());
+        return $this->userRepository->create($request->all());
     }
 
     /**
@@ -61,15 +67,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->attach('user_information,signatories,permissions')->getById($id);
-        // return $user;
-        return fractal($user, new UserTransformer)->parseIncludes('user_information,signatories,permissions');
+        $user = $this->userRepository->attach('user_information,user_offices,permissions,roles')->getById($id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions,roles');
     }
 
     public function auth()
     {
         $auth_user = Auth::user();
-        $user = $this->userRepository->attach('user_information,signatories.office,permissions')->getById($auth_user->id);
+        $user = $this->userRepository->attach('user_information,user_offices.office,permissions,roles')->getById($auth_user->id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices.office,permissions,roles');
         // sleep(5);
         return $user;
     }
@@ -92,9 +98,9 @@ class UserController extends Controller
      * @param  \App\Models\User  $User
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $User)
+    public function update(UpdateUserRequest $request, $id)
     {
-        //
+        return $this->userRepository->update($request->all(), $id);
     }
 
     /**
@@ -110,8 +116,16 @@ class UserController extends Controller
 
     public function register(CreateUserRequest $request)
     {
-        $user = $this->userRepository->register($request->all());
+        $user = $this->userRepository->create($request->all());
         $token = (new AuthRepository)->getAccessToken(['username' => $user->username, 'password' => ''], $user); // with refresh token
         return response()->json($token);  
+    }
+
+    public function updatePermission(Request $request, $id)
+    {
+        $user = $this->userRepository->getById($id);
+        $user->syncPermissions(request('permissions'));
+        $user->syncRoles(request('role'));
+        return $user->permissions;
     }
 }

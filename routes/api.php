@@ -10,8 +10,13 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\QuotationController;
-use App\Http\Controllers\SignatoryController;
+use App\Http\Controllers\UserOfficeController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AuditTrailController;
+use App\Http\Controllers\FormProcessController;
+use App\Http\Controllers\FormUploadController;
+use App\Http\Controllers\ReportController;
+use App\Models\PurchaseOrder;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,28 +29,30 @@ use App\Http\Controllers\SupplierController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', [UserController::class, 'auth']);
+Route::get('/user', [UserController::class, 'auth']);
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+Route::post('/active-directory/login', [AuthController::class, 'adLogin']);
 Route::post('/register', [UserController::class, 'register']);
-Route::post('/active-directory/login', [AuthController::class, 'ad_login']);
-Route::middleware(['auth:api'])->group(function () {
-    Route::resources([
-        'purchase-requests' => PurchaseRequestController::class,
-        'purchase-orders' => PurchaseOrderController::class,
-        'items' => ItemController::class,
-        'users' => UserController::class,
-        'signatories' => SignatoryController::class,
-        'form-routes' => FormRouteController::class,
-        'suppliers' => SupplierController::class,
-        'quotations' => QuotationController::class,
-    ]);
-});
+
+
+Route::resources([
+    'purchase-requests' => PurchaseRequestController::class,
+    'purchase-orders' => PurchaseOrderController::class,
+    'items' => ItemController::class,
+    'users' => UserController::class,
+    'user_offices' => UserOfficeController::class,
+    'form-routes' => FormRouteController::class,
+    'suppliers' => SupplierController::class,
+    'quotations' => QuotationController::class,
+]);
 
 Route::group(['prefix' => '/libraries'], function () {
     Route::get('/', [LibraryController::class, 'index']);
     Route::get('/{type}', [LibraryController::class, 'show']);
+    Route::put('/{type}/{id}', [LibraryController::class, 'update']);
+    Route::post('/{type}', [LibraryController::class, 'store']);
 });
 
 Route::group(['prefix' => '/pdf'], function () {
@@ -53,33 +60,51 @@ Route::group(['prefix' => '/pdf'], function () {
         Route::get('/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview'])->name('api.purchase-requests.pdf.preview');
         Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview'])->name('api.purchase-requests.pdf.validate');
     });
-
-    Route::group(['prefix' => '/purchase-requests'], function () {
-        Route::get('/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
-    });
+    
+    Route::get('/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
+    Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
+    Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
 });
 
 
 Route::group(['prefix' => '/purchase-requests'], function () {
-    Route::post('/{id}/approve', [PurchaseRequestController::class, 'approve']);
+    Route::post('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
 });
 
-Route::group(['prefix' => '/form', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => '/forms'], function () {
+    Route::put('/process/{id}', [FormProcessController::class, 'update']);
+    Route::get('/routes/{id}', [FormRouteController::class, 'show']);
     Route::group(['prefix' => '/routes'], function () {
-        Route::get('/requests/pending', [FormRouteController::class, 'forApproval']);
+        Route::get('/requests/pending', [FormRouteController::class, 'getPending']);
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
         Route::post('/requests/pending/{id}/reject', [FormRouteController::class, 'reject']);
-        Route::get('/requests/rejected', [FormRouteController::class, 'forApproval']);
-        Route::get('/requests/approved', [FormRouteController::class, 'forApproval']);
     }); 
+    Route::get('/rejected', [FormRouteController::class, 'rejected']);
+    Route::get('/approved', [FormRouteController::class, 'approved']);
+
+    Route::group(['prefix' => '/uploads'], function () {
+        Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
+        Route::delete('/{type}/{id}', [FormUploadController::class, 'destroy']);
+    });
 });
 
-Route::resources([
-    // 'purchase-requests' => PurchaseRequestController::class,
-    'purchase-orders' => PurchaseOrderController::class,
-    'items' => ItemController::class,
-    'users' => UserController::class,
-    'signatories' => SignatoryController::class,
-    // 'form-routes' => FormRouteController::class,
-]);
+Route::group(['prefix' => '/next-numbers'], function () {
+    Route::get('/purchase-request', [PurchaseRequestController::class, 'getNextNumber']);
+});
+
+Route::group(['prefix' => '/users'], function () {
+    Route::post('/{id}/permissions', [UserController::class, 'updatePermission']);
+    Route::get('/{id}/permissions', [UserController::class, 'updatePermission']);
+});
+
+Route::group(['prefix' => '/logger'], function () {
+    Route::get('/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);
+    Route::get('/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
+    Route::get('/all', [AuditTrailController::class, 'index']);
+    Route::get('/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
+});
+
+Route::group(['prefix' => '/reports'], function () {
+    Route::get('/purchase-request', [ReportController::class, 'purchaseRequest']);
+});
 

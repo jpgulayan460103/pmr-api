@@ -3,8 +3,9 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Transformers\SignatoryTransformer;
+use App\Transformers\UserOfficeTransformer;
 use App\Models\Library;
+use Illuminate\Support\Str;
 class LibraryTransformer extends TransformerAbstract
 {
     /**
@@ -22,7 +23,8 @@ class LibraryTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'signatory'
+        'user_office',
+        'children'
     ];
     
     /**
@@ -37,8 +39,10 @@ class LibraryTransformer extends TransformerAbstract
             'value' => $table->name,
             'title' => $table->title,
             'name' => $table->name,
+            'is_active' => $table->is_active,
             'text' => $table->name,
             'library_type' => $table->library_type,
+            'library_type_str' => Str::headline($table->library_type),
             'key' => $table->id,
         ];
     }
@@ -49,11 +53,17 @@ class LibraryTransformer extends TransformerAbstract
             return $this->item($table->parent, new LibraryTransformer);
         }
     }
-
-    public function includeSignatory(Library $table)
+    public function includeChildren(Library $table)
     {
-        if ($table->signatory) {
-            return $this->item($table->signatory, new SignatoryTransformer);
+        if ($table->children) {
+            return $this->collection($table->children, new LibraryTransformer);
+        }
+    }
+
+    public function includeUserOffice(Library $table)
+    {
+        if ($table->user_office) {
+            return $this->item($table->user_office, new UserOfficeTransformer);
         }
     }
 }

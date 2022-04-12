@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateFormProcessRequest;
 use App\Models\FormProcess;
 use Illuminate\Http\Request;
+use App\Repositories\FormProcessRepository;
 
 class FormProcessController extends Controller
 {
+
+    private $formProcessRepository;
+
+    public function __construct(FormProcessRepository $formProcessRepository)
+    {
+        $this->formProcessRepository = $formProcessRepository;
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -67,9 +77,13 @@ class FormProcessController extends Controller
      * @param  \App\Models\FormProcess  $formProcess
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, FormProcess $formProcess)
+    public function update(UpdateFormProcessRequest $request, $id)
     {
-        //
+        $type = "";
+        if(request()->has("type") && request("type") == "twg"){
+            $type = "twg";
+        }
+        return $this->formProcessRepository->updateRouting($id, $type);
     }
 
     /**

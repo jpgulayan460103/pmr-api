@@ -18,16 +18,19 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitOfMeasureSeeder::class);
         $this->call(ItemCategorySeeder::class);
         $this->call(ItemSeeder::class);
-        $this->call(UserSeeder::class);
+        // $this->call(UserSeeder::class);
         $this->call(DivisionSeeder::class);
         $this->call(SectionSeeder::class);
+        $this->call(TechnicalWorkingGroupSeeder::class);
+        $this->call(ProcurementTypeCategorySeeder::class);
+        $this->call(ProcurementTypeSeeder::class);
+        $this->call(ProcurementModeOfPaymentSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
-        $this->call(SignatorySampleSeeder::class);
-        $this->call(ProcurementTypeSeeder::class);
-        $this->call(ProcurementModeOfPaymentSeeder::class);
-        // $this->call(SignatorySeeder::class);
+        $this->call(UserOfficeSampleSeeder::class);
+        $this->call(UserOfficeSeeder::class);
+        $this->call(UacsCodeSeeder::class);
         // $this->call(FakerDataSeeders::class);
     }
 }

@@ -37,8 +37,9 @@ class SupplierContactTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'name' => $table->name,
-            'address' => $table->address,
+            'display_log' => $table->name,
             'email_address' => $table->email_address,
+            'contact_number' => $table->contact_number ,
             'supplier_id' => $table->supplier_id,
         ];
     }

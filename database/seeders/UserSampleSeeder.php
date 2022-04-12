@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Permission;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 
 class UserSampleSeeder extends Seeder
 {

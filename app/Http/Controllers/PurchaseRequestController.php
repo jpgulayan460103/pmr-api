@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreatePurchaseRequest;
+use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\PurchaseRequest;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Repositories\LibraryRepository;
-use App\Repositories\SignatoryRepository;
 use App\Repositories\PurchaseRequestRepository;
-use App\Repositories\UserRepository;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
@@ -22,6 +20,16 @@ class PurchaseRequestController extends Controller
     public function __construct(PurchaseRequestRepository $purchaseRequestRepository)
     {
         $this->purchaseRequestRepository = $purchaseRequestRepository;
+        $this->middleware('auth:api', [
+            'except' => [
+                'pdf',
+                'validatePdfPreview',
+                'generatePdfPreview',
+            ]
+        ]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.create|purchase.requests.all', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.update|purchase.requests.all',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.view|purchase.requests.all|procurement.view|procurement.all',   ['only' => ['show', 'index']]);
     }
 
 
@@ -32,27 +40,20 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $attach = 'form_process,end_user,form_routes.to_office,form_routes.from_office,purchase_request_type, mode_of_procurement';
+        $attach = 'end_user, procurement_type, mode_of_procurement, uacs_code';
         $filters = [];
-        if($request['type'] == "all"){
-        }elseif($request['type'] == "procurement"){
+        if(request('type') == "all"){
+        }elseif(request('type') == "procurement"){
             $filters['status'] = ['Approved'];
+            $attach .= ",bac_task";
         }else{
             $user = Auth::user();
-            $offices_ids = $user->signatories->pluck('office_id');
+            $offices_ids = $user->user_offices->pluck('office_id');
             $filters['offices_ids'] = $offices_ids;
+            if($user->hasRole('super-admin')){
+                unset($filters['offices_ids']);
+            }
         }
-        isset($request['purpose']) ? $filters['purpose'] = $request['purpose'] : "";
-        isset($request['total_cost']) ? $filters['total_cost'] = $request['total_cost'] : "";
-        isset($request['status']) ? $filters['status'] = $request['status'] : "";
-        isset($request['pr_date']) ? $filters['pr_date'] = $request['pr_date'] : "";
-        isset($request['sa_or']) ? $filters['sa_or'] = $request['sa_or'] : "";
-        isset($request['purchase_request_number']) ? $filters['purchase_request_number'] = $request['purchase_request_number'] : "";
-        isset($request['end_user_id']) ? $filters['end_user_id'] = $request['end_user_id'] : "";
-        isset($request['purchase_request_type_id']) ? $filters['purchase_request_type_id'] = $request['purchase_request_type_id'] : "";
-        isset($request['mode_of_procurement_id']) ? $filters['mode_of_procurement_id'] = $request['mode_of_procurement_id'] : "";
-        // return $filters;
-
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->search($filters);
         // return $purchase_request;
@@ -90,7 +91,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        $attach = "form_process,end_user,form_routes.to_office,form_routes.from_office,purchase_request_type, mode_of_procurement, items.unit_of_measure, requested_by.user.user_information, approved_by.user.user_information";
+        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.from_office, procurement_type, mode_of_procurement, uacs_code, items.unit_of_measure, requested_by, approved_by, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach)->toArray();
@@ -114,7 +115,7 @@ class PurchaseRequestController extends Controller
      * @param  \App\Models\PurchaseRequest  $purchaseRequest
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePurchaseRequest $request, $id)
     {
         $this->purchaseRequestRepository->update($request->all(), $id);
         return $this->show($id);
@@ -145,10 +146,11 @@ class PurchaseRequestController extends Controller
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         // return $purchase_request;
+        // return view('pdf.purchase-request', $purchase_request);
         if($request['view']){
-            return $pdf->stream('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+            return $pdf->stream('purchase-request-'.$purchase_request['uuid'].'.pdf');
         }
-        return $pdf->download('purchase-request-'.$purchase_request['purchase_request_uuid'].'.pdf');
+        return $pdf->download('purchase-request-'.$purchase_request['uuid'].'.pdf');
     }
 
     public function validatePdfPreview(CreatePurchaseRequest $request)
@@ -169,26 +171,45 @@ class PurchaseRequestController extends Controller
         $items = $purchase_request_preview['items'];
         unset($purchase_request_preview['items']);
         $purchase_request_preview['items']['data'] = $items;
+        $purchase_request_preview['total_cost'] = 0;
         foreach ($purchase_request_preview['items']['data'] as $key => $item) {
             $count++;
             $count += substr_count($item['item_name'],"\n");
+            $purchase_request_preview['total_cost'] += $item['total_unit_cost'];
             if($purchase_request_preview['items']['data'][$key]['unit_of_measure_id'] == null){
                 return $purchase_request_preview['items']['data'][$key]['unit_of_measure_id'];
             }
             $purchase_request_preview['items']['data'][$key]['unit_of_measure'] = (new LibraryRepository)->getById($purchase_request_preview['items']['data'][$key]['unit_of_measure_id']);
         }
         
-        $purchase_request_preview['requested_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['requestedBy']);
-        $purchase_request_preview['approved_by'] = (new SignatoryRepository)->attach('user.user_information')->getBy('signatory_type', $purchase_request_preview['approvedBy']);
+        $purchase_request_preview['requested_by'] = (new LibraryRepository)->getById($purchase_request_preview['requested_by_id']);
+        $purchase_request_preview['approved_by'] = (new LibraryRepository)->getById($purchase_request_preview['approved_by_id']);
         $purchase_request_preview['count_items'] = $count;
+        // $purchase_request_preview['form_process'] = [];
+        // return $purchase_request_preview;
         $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request_preview);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
+        // $pdf->save('sad.pdf');
         return $pdf->stream('purchase-request-preview.pdf');
     }
 
-    public function approve(Request $request, $id)
+    public function updateBacTasks(Request $request, $id)
     {
-        PurchaseRequest::find($id)->update(['status' => 'approved']);
+        return $this->purchaseRequestRepository->createOrUpdateBac($request->all());
+    }
+
+    public function getNextNumber(Request $request)
+    {
+        $purchase_request = $this->purchaseRequestRepository->getLastNumber();
+        if(!$purchase_request){
+            return [
+                'next_number' => "00001"
+            ];
+        }
+        $last_number = (integer)substr($purchase_request->purchase_request_number, 17);
+        return [
+            'next_number' => str_pad($last_number+1,5,"0",STR_PAD_LEFT)
+        ];
     }
 }

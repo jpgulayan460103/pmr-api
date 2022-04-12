@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Document</title>
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> -->
+    <meta http-equiv="Content-Type" content="charset=utf-8" />
+    <title>Purchase Request</title>
     <style>
          @page {
             /* margin: 0px 0px 0px 0px !important; */
@@ -77,6 +78,38 @@
                 <tr>
                     <td></td>
                     <td></td>
+                    <td>        @if( isset($form_process) )
+        <!-- {{ $form_process['process_description'] }}:<br> -->
+        <div style="font-size: 9pt;">
+            @php
+            $i = 0;
+            @endphp
+            @foreach($form_process['form_routes'] as $key => $route)
+                @if($i != 0 && $route['status'] == "approved")
+                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['description_code'] == 'aprroval_from_twg' ? "TWG: " : "" }}{{ $route['office_name'] }}</span><br>
+                    @if($route['office_name'] == "Budget Section")
+                    <div>
+                        <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">Amount:</b> {{ number_format($alloted_amount, 2) }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">UACS Code:</b> {{ $uacs_code['name'] }}</span><br>
+                        <span>&emsp;<b style="font-size: 9pt;">SA/OR:</b> {{ $sa_or }}</span><br> 
+                    </div>
+                    @endif
+                @endif
+                
+                @php
+                $i++;
+                @endphp
+            @endforeach
+        </div>
+        @endif</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
                     <td style="text-align: center;font-weight: bold;">Total</td>
                     <td></td>
                     <td></td>
@@ -92,19 +125,23 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0; border-bottom: 0">Printed Name:</td>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['user']['user_information']['fullname'] }}</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['user']['user_information']['fullname'] }}</td>
+                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['name'] }}</td>
+                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['name'] }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
-                    <td style=" text-align: center; border-top: 0">{{ $requested_by['title'] }} {{ $requested_by['designation'] }}</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['title'] }} {{ $approved_by['designation'] }}</td>
+                    <td style=" text-align: center; border-top: 0">{{ $requested_by['parent']['name'] }}</td>
+                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['parent']['name'] }}</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td colspan="6" style="border: 0;"></td>
-                </tr>
+                </tr> -->
             </tfoot>
             <tbody>
+                <tr>
+                    <td style="text-align: center;" colspan="2"><b>Title:</b></td>
+                    <td colspan="4"><b>{{ $title }}</b></td>
+                </tr>
                 @foreach($items['data'] as $key => $item)
                 <tr>
                     <td style="text-align: center">{{ $item['item_code'] }}</td>
@@ -116,7 +153,15 @@
                     <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
                 @endforeach
-                @for($i = 0; $i<=(32 - $count_items); $i ++)
+                <tr>
+                    <td style="text-align: center"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"><b>*** NOTHING FOLLOWS ***</b></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                @for($i = 0; $i<=(19 - $count_items); $i ++)
                 <tr>
                     <td style="text-align: center">&nbsp;</td>
                     <td style="text-align: center;"></td>
@@ -128,29 +173,6 @@
                 @endfor
             </tbody>
         </table>
-        {{ $form_process['process_description'] }}:<br>
-        <ul>
-            @php
-            $i = 0;
-            @endphp
-            @foreach($form_process['form_routes'] as $key => $route)
-                @if($i != 0 && $route['status'] == "approved")
-                    <li><b>({{ $route['status'] }})</b> {{ $route['office_name'] }}</li>
-                    @if($route['office_name'] == "Budget Section")
-                    <ul>
-                        <li><b>Charge To:</b> {{ $charge_to }}</li>
-                        <li><b>Amount:</b> {{ number_format($alloted_amount, 2) }}</li>
-                        <li><b>UACS Code:</b> {{ $uacs_code }}</li>
-                        <li><b>SA/OR:</b> {{ $sa_or }}</li>
-                    </ul>
-                    @endif
-                @endif
-                
-                @php
-                $i++;
-                @endphp
-            @endforeach
-        </ul>
 </div>
 </body>
 </html>

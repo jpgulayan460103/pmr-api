@@ -8,15 +8,15 @@ interface CrudInterface {
 
     public function modelQuery();
     
-    public function getAll($request);
+    public function getAll();
 
-    public function getAllPaginated($request);
+    public function getAllPaginated();
  
     public function getById($id);
 
     public function getByUuid($uuid);
  
-    public function getBy($field, $value);
+    public function getBy($field, $value, $type = 'item', $operation = "=");
     
     public function create(array $data);
 

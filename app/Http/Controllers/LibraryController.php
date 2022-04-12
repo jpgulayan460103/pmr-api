@@ -5,13 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Library;
 use App\Models\Item;
 use App\Repositories\ItemRepository;
+use App\Repositories\LibraryRepository;
+use App\Repositories\UserRepository;
 use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class LibraryController extends Controller
 {
+
+    private $libraryRepository;
+    public function __construct(LibraryRepository $libraryRepository)
+    {
+        $this->libraryRepository = $libraryRepository;
+        $this->middleware('auth:api', ['only' => ['store', 'update']]);
+        $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +31,10 @@ class LibraryController extends Controller
      */
     public function index()
     {
-        DB::enableQueryLog();
-        $library = Library::orderBy('library_type')->orderBy('name')->get();
-        return fractal($library, new LibraryTransformer)->parseIncludes('parent.parent.parent');
+        if ($librariesRedis = Redis::get('libraries.all')) {
+            return json_decode($librariesRedis);
+        }
+        return (new LibraryRepository)->cacheRedis();
     }
 
     /**
@@ -40,9 +53,19 @@ class LibraryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $type)
     {
-        //
+        $data = [
+            'library_type' => $type,
+            'name' => $request->name,
+            'title' => $request->title,
+            'parent_id' => $request->parent_id,
+        ];
+        $library = $this->libraryRepository->create($data);
+        
+        (new LibraryRepository)->cacheRedis();
+
+        return $library;
     }
 
     /**
@@ -51,15 +74,44 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Library $library, $type)
+    public function show(Request $request, $type)
     {
-        if($type == "items"){
-            $itemRepository = new ItemRepository(new Item);
-            $item = $itemRepository->getAll($request);
-            return fractal($item, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        switch ($type) {
+            case 'items':
+                return $this->showItems($request);
+                break;
+            case 'users':
+                return $this->showUsers($request);
+                break;
+            
+            default:
+                # code...
+                break;
         }
-        $library = $library->orderBy('name')->whereLibraryType($type)->get();
-        return fractal($library, new LibraryTransformer);
+        $library = $this->libraryRepository->getBy('library_type', $type);
+        return fractal($library, new LibraryTransformer)->parseIncludes('children');
+    }
+
+    public function showItems(Request $request)
+    {
+        if ($itemsRedis = Redis::get('libraries.items')) {
+            return json_decode($itemsRedis);
+        }
+        $items = (new ItemRepository)->attach('unit_of_measure,item_category')->getAll();
+        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        Redis::set('libraries.items', $items->toJson());
+        return $items;
+    }
+
+    public function showUsers(Request $request)
+    {
+        if ($usersRedis = Redis::get('libraries.users')) {
+            return json_decode($usersRedis);
+        }
+        $users = (new UserRepository())->attach('user_information')->getAll();
+        $users = fractal($users, new UserTransformer)->parseIncludes('user_information');
+        Redis::set('libraries.users', $users->toJson());
+        return $users;
     }
 
     /**
@@ -80,9 +132,10 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Library $library)
+    public function update(Request $request, $type, $id)
     {
-        //
+        $this->libraryRepository->update($id, $request->all());
+        return (new LibraryRepository)->cacheRedis();
     }
 
     /**

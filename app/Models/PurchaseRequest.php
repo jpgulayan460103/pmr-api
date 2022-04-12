@@ -8,28 +8,30 @@ use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
 use App\Models\Library;
-use App\Models\Signatory;
+use App\Models\UserOffice;
 use App\Models\Quotation;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class PurchaseRequest extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
-        'purchase_request_uuid',
-        'purchase_request_number',
+        'uuid',
+        'purchase_request_number', //BUDRP-PR-2022-02-00001
         'purpose',
+        'title',
         'fund_cluster',
         'center_code',
         'total_cost',
         'pr_dir',
         'end_user_id',
-        'purchase_request_type_id',
+        'procurement_type_id',
         'status',
         'pr_date',
         'mode_of_procurement_id',
-        'uacs_code',
+        'uacs_code_id',
         'charge_to',
         'alloted_amount',
         'sa_or',
@@ -42,16 +44,31 @@ class PurchaseRequest extends Model
 
     protected static $logAttributes = [
         '*',
-        'approved_by.office.name',
-        'requested_by.office.name',
+        'approved_by.name',
+        'requested_by.name',
         'end_user.name',
+        'procurement_type.parent.name',
+        'procurement_type.name',
         'mode_of_procurement.name',
-        'purchase_request_type.name',
+        'uacs_code.name',
     ];
 
     protected static $logAttributesToIgnore = [
+        'uuid',
+        'procurement_type_id',
+        'process_complete_date',
+        'process_complete_status',
+        'bac_task_id',
+        'end_user_id',
+        'requested_by_id',
+        'approved_by_id',
+        'mode_of_procurement_id',
+        'uacs_code_id',
+        'id',
+        'status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;
@@ -61,7 +78,7 @@ class PurchaseRequest extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            $model->purchase_request_uuid = (string) Str::uuid();
+            $model->uuid = (string) Str::uuid();
             $model->status = 'Pending';
         });
         self::updating(function($model) {
@@ -89,11 +106,16 @@ class PurchaseRequest extends Model
     {
         return $this->belongsTo(Library::class);
     }
-    public function purchase_request_type()
+    public function procurement_type()
+    {
+        return $this->belongsTo(Library::class)->withDefault(true);
+    }
+    public function mode_of_procurement()
     {
         return $this->belongsTo(Library::class);
     }
-    public function mode_of_procurement()
+    
+    public function uacs_code()
     {
         return $this->belongsTo(Library::class);
     }
@@ -105,12 +127,12 @@ class PurchaseRequest extends Model
 
     public function requested_by()
     {
-        return $this->belongsTo(Signatory::class);
+        return $this->belongsTo(Library::class);
     }
 
     public function approved_by()
     {
-        return $this->belongsTo(Signatory::class);
+        return $this->belongsTo(Library::class);
     }
 
     public function form_process()
@@ -120,6 +142,10 @@ class PurchaseRequest extends Model
     public function form_routes()
     {
         return $this->morphMany(FormRoute::class, 'form_routable');
+    }
+    public function form_uploads()
+    {
+        return $this->morphMany(FormUpload::class, 'form_uploadable')->orderBy('id','desc');
     }
 
     public function quotations()

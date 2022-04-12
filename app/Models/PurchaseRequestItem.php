@@ -5,11 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
+use App\Models\PurchaseRequest;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseRequestItem extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
+
+
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->purchase_request_item_uuid = (string) Str::uuid();
+        });
+        self::updating(function($model) {
+
+        });
+    }
+
+    protected $casts = [
+        'is_ppmp' => 'boolean',
+    ];
     protected $fillable = [
         'item_name',
         'item_code',
@@ -19,6 +39,8 @@ class PurchaseRequestItem extends Model
         'unit_of_measure_id',
         'total_unit_cost',
         'purchase_request_id',
+        'purchase_request_item_uuid',
+        'is_ppmp',
     ];
 
     protected static $logAttributes = [
@@ -27,8 +49,14 @@ class PurchaseRequestItem extends Model
     ];
 
     protected static $logAttributesToIgnore = [
+        'id',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deleted_at',
+        'unit_of_measure_id',
+        'purchase_request_id',
+        'item_id',
+        'purchase_request_item_uuid',
     ];
 
     protected static $logOnlyDirty = true;
@@ -37,5 +65,9 @@ class PurchaseRequestItem extends Model
     public function unit_of_measure()
     {
         return $this->belongsTo(Library::class);
+    }
+    public function purchase_request()
+    {
+        return $this->belongsTo(PurchaseRequest::class, 'purchase_request_id');
     }
 }

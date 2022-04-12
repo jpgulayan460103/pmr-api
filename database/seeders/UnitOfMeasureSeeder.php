@@ -29,6 +29,7 @@ class UnitOfMeasureSeeder extends Seeder
             'LOT',
             'PACK',
             'PAD',
+            'PAX',
             'PAIR',
             'PIECE',
             'REAM',

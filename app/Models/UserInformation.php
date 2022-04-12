@@ -22,6 +22,7 @@ class UserInformation extends Model
         'user_dn',
         'cellphone_number',
         'email_address',
+        'position_id',
     ];
 
     public function user()
@@ -30,12 +31,17 @@ class UserInformation extends Model
     }
 
 
-    public function signatory()
+    public function user_office()
     {
         return $this->belongsTo(Library::class);
     }
 
     public function section()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function position()
     {
         return $this->belongsTo(Library::class);
     }

@@ -13,7 +13,7 @@ use Laravel\Passport\Token;
 class AuthRepository implements AuthRepositoryInterface
 {
 
-    public function revoke_existing_tokens(User $user)
+    public function revokeExistingTokens(User $user)
     {
         Token::where('user_id', $user->id)->update(['revoked' => true]);
     }
@@ -39,7 +39,7 @@ class AuthRepository implements AuthRepositoryInterface
         }
 
         if($user->account_type == "app_account"){
-            if (!Auth::attempt($request->only('username', 'password'))) {
+            if (!Auth::guard('web')->attempt($request->only('username', 'password'))) {
                 return [
                     'status' => 'error',
                     'message' => "Invalid login details",
@@ -54,12 +54,12 @@ class AuthRepository implements AuthRepositoryInterface
                 'error_code' => 'success',
             ];
         }
-        return $this->ldap_auth($request);
+        return $this->ldapAuth($request);
     }
 
 
 
-    public function ldap_auth(Request $request)
+    public function ldapAuth(Request $request)
     {
         $adServer = config('services.ad.host');
 
@@ -122,7 +122,7 @@ class AuthRepository implements AuthRepositoryInterface
     {
         $password = $user->type == "app_account" ? $credentials['password'] : config('services.ad.default_password');
         $oauth = DB::table('oauth_clients')->where('id',2)->first();
-        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+        $response = Http::withOptions(['verify' => false])->asForm()->post(config('services.passport.endpoint'), [
             'grant_type' => 'password',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,
@@ -137,7 +137,7 @@ class AuthRepository implements AuthRepositoryInterface
     public function refreshToken(Request $request)
     {
         $oauth = DB::table('oauth_clients')->where('id',2)->first();
-        $response = Http::asForm()->post(config('services.passport.endpoint'), [
+        $response = Http::withOptions(['verify' => false])->asForm()->post(config('services.passport.endpoint'), [
             'grant_type' => 'refresh_token',
             'client_id' => $oauth->id,
             'client_secret' => $oauth->secret,

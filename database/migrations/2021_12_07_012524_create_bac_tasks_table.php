@@ -24,13 +24,13 @@ class CreateBacTasksTable extends Migration
             $table->string("open_of_bids")->nullable();
             $table->string("bid_evaluation")->nullable();
             $table->string("post_qual")->nullable();
-            $table->string("notice_of_award")->nullable();
-            $table->string("contract_signing")->nullable();
-            $table->string("notice_to_proceed")->nullable();
+            $table->date("notice_of_award")->nullable();
+            $table->date("contract_signing")->nullable();
+            $table->date("notice_to_proceed")->nullable();
             $table->string("estimated_ldd")->nullable();
             $table->string("abstract_of_qoutations")->nullable();
             $table->timestamps();
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests');
+            $table->softDeletes();
         });
     }
 

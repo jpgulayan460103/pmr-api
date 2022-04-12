@@ -15,25 +15,30 @@ class CreatePurchaseRequestsTable extends Migration
     {
         Schema::create('purchase_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('purchase_request_uuid')->nullable();
+            $table->string('uuid')->nullable();
             $table->string('purchase_request_number')->nullable();
-            $table->string('purpose')->nullable();
+            $table->text('purpose')->nullable();
+            $table->string('pr_dir')->nullable();
+            $table->text('title')->nullable();
+            $table->float('total_cost',15,2)->nullable();
+            $table->date('pr_date')->nullable();
+            $table->unsignedBigInteger('end_user_id')->nullable();
+            $table->unsignedBigInteger('procurement_type_id')->nullable();
+            $table->unsignedBigInteger('mode_of_procurement_id')->nullable();
+            $table->unsignedBigInteger('bac_task_id')->nullable();
+            $table->unsignedBigInteger('uacs_code_id')->nullable();
             $table->string('fund_cluster')->nullable();
             $table->string('center_code')->nullable();
-            $table->float('total_cost',15,2)->nullable();
-            $table->string('pr_dir')->nullable();
-            $table->unsignedBigInteger('end_user_id')->nullable();
-            $table->unsignedBigInteger('purchase_request_type_id')->nullable();
-            $table->string('status')->nullable();
-            $table->date('pr_date')->nullable();
-            $table->string('uacs_code')->nullable();
-            $table->unsignedBigInteger('mode_of_procurement_id')->nullable();
             $table->string('charge_to')->nullable();
             $table->float('alloted_amount',15,2)->nullable();
             $table->string('sa_or')->nullable();
+            $table->string('status')->nullable();
             $table->boolean('process_complete_status')->nullable();
             $table->date('process_complete_date')->nullable();
+            $table->unsignedBigInteger('requested_by_id')->nullable();
+            $table->unsignedBigInteger('approved_by_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

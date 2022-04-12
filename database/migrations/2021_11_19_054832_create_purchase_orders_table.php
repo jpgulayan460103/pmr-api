@@ -29,7 +29,6 @@ class CreatePurchaseOrdersTable extends Migration
             $table->string("certificate_of_occupancy")->nullable();
             $table->string("certificate_of_completion")->nullable();
             $table->timestamps();
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
         });
     }
 

@@ -4,9 +4,10 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
-use App\Transformers\SignatoryTransformer;
+use App\Transformers\UserOfficeTransformer;
 use App\Transformers\FormProcessTransformer;
 use App\Transformers\FormRouteTransformer;
+use App\Transformers\BacTaskTransformer;
 
 class PurchaseRequestTransformer extends TransformerAbstract
 {
@@ -33,8 +34,10 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'approved_by',
         'form_process',
         'form_routes',
-        'purchase_request_type',
+        'procurement_type',
         'mode_of_procurement',
+        'uacs_code',
+        'form_uploads',
     ];
     
     /**
@@ -44,11 +47,15 @@ class PurchaseRequestTransformer extends TransformerAbstract
      */
     public function transform($table)
     {
+        $uuid_last = explode("-",$table->uuid);
         return [
             'id' => $table->id,
-            'purchase_request_uuid' => $table->purchase_request_uuid,
+            'uuid' => $table->uuid,
+            'uuid_last' => end($uuid_last),
+            'display_log' => $table->purchase_request_number ? $table->purchase_request_number : $table->title,
             'purchase_request_number' => $table->purchase_request_number,
             'purpose' => $table->purpose,
+            'title' => $table->title,
             'fund_cluster' => $table->fund_cluster,
             'center_code' => $table->center_code,
             'total_cost' => $table->total_cost,
@@ -56,7 +63,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'common_amount' => $table->total_cost,
             'pr_dir' => $table->pr_dir,
             'end_user_id' => $table->end_user_id,
-            'purchase_request_type_id' => $table->purchase_request_type_id,
+            'procurement_type_id' => $table->procurement_type_id,
             'status' => $table->status,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
@@ -64,12 +71,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'requested_by_id' => $table->requested_by_id,
             'approved_by_id' => $table->approved_by_id,
             'mode_of_procurement_id' => $table->mode_of_procurement_id,
-            'uacs_code' => $table->uacs_code,
+            'uacs_code_id' => $table->uacs_code_id,
             'charge_to' => $table->charge_to,
             'alloted_amount' => $table->alloted_amount,
             'sa_or' => $table->sa_or,
-            'file' => route('api.purchase-requests.pdf', ['id' => $table->purchase_request_uuid]),
-            'particulars' => $table->purpose."\r\n"."amounting to ".number_format($table->total_cost, 2), // set common field for all forms
+            'file' => route('api.purchase-requests.pdf', ['id' => $table->uuid]),
+            'particulars' => $table->purpose, // set common field for all forms
             'process_complete_status' => $table->process_complete_status == 1,
             'process_complete_date' => $table->process_complete_date,
         ];
@@ -92,20 +99,26 @@ class PurchaseRequestTransformer extends TransformerAbstract
     public function includeBacTask($table)
     {
         if ($table->bac_task) {
-            return $this->item($table->bac_task, new LibraryTransformer);
+            return $this->item($table->bac_task, new BacTaskTransformer);
         }
     }
 
-    public function includePurchaseRequestType($table)
+    public function includeProcurementType($table)
     {
-        if ($table->purchase_request_type) {
-            return $this->item($table->purchase_request_type, new LibraryTransformer);
+        if ($table->procurement_type) {
+            return $this->item($table->procurement_type, new LibraryTransformer);
         }
     }
     public function includeModeOfProcurement($table)
     {
         if ($table->mode_of_procurement) {
             return $this->item($table->mode_of_procurement, new LibraryTransformer);
+        }
+    }
+    public function includeUacsCode($table)
+    {
+        if ($table->uacs_code) {
+            return $this->item($table->uacs_code, new LibraryTransformer);
         }
     }
     public function includeEndUser($table)
@@ -117,13 +130,13 @@ class PurchaseRequestTransformer extends TransformerAbstract
     public function includeRequestedBy($table)
     {
         if ($table->requested_by) {
-            return $this->item($table->requested_by, new SignatoryTransformer);
+            return $this->item($table->requested_by, new LibraryTransformer);
         }
     }
     public function includeApprovedBy($table)
     {
         if ($table->approved_by) {
-            return $this->item($table->approved_by, new SignatoryTransformer);
+            return $this->item($table->approved_by, new LibraryTransformer);
         }
     }
     public function includeFormProcess($table)
@@ -136,6 +149,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->form_routes) {
             return $this->collection($table->form_routes, new FormRouteTransformer);
+        }
+    }
+    public function includeFormUploads($table)
+    {
+        if ($table->form_uploads) {
+            return $this->collection($table->form_uploads, new FormUploadTransformer);
         }
     }
 }

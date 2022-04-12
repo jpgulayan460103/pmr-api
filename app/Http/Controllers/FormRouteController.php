@@ -10,14 +10,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
+use App\Models\Library;
+use App\Repositories\LibraryRepository;
+
 class FormRouteController extends Controller
 {
 
     private $formRouteRepository;
+    private $attach;
 
     public function __construct(FormRouteRepository $formRouteRepository)
     {
         $this->formRouteRepository = $formRouteRepository;
+        $this->attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
+        $this->middleware('auth:api');
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.pending.view|form.routing.pending.all|purchase.requests.approve',   ['only' => ['getPending']]);
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.approved.view|form.routing.approved.all',   ['only' => ['approved']]);
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.disapproved.view|form.routing.disapproved.all',   ['only' => ['rejected']]);
     }
     /**
      * Display a listing of the resource.
@@ -61,9 +70,10 @@ class FormRouteController extends Controller
      * @param  \App\Models\FormRoute  $formRoute
      * @return \Illuminate\Http\Response
      */
-    public function show(FormRoute $formRoute)
+    public function show($id)
     {
-        //
+        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
+        return fractal($formRoute, new FormRouteTransformer);
     }
 
     /**
@@ -100,66 +110,142 @@ class FormRouteController extends Controller
         //
     }
 
-    public function forApproval(Request $request)
+    public function rejected(Request $request)
     {
+        $filters = $request->all();
+        $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('rejected', $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
+    }
+    public function approved(Request $request)
+    {
+        $filters = $request->all();
+        $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('approved', $filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
+    }
+
+    public function getPending(Request $request)
+    {
+        $filters = $request->all();
         $user = Auth::user();
-        // $user = User::find(3);
-        $offices_ids = $user->signatories->pluck('office_id');
-        $filters['offices_ids'] = $offices_ids;
-        $routes = $this->formRouteRepository->attach('form_routable,end_user,to_office,from_office,form_process,user.user_information')->getForApproval($request, $filters);
-        // return $routes;
-        return fractal($routes, new FormRouteTransformer)->parseIncludes('form_routable,end_user,to_office,from_office,form_process,user.user_information');
+        $offices_ids = $user->user_offices->pluck('office_id')->toArray();
+        $groups_ids = $user->user_groups->pluck('group_id')->toArray();
+        $filters['offices_ids'] = array_merge($groups_ids, $offices_ids);
+        if($user->hasRole('super-admin')){
+            unset($filters['offices_ids']);
+        }
+        $filters['total_cost'] = request('total_cost');
+        $filters['total_cost_op'] = $filters['total_cost_op'] = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
+        $routes = $this->formRouteRepository->attach($this->attach)->getPending($filters);
+        return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
     }
 
     public function approve(Request $request, $id)
     {
         DB::beginTransaction();
-        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
-        $formProcess = $formRoute->form_process;
-        $formRoutes = $formProcess->form_routes;
-        $step = 0;
-        foreach ($formRoutes as $key => $route) {
-            if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
-                $formRoutes[$key]['status'] = "approved";
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
-                break;
-            }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => $request['remarks']]);
-                break;
+        try {
+            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
+            $formProcess = $formRoute->form_process;
+            $formRoutes = $formProcess->form_routes;
+            $step = 0;
+            $form_status = $formRoute->status;
+            foreach ($formRoutes as $key => $route) {
+                if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
+                    $formRoutes[$key]['status'] = "approved";
+                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
+                    break;
+                }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
+                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => request('remarks')]);
+                    break;
+                }
+                $step++;
             }
-            $step++;
-        }
-        // return $step;
-        $lastRoute = $formRoutes[count($formRoutes) - 1];
-        if($lastRoute['office_id'] == $formRoutes[$step]['office_id']){
+            $lastRoute = $formRoutes[count($formRoutes) - 1];
             $form = $formRoute->form_routable;
-            $this->formRouteRepository->completeForm($form);
-        }else{
-            $currentRoute = $formRoutes[$step];
-            if($formRoute->to_office_id == $currentRoute['office_id']){
-                $nextRoute = $formRoutes[$step + 1];
+            if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user." && $formRoute->status == "pending"){
+                $this->formRouteRepository->completeForm($form);
+                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
             }else{
-                $nextRoute = $currentRoute;
+                $currentRoute = $formRoutes[$step];
+                if($formRoute->to_office_id == $currentRoute['office_id']){
+                    $nextRoute = $formRoutes[$step + 1];
+                }else{
+                    $nextRoute = $currentRoute;
+                }
+                $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
+                if($nextRoute['description_code'] == 'aprroval_from_twg'){
+                    $nextRoute['office_name'] .= " Techinical Working Group";
+                }
+                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Forwarded to ".$nextRoute['office_name']."." ]);
             }
-            // return $nextRoute;
-            $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, $request['remarks']);
+            $formRoute->form_process->form_routes = $formRoutes;
+            $formRoute->form_process->save();
+            $user = Auth::user();
+            
+            $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
+            $return = [
+                'form_route' => $formRoute,
+                'next_route' => isset($nextRoute) ? $nextRoute : [
+                    'office_name' => $procurement_office->name,
+                    'office_id' => $procurement_office->id,
+                    'description' => "Procurement Process"
+                ],
+                'notification_type' => 'approved_form',
+                'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id,
+                'notification_title' => "New forwarded purchase request",
+                'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
+            ];
+            DB::commit();
+            try {
+                event(new NewMessage($return));
+            } catch (\Throwable $th) {
+                // return $th;
+            }
+            return $return;
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        $formRoute->form_process->form_routes = $formRoutes;
-        $formRoute->form_process->save();
-        // event(new NewMessage(['test' => 'asdasd']));
-        DB::commit();
-        return $formRoute;
     }
 
     public function reject(Request $request, $id)
     {
-        $user = Auth::user();
-        $data = $request->all();
-        $data = $this->formRouteRepository->returnToRejecter($id, $data);
-        $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => $request['remarks']]);
-        $data['status'] = "with_issues";
-        $data['remarks_by_id'] = $user->id;
-        $this->formRouteRepository->create($data);
-        // event(new NewMessage(['test' => 'asdasd']));
+        DB::beginTransaction();
+        try {
+            $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);
+            $user = Auth::user();
+            $data = $request->all();
+            $data = $this->formRouteRepository->returnTo($id, $data);
+            $data['status'] = "with_issues";
+            $data['remarks_by_id'] = $user->id;
+            $data['remarks'] = request('remarks');
+            $office = (new LibraryRepository)->getById($data['to_office_id']);
+            $this->formRouteRepository->create($data);
+            $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
+            $user = Auth::user();
+            $form = $formRoute->form_routable;
+            $return = [
+                'form_route' => $formRoute,
+                'next_route' => [
+                    'office_name' => $office->name,
+                    'office_id' => $office->id,
+                    'description' => "Returned to ".$office->name."."
+                ],
+                'notification_type' => 'rejected_form',
+                'notify_offices' => $office->id,
+                'from_user' => $user,
+                'notification_title' => "New disapproved purchase request",
+                'notification_message' => request('remarks'),
+            ];
+            DB::commit();
+            try {
+                event(new NewMessage($return));
+            } catch (\Throwable $th) {
+                // return $th;
+            }
+            return $return;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
+
+
 }

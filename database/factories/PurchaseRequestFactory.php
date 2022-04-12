@@ -14,7 +14,7 @@ class PurchaseRequestFactory extends Factory
     public function definition()
     {
         return [
-            'purchase_request_uuid' => $this->faker->uuid,
+            'uuid' => $this->faker->uuid,
             'purchase_request_number' => $this->faker->uuid,
             'purpose' => $this->faker->text(100),
             'fund_cluster' => $this->faker->word,
@@ -22,11 +22,11 @@ class PurchaseRequestFactory extends Factory
             'total_cost' => $this->faker->randomNumber,
             'pr_dir' => $this->faker->name,
             'end_user_id' => $this->faker->numberBetween(63, 128),
-            'purchase_request_type' => $this->faker->word,
+            'procurement_type' => $this->faker->word,
             'status' => "Pending",
             'pr_date' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'mode_of_procurement' => $this->faker->word,
-            'uacs_code' => $this->faker->word,
+            'uacs_code_id' => $this->faker->word,
             'charge_to' => $this->faker->word,
             'alloted_amount' => $this->faker->randomNumber,
             'sa_or' => $this->faker->name,

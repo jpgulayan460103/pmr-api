@@ -6,6 +6,7 @@ use App\Models\Supplier;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\SupplierContactTransformer;
 use App\Transformers\QuotationTransformer;
+use App\Transformers\SupplierCategoryTransformer;
 
 class SupplierTransformer extends TransformerAbstract
 {
@@ -24,7 +25,9 @@ class SupplierTransformer extends TransformerAbstract
      * @var array
      */
     protected $availableIncludes = [
-        'contacts'
+        'contacts',
+        'categories',
+        'quotations',
     ];
     
     /**
@@ -38,6 +41,7 @@ class SupplierTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'name' => $table->name,
+            'display_log' => $table->name,
             'address' => $table->address,
         ];
     }
@@ -52,6 +56,12 @@ class SupplierTransformer extends TransformerAbstract
     {
         if ($table->quotations) {
             return $this->collection($table->quotations, new QuotationTransformer);
+        }
+    }
+    public function includeCategories(Supplier $table)
+    {
+        if ($table->categories) {
+            return $this->collection($table->categories, new SupplierCategoryTransformer);
         }
     }
 }

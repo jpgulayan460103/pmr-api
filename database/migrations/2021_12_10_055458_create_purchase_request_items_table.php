@@ -17,10 +17,16 @@ class CreatePurchaseRequestItemsTable extends Migration
             $table->id();
             $table->longText('item_name')->nullable();
             $table->string('item_code')->nullable();
+            $table->string('purchase_request_item_uuid')->nullable();
             $table->integer('quantity')->nullable();
-            $table->float('unit_cost',15,2);
-            $table->float('total_unit_cost',15,2);
+            $table->float('unit_cost',15,2)->nullable();
+            $table->float('total_unit_cost',15,2)->nullable();
+            $table->boolean('is_ppmp')->nullable();
+            $table->unsignedBigInteger('item_id')->nullable();
+            $table->unsignedBigInteger('purchase_request_id')->nullable();
+            $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

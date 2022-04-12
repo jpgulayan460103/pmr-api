@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
 use App\Models\User;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormRoute extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'route_type',
         'status',
         'remarks',
+        'forwarded_remarks',
+        'forwarded_by_id',
+        'owner_id',
         'remarks_by_id',
         'origin_office_id',
         'from_office_id',
@@ -22,8 +27,40 @@ class FormRoute extends Model
         'form_routable_id',
         'form_routable_type',
         'form_process_id',
+        'action_taken',
     ];
 
+    protected static $logAttributes = [
+        '*',
+        'form_routable.uuid',
+        'end_user.name',
+        'to_office.name',
+        'from_office.name',
+        'user.name',
+        'forwarded_by.name',
+        'owner.name',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'form_routable_type',
+        'form_routable_id',
+        'forwarded_by_id',
+        'owner_id',
+        'remarks_by_id',
+        'origin_office_id',
+        'from_office_id',
+        'to_office_id',
+        'form_process_id',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    
     public function form_routable()
     {
         return $this->morphTo();
@@ -52,5 +89,13 @@ class FormRoute extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'remarks_by_id');
+    }
+    public function forwarded_by()
+    {
+        return $this->belongsTo(User::class, 'forwarded_by_id');
+    }
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

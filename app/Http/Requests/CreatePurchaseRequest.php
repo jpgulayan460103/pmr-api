@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LibraryExistRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreatePurchaseRequest extends FormRequest
@@ -24,11 +25,12 @@ class CreatePurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'end_user_id' => 'required', 
+            'end_user_id' => ['required', new LibraryExistRule('user_section')], 
             'pr_date' => 'date|required',
             'purpose' => 'required',
+            'title' => 'required',
             'items.*.item_name' => 'required',
-            'items.*.unit_of_measure_id' => 'required',
+            'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'items.*.quantity' => 'numeric|min:1',
             'items.*.unit_cost' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
         ];
@@ -49,4 +51,21 @@ class CreatePurchaseRequest extends FormRequest
             'items.*.unit_cost.regex' => '2 decimal places only',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if(request()->has('items')){
+                if(request('items') == array()){
+                    $validator->errors()->add("items", "No purchase request items added.");
+                }
+            }
+            if(request()->has('purpose')){
+                if(trim(request('purpose')) == "For the implementation of undefined" || trim(request('purpose')) == "For the implementation of"){
+                    $validator->errors()->add("purpose", "The purpose field is required.");
+                }
+            }            
+        });
+    }
+
 }

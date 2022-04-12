@@ -32,6 +32,7 @@ class FormRouteTransformer extends TransformerAbstract
         'to_office',
         'form_process',
         'user',
+        'parent'
     ];
     
     /**
@@ -49,6 +50,9 @@ class FormRouteTransformer extends TransformerAbstract
             'status' => $table->status,
             'status_str' => Str::headline($table->status),
             'remarks' => $table->remarks,
+            'display_log' => $table->remarks,
+            'forwarded_remarks' => $table->forwarded_remarks,
+            'forwarded_by_id' => $table->forwarded_by_id,
             'remarks_by_id' => $table->remarks_by_id,
             'origin_office_id' => $table->origin_office_id,
             'from_office_id' => $table->from_office_id,
@@ -56,15 +60,23 @@ class FormRouteTransformer extends TransformerAbstract
             'form_routable_id' => $table->form_routable_id,
             'form_routable_type' => $table->form_routable_type,
             'form_process_id' => $table->form_process_id,
+            'action_taken' => $table->action_taken,
             'created_at' => $table->created_at->toDayDateTimeString(),
+            'created_at_date' => $table->created_at->toDateString(),
             'updated_at' => $table->updated_at->toDayDateTimeString(),
         ];
     }
 
+    public function includeParent(FormRoute $table)
+    {
+        if ($table->form_routable) {
+            return $this->formRoutable($table);
+        }
+    }
     public function includeFormRoutable(FormRoute $table)
     {
         if ($table->form_routable) {
-            return $this->item($table->form_routable, new PurchaseRequestTransformer);
+            return $this->formRoutable($table);
         }
     }
     public function includeEndUser(FormRoute $table)
@@ -95,6 +107,19 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->user) {
             return $this->item($table->user, new UserTransformer);
+        }
+    }
+
+    private function formRoutable(FormRoute $table)
+    {
+        switch ($table->route_type) {
+            case 'purchase_request':
+                return $this->item($table->form_routable, new PurchaseRequestTransformer);
+                break;
+            
+            default:
+                # code...
+                break;
         }
     }
 }

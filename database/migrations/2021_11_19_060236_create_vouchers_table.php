@@ -22,8 +22,6 @@ class CreateVouchersTable extends Migration
             $table->string("status")->nullable();
             $table->string("obr_by_budget_dir")->nullable();
             $table->timestamps();
-            $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');;
-            $table->foreign('purchase_order_id')->references('id')->on('purchase_orders')->onDelete('cascade');;
         });
     }
 
