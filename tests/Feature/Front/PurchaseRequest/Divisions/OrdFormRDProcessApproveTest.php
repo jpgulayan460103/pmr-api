@@ -85,8 +85,8 @@ class OrdFormRDProcessApproveTest extends TestCase
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $response = $this->put('/api/purchase-requests/'.OrdFormRDProcessApproveTest::$purchase_request_id,[
-            'procurement_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_type')->get()->pluck('id')),
-            'procurement_type_category' => $this->faker->randomElement(Library::where('library_type','procurement_type_category')->get()->pluck('id')),
+            'account_id' => $this->faker->randomElement(Library::where('library_type','account')->get()->pluck('id')),
+            'account_classification' => $this->faker->randomElement(Library::where('library_type','account_classification')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
         ]);

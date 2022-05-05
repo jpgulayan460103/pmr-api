@@ -30,9 +30,9 @@ class UpdatePurchaseRequest extends FormRequest
     {
         if(request()->has('updater') && request('updater') == 'procurement'){
             $rules = [
-                'procurement_type_id' => ['required', new LibraryExistRule('procurement_type')],
+                'account_id' => ['required', new LibraryExistRule('account')],
                 'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
-                'procurement_type_category' => ['required', new LibraryExistRule('procurement_type_category')],
+                'account_classification' => ['required', new LibraryExistRule('account_classification')],
             ];
         }elseif(request()->has('updater') && request('updater') == 'budget'){
             $rules = [
@@ -73,8 +73,8 @@ class UpdatePurchaseRequest extends FormRequest
             'items.*.unit_cost.min' => ':min is the minimum',
             'items.*.unit_cost.numeric' => 'Required',
             'items.*.unit_cost.regex' => '2 decimal places only',
-            'procurement_type_id.required' => 'Please select procurement type.',
-            'procurement_type_category.required' => 'Please select procurement category.',
+            'account_id.required' => 'Please select procurement type.',
+            'account_classification.required' => 'Please select Account Classification.',
             'mode_of_procurement_id.required' => 'Please select mode of procurement.',
             'purchase_request_number.unique' => 'The purchase request number is already in the database.',
             // 'purchase_request_number_last.required' => 'The office/section is required.',

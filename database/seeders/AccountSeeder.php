@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Library;
 use Illuminate\Database\Seeder;
 
-class ProcurementTypeSeeder extends Seeder
+class AccountSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +14,7 @@ class ProcurementTypeSeeder extends Seeder
      */
     public function run()
     {
-        $procurement_types = [
+        $accounts = [
             [
                 'name' => 'Furnitures and Fixtures',
                 'category' => 'Capital Outlay'
@@ -142,9 +142,9 @@ class ProcurementTypeSeeder extends Seeder
 
         ];
 
-        foreach ($procurement_types as $procurement_type) {
-            $category = Library::where('name', $procurement_type['category'])->where('library_type','procurement_type_category')->first();
-            $lib = Library::create(['name' => $procurement_type['name'], 'library_type' => 'procurement_type', 'parent_id' => $category->id]);
+        foreach ($accounts as $account) {
+            $category = Library::where('name', $account['category'])->where('library_type','account_classification')->first();
+            $lib = Library::create(['name' => $account['name'], 'library_type' => 'account', 'parent_id' => $category->id]);
             echo $lib->library_type.": ".$lib->name."\n";
         }
     }

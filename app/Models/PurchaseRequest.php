@@ -27,7 +27,7 @@ class PurchaseRequest extends Model
         'total_cost',
         'pr_dir',
         'end_user_id',
-        'procurement_type_id',
+        'account_id',
         'status',
         'pr_date',
         'mode_of_procurement_id',
@@ -47,15 +47,15 @@ class PurchaseRequest extends Model
         'approved_by.name',
         'requested_by.name',
         'end_user.name',
-        'procurement_type.parent.name',
-        'procurement_type.name',
+        'account.parent.name',
+        'account.name',
         'mode_of_procurement.name',
         'uacs_code.name',
     ];
 
     protected static $logAttributesToIgnore = [
         'uuid',
-        'procurement_type_id',
+        'account_id',
         'process_complete_date',
         'process_complete_status',
         'bac_task_id',
@@ -106,7 +106,7 @@ class PurchaseRequest extends Model
     {
         return $this->belongsTo(Library::class);
     }
-    public function procurement_type()
+    public function account()
     {
         return $this->belongsTo(Library::class)->withDefault(true);
     }

@@ -30,7 +30,7 @@ class SupplierTest extends TestCase
         $response = $this->post('/api/suppliers',[
             'name' => $this->faker->company." ".$this->faker->companySuffix,
             'address' => $this->faker->address,
-            'categories' => $this->faker->randomElements(Library::where('library_type','procurement_type')->get()->pluck('id'),2),
+            'categories' => $this->faker->randomElements(Library::where('library_type','account')->get()->pluck('id'),2),
             'contacts' => [
                 [
                     'name' => $this->faker->address,
@@ -68,7 +68,7 @@ class SupplierTest extends TestCase
         $response = $this->put('/api/suppliers/'.SupplierTest::$supplier_id,[
             'name' => $this->faker->company." ".$this->faker->companySuffix,
             'address' => $this->faker->address,
-            'categories' => $this->faker->randomElements(Library::where('library_type','procurement_type')->get()->pluck('id'),2),
+            'categories' => $this->faker->randomElements(Library::where('library_type','account')->get()->pluck('id'),2),
             'contacts' => [
                 $contact_1,
                 [

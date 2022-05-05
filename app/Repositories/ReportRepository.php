@@ -187,7 +187,7 @@ class ReportRepository implements ReportRepositoryInterface
         ];
     }
 
-    public function procurementTypes($date, $freq, $dateRange = [], $end_user_id = null)
+    public function accounts($date, $freq, $dateRange = [], $end_user_id = null)
     {
         $custom_dates = [];
         if($freq == "custom"){
@@ -202,10 +202,10 @@ class ReportRepository implements ReportRepositoryInterface
             $last_day_year = Carbon::parse($date)->copy()->endOfYear();
         }
 
-        $types = PurchaseRequest::with('procurement_type.parent')->where('status', "approved");
+        $types = PurchaseRequest::with('account.parent')->where('status', "approved");
         $types->select(
             DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
-            'procurement_type_id'
+            'account_id'
         );
         if($end_user_id){
             $types->where('end_user_id', $end_user_id);
@@ -238,18 +238,18 @@ class ReportRepository implements ReportRepositoryInterface
                 # code...
                 break;
         }
-        $types->groupBy('procurement_type_id');
+        $types->groupBy('account_id');
         $types = $types->get();
         $total = $this->totalPurchaseRequest('approved', $freq, $date, $dateRange, $end_user_id);
         $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
-            $type->name = $type->procurement_type->name;
-            $type->procurement_type_id = $type->procurement_type->id;
-            $type->procurement_type_category = $type->procurement_type->parent->name;
-            $type->procurement_type_category_id = $type->procurement_type->parent->id;
-            $type->procurement_type_percentage = round((($type->sum_cost / $total) * 100), 2);
-            unset($type->procurement_type);
+            $type->name = $type->account->name;
+            $type->account_id = $type->account->id;
+            $type->account_classification = $type->account->parent->name;
+            $type->account_classification_id = $type->account->parent->id;
+            $type->account_percentage = round((($type->sum_cost / $total) * 100), 2);
+            unset($type->account);
         }
         return [
             'data' => $types,

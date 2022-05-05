@@ -23,7 +23,7 @@ class CreatePurchaseRequestsTable extends Migration
             $table->float('total_cost',15,2)->nullable();
             $table->date('pr_date')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();
-            $table->unsignedBigInteger('procurement_type_id')->nullable();
+            $table->unsignedBigInteger('account_id')->nullable();
             $table->unsignedBigInteger('mode_of_procurement_id')->nullable();
             $table->unsignedBigInteger('bac_task_id')->nullable();
             $table->unsignedBigInteger('uacs_code_id')->nullable();

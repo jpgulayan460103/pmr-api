@@ -22,7 +22,7 @@ class PurchaseRequestFactory extends Factory
             'total_cost' => $this->faker->randomNumber,
             'pr_dir' => $this->faker->name,
             'end_user_id' => $this->faker->numberBetween(63, 128),
-            'procurement_type' => $this->faker->word,
+            'account' => $this->faker->word,
             'status' => "Pending",
             'pr_date' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'mode_of_procurement' => $this->faker->word,

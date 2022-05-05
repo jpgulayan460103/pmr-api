@@ -37,7 +37,7 @@ class ReportController extends Controller
         $yearly = $this->reportRepository->perMonthPurchaseRequest($date, $end_user_id);
         $most_quantity_items = $this->reportRepository->mostRequestedItems($date, $type, 'quantity', $dateRange, $end_user_id);
         $most_cost_items = $this->reportRepository->mostRequestedItems($date, $type, 'cost', $dateRange, $end_user_id);
-        $procurement_types = $this->reportRepository->procurementTypes($date, $type, $dateRange, $end_user_id);
+        $accounts = $this->reportRepository->accounts($date, $type, $dateRange, $end_user_id);
         $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, $type, $dateRange, $end_user_id);
         // return $per_section;
         return [
@@ -49,7 +49,7 @@ class ReportController extends Controller
             'yearly' => $yearly,
             'most_quantity_items' => $most_quantity_items,
             'most_cost_items' => $most_cost_items,
-            'procurement_types' => $procurement_types,
+            'accounts' => $accounts,
             'mode_of_procurements' => $mode_of_procurements,
         ];
     }

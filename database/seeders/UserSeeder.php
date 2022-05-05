@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
     public function json()
     {
         $reader = Reader::createFromPath(public_path('/files/users.csv'), 'r');
-        $results = $reader->getRecords();
+        $results = $reader->fetchAll();
         $data = array();
        
         foreach ($results as $key => $row) {

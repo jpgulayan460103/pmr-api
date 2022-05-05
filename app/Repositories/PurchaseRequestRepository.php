@@ -60,15 +60,15 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(request()->has('end_user_id') && request('end_user_id') != ""){
             $this->modelQuery()->whereIn('end_user_id', request('end_user_id'));
         }
-        if(request()->has('procurement_type_id') && request('procurement_type_id') != ""){
-            $this->modelQuery()->whereIn('procurement_type_id', request('procurement_type_id'));
+        if(request()->has('account_id') && request('account_id') != ""){
+            $this->modelQuery()->whereIn('account_id', request('account_id'));
         }
         if(request()->has('mode_of_procurement_id') && request('mode_of_procurement_id') != ""){
             $this->modelQuery()->whereIn('mode_of_procurement_id', request('mode_of_procurement_id'));
         }
         if(request()->has('purchase_request_type_category') && request('purchase_request_type_category') != ""){
-            $procurement_type_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',request('purchase_request_type_category'))->pluck('id');
-            $this->modelQuery()->whereIn('procurement_type_id', $procurement_type_ids);
+            $account_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',request('purchase_request_type_category'))->pluck('id');
+            $this->modelQuery()->whereIn('account_id', $account_ids);
         }
         if(request()->has('pr_date') && request('pr_date') != ""){
             $pr_date[] = Carbon::parse(str_replace('"', '', request('pr_date')[0]))->toDateString();
