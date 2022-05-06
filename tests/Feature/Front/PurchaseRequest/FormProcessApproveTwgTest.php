@@ -72,26 +72,17 @@ class FormProcessApproveTwgTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_update_for_twg()
-    {
-        $user = User::with('user_offices.office')->where('username','procurement')->first();
-        Passport::actingAs($user);
-        $response = $this->put('api/forms/process/'.FormProcessApproveTwgTest::$purchase_request_id,[
-            'action_type' => "twg",
-            'id' => FormProcessApproveTwgTest::$purchase_request_id,
-            'technical_working_group_id' => Library::where('library_type','technical_working_group')->where('name','Information Technology')->first()->id,
-            'type' => "twg",
-            'updater' => "procurement",
-        ]);
-        $response->assertStatus(200);
-    }
-
     public function test_procurement_to_twg()
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve', [
+            'type' => "twg",
+            'id' => FormProcessApproveTwgTest::$purchase_request_id,
+            'technical_working_group_id' => Library::where('library_type','technical_working_group')->where('name','Information Technology')->first()->id,
+            'updater' => "procurement",
+        ]);
         $response->assertStatus(200);
     }
 
@@ -105,25 +96,18 @@ class FormProcessApproveTwgTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_update_procurement()
-    {
-        $user = User::with('user_offices.office')->where('username','procurement')->first();
-        Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.FormProcessApproveTwgTest::$purchase_request_id,[
-            'account_id' => $this->faker->randomElement(Library::where('library_type','account')->get()->pluck('id')),
-            'account_classification' => $this->faker->randomElement(Library::where('library_type','account_classification')->get()->pluck('id')),
-            'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
-            'updater' => 'procurement',
-        ]);
-        $response->assertStatus(200);
-    }
-
     public function test_procurement()
     {
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',FormProcessApproveTwgTest::$purchase_request_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve', [
+            'type' => "approve",
+            'account_id' => $this->faker->randomElement(Library::where('library_type','account')->get()->pluck('id')),
+            'account_classification' => $this->faker->randomElement(Library::where('library_type','account_classification')->get()->pluck('id')),
+            'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
+            'updater' => 'procurement',
+        ]);
         $response->assertStatus(200);
     }
 

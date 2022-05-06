@@ -79,10 +79,7 @@ class FormProcessController extends Controller
      */
     public function update(UpdateFormProcessRequest $request, $id)
     {
-        $type = "";
-        if(request()->has("type") && request("type") == "twg"){
-            $type = "twg";
-        }
+        $type = request("type");
         return $this->formProcessRepository->updateRouting($id, $type);
     }
 

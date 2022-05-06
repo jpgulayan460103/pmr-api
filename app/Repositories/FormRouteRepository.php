@@ -198,6 +198,19 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $data;
     }
 
+    public function isFormProcessed($id)
+    {
+        $form = $this->getById($id);
+        return $form->status != "pending" && $form->status != "with_issues";
+    }
+
+    public function verifyRoute($id)
+    {
+        if($this->isFormProcessed($id)){
+            abort(404);
+        }
+    }
+
 
 
 }

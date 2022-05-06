@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
 use App\Models\Library;
+use App\Repositories\FormProcessRepository;
 use App\Repositories\LibraryRepository;
+use App\Repositories\PurchaseRequestRepository;
 
 class FormRouteController extends Controller
 {
@@ -141,8 +143,19 @@ class FormRouteController extends Controller
 
     public function approve(Request $request, $id)
     {
+        $this->formRouteRepository->verifyRoute($id);
         DB::beginTransaction();
         try {
+            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
+            if(request()->has("updater") && (request('updater') == "procurement" || request('updater') == "budget")){
+                $formId = $formRoute->form_process->form_processable_id;
+                (new PurchaseRequestRepository())->update($request->all(), $formId);
+
+                if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
+                    $formProcessId = $formRoute->form_process->id;
+                    (new FormProcessRepository)->updateRouting($formProcessId, request("type"));
+                }
+            }
             $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
@@ -208,6 +221,7 @@ class FormRouteController extends Controller
 
     public function reject(Request $request, $id)
     {
+        $this->formRouteRepository->verifyRoute($id);
         DB::beginTransaction();
         try {
             $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);

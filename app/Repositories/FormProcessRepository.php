@@ -127,7 +127,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         if($type == "twg"){
             $new_routes = $this->purchaseRequestAddTwgRoute($process);
             $process->form_routes = $new_routes;
-            return $process->save();
+            $process->save();
         }elseif($type == "OARD"){
             $updated_oard_route = $this->purchaseRequestUpdateOardRoute($process);
             $process->form_routes = $updated_oard_route['new_routes'];
@@ -139,8 +139,9 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 $data['to_office_id'] = $updated_oard_route['new_oard_route']['office_id'];
                 $form_route_repository->update($current_route->id, $data);
             }
-            return $process->save();
+            $process->save();
         }
+        return $process;
     }
 
     public function purchaseRequestAddTwgRoute($process)
