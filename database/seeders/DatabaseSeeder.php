@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TechnicalWorkingGroupSeeder::class);
         $this->call(AccountCategorySeeder::class);
         $this->call(AccountSeeder::class);
+        $this->call(ProcurementTypeSeeder::class);
         $this->call(ModeOfProcurementClassificationSeeder::class);
         $this->call(ModeOfProcurementSeeder::class);
         $this->call(PositionSeeder::class);

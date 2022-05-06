@@ -99,7 +99,12 @@ class ModeOfProcurementSeeder extends Seeder
         foreach ($mode_of_procurements as $mode_of_procurement) {
 
             $category = Library::where('name', $mode_of_procurement['parent'])->where('library_type','mode_of_procurement_classification')->first();
-            $lib = Library::create(['name' => $mode_of_procurement['name'], 'library_type' => 'mode_of_procurement', 'parent_id' => $category->id]);
+            $lib = Library::create([
+                'name' => $mode_of_procurement['name'],
+                'title' => $mode_of_procurement['title'],
+                'library_type' => 'mode_of_procurement',
+                'parent_id' => $category->id
+            ]);
             echo $lib->library_type.": ".$lib->name."\n";
         }
     }
