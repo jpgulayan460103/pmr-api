@@ -31,7 +31,7 @@ class UpdatePurchaseRequest extends FormRequest
         if(request()->has('updater') && request('updater') == 'procurement'){
             $rules = [
                 'account_id' => ['required', new LibraryExistRule('account')],
-                // 'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
+                'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
                 'account_classification' => ['required', new LibraryExistRule('account_classification')],
             ];
         }elseif(request()->has('updater') && request('updater') == 'budget'){

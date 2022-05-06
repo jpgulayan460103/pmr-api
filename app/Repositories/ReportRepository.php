@@ -317,10 +317,12 @@ class ReportRepository implements ReportRepositoryInterface
         $total = $total['data'];
         foreach ($types as $key => $type) {
             $type->key = ++$key;
-            $type->mode_of_procurement_id = $type->mode_of_procurement->id;
-            $type->name = $type->mode_of_procurement->name;
+            $type->mode_of_procurement_id = $type->mode_of_procurement ? $type->mode_of_procurement->id : null;
+            $type->name = $type->mode_of_procurement ? $type->mode_of_procurement->name : "";
             $type->mode_of_procurement_percentage = round((($type->sum_cost / $total) * 100), 2);
-            unset($type->mode_of_procurement);
+            if($type->mode_of_procurement){
+                unset($type->mode_of_procurement);
+            }
         }
         return [
             'data' => $types,
