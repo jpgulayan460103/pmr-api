@@ -28,36 +28,16 @@ class UpdatePurchaseRequest extends FormRequest
      */
     public function rules()
     {
-        if(request()->has('updater') && request('updater') == 'procurement'){
-            $rules = [
-                'account_id' => ['required', new LibraryExistRule('account')],
-                'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
-                'account_classification' => ['required', new LibraryExistRule('account_classification')],
-            ];
-        }elseif(request()->has('updater') && request('updater') == 'budget'){
-            $rules = [
-                'purchase_request_number_last' => 'required|numeric|digits:5',
-                'fund_cluster' => 'required',
-                // 'center_code' => 'required',
-                'charge_to' => 'required',
-                'alloted_amount' => 'required',
-                'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
-                'sa_or' => 'required',
-                // 'purchase_request_number' => 'required|unique:purchase_requests,purchase_request_number',
-            ];
-        }else{
-            $rules = [
-                'end_user_id' => ['required', new LibraryExistRule('user_section')], 
-                'pr_date' => 'date|required',
-                'purpose' => 'required',
-                'title' => 'required',
-                'items.*.item_name' => 'required',
-                'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
-                'items.*.quantity' => 'numeric|min:1',
-                'items.*.unit_cost' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
-            ];
-        }
-        return $rules;
+        return [
+            'end_user_id' => ['required', new LibraryExistRule('user_section')], 
+            'pr_date' => 'date|required',
+            'purpose' => 'required',
+            'title' => 'required',
+            'items.*.item_name' => 'required',
+            'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
+            'items.*.quantity' => 'numeric|min:1',
+            'items.*.unit_cost' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
+        ];
     }
 
     public function messages()
@@ -90,15 +70,6 @@ class UpdatePurchaseRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if(request()->has('updater') && request('updater') == 'budget'){
-                if(request()->has('id') && request()->has('purchase_request_number')){
-                    $purchase_request = PurchaseRequest::where('purchase_request_number', request('purchase_request_number'))->where('id','<>',request('id'))->count();
-                    if($purchase_request != 0){
-                        $validator->errors()->add("purchase_request_number_last", "The purchase number field is already in the database.");
-                    }
-                }
-            }
-
             if(request()->has('requested_by_id')){
                 $this->validateRequestedBy($validator);
             }

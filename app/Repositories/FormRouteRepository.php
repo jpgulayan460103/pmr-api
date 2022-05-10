@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\FormRoute;
 use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
+use App\Rules\LibraryExistRule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -209,6 +210,54 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         if($this->isFormProcessed($id)){
             abort(404);
         }
+    }
+
+    public function modifyRoute($request, $id)
+    {
+        $formRoute = $this->attach('form_process, form_routable.end_user')->getById($id);
+            if(request()->has("updater") && (request('updater') == "procurement" || request('updater') == "budget")){
+                switch (request('updater')) {
+                    case 'procurement':
+                        if(request()->has('type') && request('type') == "twg"){
+                            $validated = $request->validate([
+                                'type' => 'required',
+                                'technical_working_group_id' => ['required', new LibraryExistRule('technical_working_group')],
+                            ]);
+                        }else{
+                            $validated = $request->validate([
+                                'type' => 'required',
+                                'account_id' => ['required', new LibraryExistRule('account')],
+                                'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
+                                'account_classification' => ['required', new LibraryExistRule('account_classification')],
+                            ]);
+                        }
+                        break;
+                    case 'budget':
+                        $validated = $request->validate([
+                            'purchase_request_number_last' => 'required|numeric|digits:5',
+                            'fund_cluster' => 'required|string',
+                            'charge_to' => 'required|string',
+                            'alloted_amount' => 'required|numeric',
+                            'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
+                            'sa_or' => 'required|string',
+                            'purchase_request_number' => 'required|string|unique:purchase_requests,purchase_request_number',
+                        ], [
+                            'purchase_request_number.unique' => "The purchase request number has already been in the database."
+                        ]);
+                        break;
+                    
+                    default:
+                        
+                        break;
+                }
+                $formId = $formRoute->form_process->form_processable_id;
+                (new PurchaseRequestRepository())->update($request->all(), $formId);
+
+                if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
+                    $formProcessId = $formRoute->form_process->id;
+                    (new FormProcessRepository())->updateRouting($formProcessId, request("type"));
+                }
+            }
     }
 
 

@@ -76,15 +76,7 @@ class OrdFormRDProcessApproveTest extends TestCase
         $user = User::with('user_offices.office')->where('username','procurement')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',OrdFormRDProcessApproveTest::$purchase_request_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-        $response->assertStatus(200);
-    }
-
-    public function test_update_procurement()
-    {
-        $user = User::with('user_offices.office')->where('username','procurement')->first();
-        Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.OrdFormRDProcessApproveTest::$purchase_request_id,[
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve', [
             'account_id' => $this->faker->randomElement(Library::where('library_type','account')->get()->pluck('id')),
             'account_classification' => $this->faker->randomElement(Library::where('library_type','account_classification')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
@@ -92,7 +84,7 @@ class OrdFormRDProcessApproveTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
-    
+
     public function test_approve_bacs()
     {
         $user = User::with('user_offices.office')->where('username','bacs')->first();
@@ -116,14 +108,7 @@ class OrdFormRDProcessApproveTest extends TestCase
         $user = User::with('user_offices.office')->where('username','budget')->first();
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',OrdFormRDProcessApproveTest::$purchase_request_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-        $response->assertStatus(200);
-    }
-    public function test_update_budget()
-    {
-        $user = User::with('user_offices.office')->where('username','budget')->first();
-        Passport::actingAs($user);
-        $response = $this->put('/api/purchase-requests/'.OrdFormRDProcessApproveTest::$purchase_request_id,[
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve', [
             'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
             'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
@@ -136,6 +121,7 @@ class OrdFormRDProcessApproveTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
+
 
     public function test_approve_ord()
     {

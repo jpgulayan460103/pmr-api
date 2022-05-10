@@ -110,7 +110,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         ];
         
         $data = [
-            'process_description' => "Purchase Request Routing",
+            'process_description' => "Purchase Request Form Routing",
             'form_type' => "purchase_request",
             'office_id' => $origin_office->id,
             "status" => "pending",

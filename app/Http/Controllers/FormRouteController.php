@@ -14,6 +14,7 @@ use App\Models\Library;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\LibraryRepository;
 use App\Repositories\PurchaseRequestRepository;
+use App\Rules\LibraryExistRule;
 
 class FormRouteController extends Controller
 {
@@ -146,16 +147,7 @@ class FormRouteController extends Controller
         $this->formRouteRepository->verifyRoute($id);
         DB::beginTransaction();
         try {
-            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
-            if(request()->has("updater") && (request('updater') == "procurement" || request('updater') == "budget")){
-                $formId = $formRoute->form_process->form_processable_id;
-                (new PurchaseRequestRepository())->update($request->all(), $formId);
-
-                if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
-                    $formProcessId = $formRoute->form_process->id;
-                    (new FormProcessRepository)->updateRouting($formProcessId, request("type"));
-                }
-            }
+            $this->formRouteRepository->modifyRoute($request, $id);
             $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
