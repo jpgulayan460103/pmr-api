@@ -33,8 +33,6 @@ class PurchaseRequestFactory extends Factory
             // 'bac_task_id' => $this->faker->name,
             'requested_by_id' => $this->faker->numberBetween(1, 24),
             'approved_by_id' => $this->faker->numberBetween(1, 24),
-            // 'process_complete_status' => ,
-            // 'process_complete_date' => $this->faker->name,
             
         ];
     }

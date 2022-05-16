@@ -38,8 +38,6 @@ class PurchaseRequest extends Model
         'bac_task_id',    
         'requested_by_id',
         'approved_by_id',
-        'process_complete_status',
-        'process_complete_date',
     ];
 
     protected static $logAttributes = [
@@ -56,8 +54,6 @@ class PurchaseRequest extends Model
     protected static $logAttributesToIgnore = [
         'uuid',
         'account_id',
-        'process_complete_date',
-        'process_complete_status',
         'bac_task_id',
         'end_user_id',
         'requested_by_id',

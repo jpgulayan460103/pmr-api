@@ -81,6 +81,7 @@ class OardoFormRDProcessApproveTest extends TestCase
             'account_classification' => $this->faker->randomElement(Library::where('library_type','account_classification')->get()->pluck('id')),
             'mode_of_procurement_id' => $this->faker->randomElement(Library::where('library_type','mode_of_procurement')->get()->pluck('id')),
             'updater' => 'procurement',
+            'type' => 'approve',
         ]);
         $response->assertStatus(200);
     }

@@ -172,12 +172,15 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $created_route;
     }
 
-    public function completeForm($form)
+    public function completeForm($formRoute)
     {
+        $formProcess = $formRoute->form_process;
+        $form = $formRoute->form_routable;
         $form->disableLogging();
-        $form->process_complete_status = 1;
+        $formProcess->is_complete = 1;
+        $formProcess->completed_date = Carbon::now();
         $form->status = "Approved";
-        $form->process_complete_date = Carbon::now();
+        $formProcess->save();
         $form->save();
     }
 

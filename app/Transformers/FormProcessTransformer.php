@@ -41,6 +41,8 @@ class FormProcessTransformer extends TransformerAbstract
             'office_id' => $table->office_id,
             'form_processable_id' => $table->form_processable_id,
             'form_processable_type' => $table->form_processable_type,
+            'is_complete' => $table->is_complete,
+            'completed_date' => $table->completed_date,
         ];
     }
 }

@@ -35,8 +35,6 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         "account.name" => "Account",
         "mode_of_procurement.name" => "Mode of Procurement",
         "account_id" => "account_id",
-        "process_complete_date" => "process_complete_date",
-        "process_complete_status" => "process_complete_status",
         "bac_task_id" => "bac_task_id",
         "end_user_id" => "end_user_id",
         "requested_by_id" => "requested_by_id",

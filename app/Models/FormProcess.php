@@ -16,6 +16,8 @@ class FormProcess extends Model
         'office_id',
         'form_processable_id',
         'form_processable_type',
+        'is_complete',
+        'completed_date',
     ];
 
     protected $casts = [

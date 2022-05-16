@@ -77,8 +77,6 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'sa_or' => $table->sa_or,
             'file' => route('api.purchase-requests.pdf', ['id' => $table->uuid]),
             'particulars' => $table->purpose, // set common field for all forms
-            'process_complete_status' => $table->process_complete_status == 1,
-            'process_complete_date' => $table->process_complete_date,
         ];
     }
 

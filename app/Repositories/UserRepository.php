@@ -8,6 +8,7 @@ use App\Models\UserInformation;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\HasCrud;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -35,6 +36,11 @@ class UserRepository implements UserRepositoryInterface
             $user = $this->mCreate($data);
             $user_information = $user->user_information()->create($data);
             $user_sigatories = $user->user_offices()->create($data);
+            $user->givePermissionTo([
+                'purchase.requests.create',
+                'purchase.requests.view',
+            ]);
+            $user->assignRole('user');
             DB::commit();
             return $user;
         } catch (\Throwable $th) {

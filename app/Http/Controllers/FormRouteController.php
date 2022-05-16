@@ -152,7 +152,6 @@ class FormRouteController extends Controller
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
             $step = 0;
-            $form_status = $formRoute->status;
             foreach ($formRoutes as $key => $route) {
                 if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
                     $formRoutes[$key]['status'] = "approved";
@@ -165,9 +164,8 @@ class FormRouteController extends Controller
                 $step++;
             }
             $lastRoute = $formRoutes[count($formRoutes) - 1];
-            $form = $formRoute->form_routable;
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user." && $formRoute->status == "pending"){
-                $this->formRouteRepository->completeForm($form);
+                $this->formRouteRepository->completeForm($formRoute);
                 $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
             }else{
                 $currentRoute = $formRoutes[$step];

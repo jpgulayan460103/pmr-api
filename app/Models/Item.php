@@ -15,6 +15,7 @@ class Item extends Model
         'item_code',
         'item_category_id',
         'unit_of_measure_id',
+        'is_ppmp',
     ];
 
     public function item_category()

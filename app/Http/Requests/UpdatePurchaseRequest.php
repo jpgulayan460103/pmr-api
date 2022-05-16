@@ -57,29 +57,24 @@ class UpdatePurchaseRequest extends FormRequest
             'account_classification.required' => 'Please select Account Classification.',
             'mode_of_procurement_id.required' => 'Please select mode of procurement.',
             'purchase_request_number.unique' => 'The purchase request number is already in the database.',
-            // 'purchase_request_number_last.required' => 'The office/section is required.',
-            // 'fund_cluster.required' => 'The office/section is required.',
-            // 'center_code.required' => 'The office/section is required.',
-            // 'charge_to.required' => 'The office/section is required.',
-            // 'alloted_amount.required' => 'The office/section is required.',
             'uacs_code_id.required' => 'The office/section is required.',
-            // 'sa_or.required' => 'The office/section is required.',
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            $purchaseRequestRepository = new PurchaseRequestRepository;
+            $purchase_request = $purchaseRequestRepository->attach('form_process')->getById(request('id'));
             if(request()->has('requested_by_id')){
-                $this->validateRequestedBy($validator);
+                $this->validateRequestedBy($validator, $purchase_request);
             }
+            $this->validateUpdatability($validator, $purchase_request);
         });
     }
 
-    public function validateRequestedBy($validator)
+    public function validateRequestedBy($validator, $purchase_request)
     {
-        $purchaseRequestRepository = new PurchaseRequestRepository;
-        $purchase_request = $purchaseRequestRepository->attach('form_process')->getById(request('id'));
         $process = fractal($purchase_request->form_process, new FormProcessTransformer)->toArray();
         $form_routes = $process['form_routes'];
         $key = array_search("OARD", array_column($form_routes, 'label'));
@@ -88,6 +83,16 @@ class UpdatePurchaseRequest extends FormRequest
             if($form_routes[$key]['status'] == "approved"){
                 $validator->errors()->add("requested_by_id", "The purchase number already approved by ".$form_routes[$key]['office_name']);
             }
+        }
+    }
+
+    public function validateUpdatability($validator, $purchase_request)
+    {
+        $process = fractal($purchase_request->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("BS", array_column($form_routes, 'label'));
+        if($form_routes[$key]['status'] != "pending"){
+            $validator->errors()->add("update_error", "Update unavailable");
         }
     }
 }

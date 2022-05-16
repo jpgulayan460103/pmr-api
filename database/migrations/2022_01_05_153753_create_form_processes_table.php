@@ -21,6 +21,8 @@ class CreateFormProcessesTable extends Migration
             $table->unsignedBigInteger('office_id')->nullable();
             $table->unsignedBigInteger('form_processable_id')->nullable();
             $table->string('form_processable_type')->nullable();
+            $table->boolean('is_complete')->nullable();
+            $table->date('completed_date')->nullable();
             $table->timestamps();
         });
     }
