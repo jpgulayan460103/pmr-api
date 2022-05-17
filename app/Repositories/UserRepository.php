@@ -39,6 +39,8 @@ class UserRepository implements UserRepositoryInterface
             $user->givePermissionTo([
                 'purchase.requests.create',
                 'purchase.requests.view',
+                'libraries.items.view',
+                'libraries.uom.view'
             ]);
             $user->assignRole('user');
             DB::commit();
@@ -92,7 +94,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function getAll()
     {
-        return $this->modelQuery()->where('username',"<>","admin")->get();
+        return $this->modelQuery()->orderBy('id', 'desc')->where('username',"<>","admin")->get();
     }
 
     public function getOffices()

@@ -111,4 +111,12 @@ Trait HasCrud {
     {
 
     }
+
+    public function defaultOrder($field, $order)
+    {
+        if($field){
+            $this->modelQuery()->orderBy($field, $order);
+        }
+        return $this->modelQuery();
+    }
 }

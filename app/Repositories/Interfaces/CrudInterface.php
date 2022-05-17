@@ -28,5 +28,5 @@ interface CrudInterface {
 
     public function showDeleted($id = null);
 
-
+    public function defaultOrder($field, $order);
 }

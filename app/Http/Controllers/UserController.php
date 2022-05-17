@@ -32,8 +32,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->attach('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles')->getAll();
-        return fractal($users, new UserTransformer)->parseIncludes('user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles');
+        $attach = "user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles";
+        $users = $this->userRepository->attach($attach)->getAll();
+        return fractal($users, new UserTransformer)->parseIncludes($attach);
     }
 
     /**

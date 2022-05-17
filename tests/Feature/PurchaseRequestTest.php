@@ -78,6 +78,7 @@ class PurchaseRequestTest extends TestCase
             'pr_date' => $purchase_request['pr_date'],
             'purpose' => $purchase_request['purpose'],
             'title' => $purchase_request['title'],
+            'id' => $purchase_request['id'],
             'items' => [
                 $item_1,
                 [

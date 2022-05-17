@@ -20,6 +20,13 @@ class UserOfficeSeeder extends Seeder
 
         $ord_designation = Library::create([
             'library_type' => 'user_signatory_designation',
+            'name' => 'Regional Director',
+            'title' => 'ORD',
+            'parent_id' => $ord->id,
+        ]);
+
+        Library::create([
+            'library_type' => 'user_signatory_designation',
             'name' => 'OIC Regional Director',
             'title' => 'ORD',
             'parent_id' => $ord->id,
@@ -27,14 +34,21 @@ class UserOfficeSeeder extends Seeder
 
         $ord_name = Library::create([
             'library_type' => 'user_signatory_name',
-            'name' => 'RONALD RYAN R. CUI',
+            'name' => 'ATTY. VANESSA B. GOC-ONG',
             'title' => 'ORD',
             'parent_id' => $ord_designation->id,
         ]);
 
         $oarda_designation = Library::create([
             'library_type' => 'user_signatory_designation',
-            'name' => 'OIC Assistant Regional Director for Administrator',
+            'name' => 'OIC Assistant Regional Director for Administration',
+            'title' => 'OARDA',
+            'parent_id' => $oarda->id,
+        ]);
+
+        Library::create([
+            'library_type' => 'user_signatory_designation',
+            'name' => 'Assistant Regional Director for Administration',
             'title' => 'OARDA',
             'parent_id' => $oarda->id,
         ]);
@@ -49,6 +63,13 @@ class UserOfficeSeeder extends Seeder
 
         $oardo_designation = Library::create([
             'library_type' => 'user_signatory_designation',
+            'name' => 'Assistant Regional Director for Operations',
+            'title' => 'OARDO',
+            'parent_id' => $oardo->id,
+        ]);
+
+        Library::create([
+            'library_type' => 'user_signatory_designation',
             'name' => 'OIC Assistant Regional Director for Operations',
             'title' => 'OARDO',
             'parent_id' => $oardo->id,
@@ -56,7 +77,7 @@ class UserOfficeSeeder extends Seeder
 
         $oardo_name = Library::create([
             'library_type' => 'user_signatory_name',
-            'name' => 'ELIZABETH T. DEGORIO',
+            'name' => 'RONALD RYAN R. CUI',
             'title' => 'OARDO',
             'parent_id' => $oardo_designation->id,
         ]);

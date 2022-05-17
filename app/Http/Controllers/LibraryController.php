@@ -34,7 +34,7 @@ class LibraryController extends Controller
         if ($librariesRedis = Redis::get('libraries.all')) {
             return json_decode($librariesRedis);
         }
-        return (new LibraryRepository)->cacheRedis();
+        return (new LibraryRepository)->all();
     }
 
     /**
@@ -55,17 +55,28 @@ class LibraryController extends Controller
      */
     public function store(Request $request, $type)
     {
-        $data = [
-            'library_type' => $type,
-            'name' => $request->name,
-            'title' => $request->title,
-            'parent_id' => $request->parent_id,
-        ];
-        $library = $this->libraryRepository->create($data);
-        
-        (new LibraryRepository)->cacheRedis();
 
-        return $library;
+        switch ($type) {
+            case 'items':
+                $itemRepository = new ItemRepository();
+                $itemRepository->create($request->all());
+                return (new LibraryRepository())->showItems(true);
+                break;
+            case 'users':
+                return (new LibraryRepository())->showUsers();
+                break;
+            
+            default:
+                $data = [
+                    'library_type' => $type,
+                    'name' => $request->name,
+                    'title' => $request->title,
+                    'parent_id' => $request->parent_id,
+                ];
+                $this->libraryRepository->create($data);
+                return (new LibraryRepository())->showLibrary($type, true);
+                break;
+        }
     }
 
     /**
@@ -74,44 +85,20 @@ class LibraryController extends Controller
      * @param  \App\Models\Library  $library
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $type)
+    public function show($type)
     {
         switch ($type) {
             case 'items':
-                return $this->showItems($request);
+                return (new LibraryRepository())->showItems();
                 break;
             case 'users':
-                return $this->showUsers($request);
+                return (new LibraryRepository())->showUsers();
                 break;
             
             default:
-                # code...
+                return (new LibraryRepository())->showLibrary($type);
                 break;
         }
-        $library = $this->libraryRepository->getBy('library_type', $type);
-        return fractal($library, new LibraryTransformer)->parseIncludes('children');
-    }
-
-    public function showItems(Request $request)
-    {
-        if ($itemsRedis = Redis::get('libraries.items')) {
-            return json_decode($itemsRedis);
-        }
-        $items = (new ItemRepository)->attach('unit_of_measure,item_category')->getAll();
-        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
-        Redis::set('libraries.items', $items->toJson());
-        return $items;
-    }
-
-    public function showUsers(Request $request)
-    {
-        if ($usersRedis = Redis::get('libraries.users')) {
-            return json_decode($usersRedis);
-        }
-        $users = (new UserRepository())->attach('user_information')->getAll();
-        $users = fractal($users, new UserTransformer)->parseIncludes('user_information');
-        Redis::set('libraries.users', $users->toJson());
-        return $users;
     }
 
     /**
@@ -134,8 +121,21 @@ class LibraryController extends Controller
      */
     public function update(Request $request, $type, $id)
     {
-        $this->libraryRepository->update($id, $request->all());
-        return (new LibraryRepository)->cacheRedis();
+        switch ($type) {
+            case 'items':
+                $itemRepository = new ItemRepository();
+                $itemRepository->update($id, $request->all());
+                return (new LibraryRepository())->showItems(true);
+                break;
+            case 'users':
+                return (new LibraryRepository())->showUsers();
+                break;
+            
+            default:
+                $this->libraryRepository->update($id, $request->all());
+                return (new LibraryRepository())->showLibrary($type, true);
+                break;
+        }
     }
 
     /**

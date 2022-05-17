@@ -18,6 +18,10 @@ class Item extends Model
         'is_ppmp',
     ];
 
+    protected $casts = [
+        'is_ppmp' => 'boolean',
+    ];
+
     public function item_category()
     {
         return $this->belongsTo(Library::class);

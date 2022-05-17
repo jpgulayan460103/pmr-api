@@ -15,6 +15,7 @@ class ItemRepository implements ItemRepositoryInterface
             $item = new Item;
         }
         $this->model($item);
+        $this->defaultOrder("item_name","asc");
         $this->perPage(200);
         $this->attach('item_category,unit_of_measure');
     }

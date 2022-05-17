@@ -38,6 +38,8 @@ class ItemTransformer extends TransformerAbstract
             'value' => $table->item_name,
             'item_name' => $table->item_name,
             'item_code' => $table->item_code,
+            'is_ppmp' => $table->is_ppmp == 1,
+            'is_ppmp_str' => $table->is_ppmp == 1 ? "Yes" : "No",
             'id' => $table->id,
             'key' => $table->id,
             // 'item_category_id' => $table->item_category_id,
