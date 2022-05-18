@@ -38,6 +38,7 @@ class PurchaseRequestItemTransformer extends TransformerAbstract
         $uuid_last = explode("-",$table->purchase_request_item_uuid);
         return [
             'item_name' => $table->item_name,
+            'description' => $table->description,
             'display_log' => $table->item_name,
             'item_code' => $table->item_code,
             'item_id' => $table->item_id,

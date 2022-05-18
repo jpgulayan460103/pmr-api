@@ -13,6 +13,7 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
         "item_id" => "Item ID",
         "quantity" => "Quantity",
         "item_code" => "Item Code",
+        "description" => "Item Description",
         "item_name" => "Item Name",
         "unit_cost" => "Unit Cost",
         "total_unit_cost" => "Total Unit Cost",

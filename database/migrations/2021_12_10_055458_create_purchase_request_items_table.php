@@ -16,6 +16,7 @@ class CreatePurchaseRequestItemsTable extends Migration
         Schema::create('purchase_request_items', function (Blueprint $table) {
             $table->id();
             $table->longText('item_name')->nullable();
+            $table->longText('description')->nullable();
             $table->string('item_code')->nullable();
             $table->string('purchase_request_item_uuid')->nullable();
             $table->integer('quantity')->nullable();

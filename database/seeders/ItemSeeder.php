@@ -2332,8 +2332,8 @@ class ItemSeeder extends Seeder
         foreach ($items as $item) {
             $item_category_library = Library::where('name',$item['item_category_id'])->where('library_type', 'item_category')->first();
             $unit_of_measure_library = Library::where('name',$item['unit_of_measure_id'])->where('library_type', 'unit_of_measure')->first();
-            $item['item_category_id'] = $item_category_library->id;
-            $item['unit_of_measure_id'] = $unit_of_measure_library->id;
+            $item['item_category_id'] = $item_category_library ? $item_category_library->id : null;
+            $item['unit_of_measure_id'] = $unit_of_measure_library ? $unit_of_measure_library->id : null;
             $createdItem = Item::create($item);
             echo "item name: ".$createdItem->item_name." item code: ".$createdItem->item_code."\n";
         }
