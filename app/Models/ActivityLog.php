@@ -11,14 +11,15 @@ class ActivityLog extends Model
     use HasFactory;
 
     protected $table = 'activity_log';
+    protected $connection = 'mysql_log';
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'causer_id');
+        return $this->setConnection('mysql')->belongsTo(User::class, 'causer_id');
     }
     
     public function subject()
     {
-        return $this->morphTo();
+        return $this->setConnection('mysql')->morphTo();
     }
 }
