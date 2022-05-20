@@ -32,6 +32,7 @@ use App\Models\PurchaseOrder;
 Route::get('/user', [UserController::class, 'auth']);
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/auth/refresh', [AuthController::class, 'refreshToken']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/active-directory/login', [AuthController::class, 'adLogin']);
 Route::post('/register', [UserController::class, 'register']);
