@@ -6,21 +6,49 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
 use App\Models\ItemCategory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'item_name',
         'item_code',
         'item_category_id',
         'unit_of_measure_id',
         'is_ppmp',
+        'is_active',
     ];
 
-    protected $casts = [
-        'is_ppmp' => 'boolean',
+    protected $casts = [];
+
+    protected static $logAttributes = [
+        '*',
+        'unit_of_measure.name',
+        'item_category.name',
     ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->is_active = 1;
+        });
+        self::updating(function($model) {
+
+        });
+    }
 
     public function item_category()
     {

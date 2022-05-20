@@ -15,6 +15,7 @@ use App\Repositories\FormProcessRepository;
 use App\Repositories\LibraryRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Rules\LibraryExistRule;
+use Carbon\Carbon;
 
 class FormRouteController extends Controller
 {
@@ -155,10 +156,10 @@ class FormRouteController extends Controller
             foreach ($formRoutes as $key => $route) {
                 if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
                     $formRoutes[$key]['status'] = "approved";
-                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'approved']);
+                    $this->formRouteRepository->updateRoute($formRoute, ['status'=>'approved']);
                     break;
                 }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                    $this->formRouteRepository->updateRoute($formRoute->id, ['status'=>'resolved', 'remarks' => request('remarks')]);
+                    $this->formRouteRepository->updateRoute($formRoute, ['status'=>'resolved', 'remarks' => request('remarks')]);
                     break;
                 }
                 $step++;
@@ -166,7 +167,7 @@ class FormRouteController extends Controller
             $lastRoute = $formRoutes[count($formRoutes) - 1];
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user." && $formRoute->status == "pending"){
                 $this->formRouteRepository->completeForm($formRoute);
-                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Approved for procurement process." ]);
+                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Approved for procurement process." ]);
             }else{
                 $currentRoute = $formRoutes[$step];
                 if($formRoute->to_office_id == $currentRoute['office_id']){
@@ -178,10 +179,11 @@ class FormRouteController extends Controller
                 if($nextRoute['description_code'] == 'aprroval_from_twg'){
                     $nextRoute['office_name'] .= " Techinical Working Group";
                 }
-                $this->formRouteRepository->updateRoute($formRoute->id, ['action_taken'=> "Forwarded to ".$nextRoute['office_name']."." ]);
+                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Forwarded to ".$nextRoute['office_name']."." ]);
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
+            $form = $formRoute->form_routable;
             $user = Auth::user();
             
             $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
@@ -196,6 +198,15 @@ class FormRouteController extends Controller
                 'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id,
                 'notification_title' => "New forwarded purchase request",
                 'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
+                'notification_title' => ($formRoute->status == "with_issues" ? "Resolved" : "For Approval ")." Purchase Request",
+                'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
+                'notification_data' => [
+                    "status" => $formRoute->status == "with_issues" ? "Resolved" : "For Approval",
+                    "user" => $user->username,
+                    "remarks" => $formRoute->status == "with_issues" ? request('remarks') : (isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process"),
+                    "form" => $form->title,
+                    "datetime" => Carbon::now()->toDayDateTimeString()
+                ],
             ];
             DB::commit();
             try {
@@ -219,12 +230,11 @@ class FormRouteController extends Controller
             $data = $request->all();
             $data = $this->formRouteRepository->returnTo($id, $data);
             $data['status'] = "with_issues";
-            $data['remarks_by_id'] = $user->id;
+            $data['forwarded_by_id'] = $user->id;
             $data['remarks'] = request('remarks');
             $office = (new LibraryRepository)->getById($data['to_office_id']);
             $this->formRouteRepository->create($data);
-            $this->formRouteRepository->updateRoute($id, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
-            $user = Auth::user();
+            $this->formRouteRepository->updateRoute($formRoute, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
             $form = $formRoute->form_routable;
             $return = [
                 'form_route' => $formRoute,
@@ -238,6 +248,15 @@ class FormRouteController extends Controller
                 'from_user' => $user,
                 'notification_title' => "New disapproved purchase request",
                 'notification_message' => request('remarks'),
+                'notification_title' => "Disapproved Purchase Request",
+                'notification_message' => request('remarks'),
+                'notification_data' => [
+                    "status" => "Disapproved",
+                    "user" => $user->username,
+                    "remarks" => request('remarks'),
+                    "form" => $form->title,
+                    "datetime" => Carbon::now()->toDayDateTimeString()
+                ],
             ];
             DB::commit();
             try {

@@ -8,10 +8,11 @@ use Illuminate\Support\Str;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequestItem;
 use App\Models\Library;
-use App\Models\UserOffice;
+use App\Models\User;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class PurchaseRequest extends Model
@@ -29,6 +30,7 @@ class PurchaseRequest extends Model
         'end_user_id',
         'account_id',
         'status',
+        'remarks',
         'pr_date',
         'mode_of_procurement_id',
         'uacs_code_id',
@@ -38,6 +40,7 @@ class PurchaseRequest extends Model
         'bac_task_id',    
         'requested_by_id',
         'approved_by_id',
+        'created_by_id',
     ];
 
     protected static $logAttributes = [
@@ -60,6 +63,7 @@ class PurchaseRequest extends Model
         'approved_by_id',
         'mode_of_procurement_id',
         'uacs_code_id',
+        'created_by_id',
         'id',
         'status',
         'created_at',
@@ -72,9 +76,11 @@ class PurchaseRequest extends Model
 
     public static function boot()
     {
+        $user = Auth::user();
         parent::boot();
-        self::creating(function ($model) {
+        self::creating(function ($model) use ($user) {
             $model->uuid = (string) Str::uuid();
+            $model->created_by_id = $user->id;
             $model->status = 'Pending';
         });
         self::updating(function($model) {
@@ -129,6 +135,11 @@ class PurchaseRequest extends Model
     public function approved_by()
     {
         return $this->belongsTo(Library::class);
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function form_process()

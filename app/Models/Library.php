@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\UserOffice;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Library extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'library_type',
@@ -20,8 +21,24 @@ class Library extends Model
     ];
 
 
+    protected static $logAttributes = [
+        '*',
+        'parent.name',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
+
+
     protected $casts = [
-        'is_active' => 'boolean',
+        // 'is_active' => 'boolean',
     ];
 
     public static function boot()

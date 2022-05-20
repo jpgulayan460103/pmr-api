@@ -26,7 +26,7 @@ class AddTableForeignKeys extends Migration
         Schema::table('form_routes', function (Blueprint $table) {
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('forwarded_by_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('remarks_by_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('processed_by_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('form_process_id')->references('id')->on('form_processes')->onDelete('cascade');
             $table->foreign('origin_office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('from_office_id')->references('id')->on('libraries')->onDelete('set null');
@@ -62,6 +62,7 @@ class AddTableForeignKeys extends Migration
             $table->foreign('account_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('mode_of_procurement_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('uacs_code_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('set null');
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {
@@ -135,7 +136,7 @@ class AddTableForeignKeys extends Migration
         });
 
         Schema::table('form_routes', function (Blueprint $table) {
-            $table->dropForeign(['remarks_by_id']);
+            $table->dropForeign(['processed_by_id']);
             $table->dropForeign(['form_process_id']);
             $table->dropForeign(['origin_office_id']);
             $table->dropForeign(['from_office_id']);
@@ -170,6 +171,7 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['account_id']);
             $table->dropForeign(['mode_of_procurement_id']);
             $table->dropForeign(['uacs_code_id']);
+            $table->dropForeign(['created_by_id']);
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {

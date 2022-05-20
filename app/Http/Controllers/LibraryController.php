@@ -11,6 +11,7 @@ use App\Transformers\ItemTransformer;
 use App\Transformers\LibraryTransformer;
 use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -22,7 +23,7 @@ class LibraryController extends Controller
     {
         $this->libraryRepository = $libraryRepository;
         $this->middleware('auth:api', ['only' => ['store', 'update']]);
-        $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
+        // $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
     }
     /**
      * Display a listing of the resource.
@@ -55,7 +56,10 @@ class LibraryController extends Controller
      */
     public function store(Request $request, $type)
     {
-
+        $user = Auth::user();
+        if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."add")){
+            abort(403);
+        }
         switch ($type) {
             case 'items':
                 $itemRepository = new ItemRepository();
@@ -121,6 +125,16 @@ class LibraryController extends Controller
      */
     public function update(Request $request, $type, $id)
     {
+        $user = Auth::user();
+        if(request()->has('is_active')){
+            if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."delete")){
+                abort(403);
+            }
+        }else{
+            if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."update")){
+                abort(403);
+            }
+        }
         switch ($type) {
             case 'items':
                 $itemRepository = new ItemRepository();

@@ -2,12 +2,11 @@
 
 namespace App\Transformers\Logs;
 
-use League\Fractal\TransformerAbstract;
 use App\Models\ActivityLog;
-use App\Transformers\UserTransformer;
-use App\Transformers\PurchaseRequestTransformer;
+use App\Transformers\SupplierTransformer;
+use League\Fractal\TransformerAbstract;
 
-class PurchaseRequestLogTransformer extends TransformerAbstract
+class LibraryLogTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -15,33 +14,11 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      * @var array
      */
     protected $labels = [
-        "sa_or" => "SA/OR",
-        "pr_dir" => "pr_dir",
-        "status" => "Status",
-        "pr_date" => "PR Date",
-        "purpose" => "Particulars",
-        "charge_to" => "Charge To",
-        "uacs_code.name" => "UACS Code",
-        "total_cost" => "Total Cost",
-        "center_code" => "Responsibility Center Code",
-        "fund_cluster" => "Fund Cluster",
-        "end_user.name" => "End User",
-        "alloted_amount" => "ABC (PHP)",
-        "uuid" => "UUID",
-        "remarks" => "Remarks",
-        "approved_by.name" => "Approved By",
-        "purchase_request_number" => "PR Number",
-        "requested_by.name" => "Requested By",
-        "account.parent.name" => "Account Classification",
-        "account.name" => "Account",
-        "mode_of_procurement.name" => "Mode of Procurement",
-        "account_id" => "account_id",
-        "bac_task_id" => "bac_task_id",
-        "end_user_id" => "end_user_id",
-        "requested_by_id" => "requested_by_id",
-        "approved_by_id" => "approved_by_id",
-        "mode_of_procurement_id" => "mode_of_procurement_id",
-        "id" => "id",
+        "name" => "Name",
+        "title" => "Title",
+        "is_active" => "Enabled",
+        "parent.name" => "Parent",
+        "library_type" => "Type",
     ];
     protected $defaultIncludes = [
         //
@@ -99,16 +76,10 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         return $properties['changes'];
     }
 
-    public function includeUser(ActivityLog $table)
-    {
-        if ($table->user) {
-            return $this->item($table->user, new UserTransformer);
-        }
-    }
     public function includeSubject(ActivityLog $table)
     {
         if ($table->subject) {
-            return $this->item($table->subject, new PurchaseRequestTransformer);
+            return $this->item($table->subject, new SupplierTransformer);
         }
     }
 }

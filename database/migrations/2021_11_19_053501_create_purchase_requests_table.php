@@ -33,8 +33,10 @@ class CreatePurchaseRequestsTable extends Migration
             $table->float('alloted_amount',15,2)->nullable();
             $table->string('sa_or')->nullable();
             $table->string('status')->nullable();
+            $table->string('remarks')->nullable();
             $table->unsignedBigInteger('requested_by_id')->nullable();
             $table->unsignedBigInteger('approved_by_id')->nullable();
+            $table->unsignedBigInteger('created_by_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

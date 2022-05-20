@@ -18,9 +18,11 @@ class CreateItemsTable extends Migration
             $table->string('item_name')->nullable();
             $table->string('item_code')->nullable();
             $table->boolean('is_ppmp')->nullable();
+            $table->boolean('is_active')->nullable();
             $table->unsignedBigInteger('item_category_id')->nullable();
             $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

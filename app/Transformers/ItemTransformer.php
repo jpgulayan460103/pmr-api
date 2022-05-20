@@ -37,7 +37,9 @@ class ItemTransformer extends TransformerAbstract
         return [
             'value' => $table->item_name,
             'item_name' => $table->item_name,
+            'display_log' => $table->item_name,
             'item_code' => $table->item_code,
+            'is_active' => $table->is_active,
             'is_ppmp' => $table->is_ppmp == 1,
             'is_ppmp_str' => $table->is_ppmp == 1 ? "Yes" : "No",
             'id' => $table->id,

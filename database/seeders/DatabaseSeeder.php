@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        activity()->disableLogging();
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UnitOfMeasureSeeder::class);
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserOfficeSampleSeeder::class);
         $this->call(UserOfficeSeeder::class);
         $this->call(UacsCodeSeeder::class);
+        activity()->enableLogging();
         // $this->call(FakerDataSeeders::class);
     }
 }

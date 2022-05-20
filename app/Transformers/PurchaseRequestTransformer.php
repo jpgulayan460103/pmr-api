@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestItemTransformer;
-use App\Transformers\UserOfficeTransformer;
+use App\Transformers\UserTransformer;
 use App\Transformers\FormProcessTransformer;
 use App\Transformers\FormRouteTransformer;
 use App\Transformers\BacTaskTransformer;
@@ -38,6 +38,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'mode_of_procurement',
         'uacs_code',
         'form_uploads',
+        'created_by',
     ];
     
     /**
@@ -65,6 +66,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'end_user_id' => $table->end_user_id,
             'account_id' => $table->account_id,
             'status' => $table->status,
+            'remarks' => $table->remarks,
             'pr_date' => $table->pr_date,
             'bac_task_id' => $table->bac_task_id,
             'key' => $table->id,
@@ -129,6 +131,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->requested_by) {
             return $this->item($table->requested_by, new LibraryTransformer);
+        }
+    }
+    public function includeCreatedBy($table)
+    {
+        if ($table->created_by) {
+            return $this->item($table->created_by, new UserTransformer);
         }
     }
     public function includeApprovedBy($table)

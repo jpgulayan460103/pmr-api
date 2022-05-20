@@ -11,6 +11,8 @@ use App\Transformers\BacTaskTransformer;
 use App\Transformers\Logs\BacTaskLogTransformer;
 use App\Transformers\Logs\FormRouteLogTransformer;
 use App\Transformers\Logs\FormUploadLogTransformer;
+use App\Transformers\Logs\ItemLogTransformer;
+use App\Transformers\Logs\LibraryLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use App\Transformers\Logs\SupplierContactLogTransformer;
@@ -96,7 +98,16 @@ class AuditTrailTransformer extends TransformerAbstract
                 // $properties = $activityLog->properties;
                 $description_str = ucfirst($activityLog->description)." the form route";
                 break;
-            
+            case 'App\Models\Item':
+                $log_type = "item";
+                $properties = (new ItemLogTransformer)->addLabels($activityLog->properties);
+                $description_str = ucfirst($activityLog->description)." the item";
+                break;
+            case 'App\Models\Library':
+                $log_type = "library";
+                $properties = (new LibraryLogTransformer)->addLabels($activityLog->properties);
+                $description_str = ucfirst($activityLog->description)." the item";
+                break;
             default:
                 $log_type = $activityLog->log_name;
                 $description_str = $activityLog->description;
@@ -148,6 +159,12 @@ class AuditTrailTransformer extends TransformerAbstract
                     break;
                 case 'App\Models\FormRoute':
                     return $this->item($activityLog->subject, new FormRouteTransformer);
+                    break;
+                case 'App\Models\Item':
+                    return $this->item($activityLog->subject, new ItemTransformer);
+                    break;
+                case 'App\Models\Library':
+                    return $this->item($activityLog->subject, new LibraryTransformer);
                     break;
                 
                 default:

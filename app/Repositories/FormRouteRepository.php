@@ -33,7 +33,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "route_type" => "purchase_request",
             "status" => "pending",
             "remarks" => "Finalization from the end user.",
-            "remarks_by_id" => $user->id,
+            "processed_by_id" => null,
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
@@ -50,7 +50,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $user = Auth::user();
         $results = $this->modelQuery()->where('form_routes.status', $type);
         if(!$user->hasRole('super-admin')){
-            $results->where('remarks_by_id',$user->id);
+            $results->where('processed_by_id',$user->id);
         }
         if($type == "approved"){
             $results->where('remarks','<>','Finalization from the end user.');
@@ -144,11 +144,11 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     }
 
 
-    public function updateRoute($id, $data)
+    public function updateRoute($formRoute, $data)
     {
         $user = Auth::user();
-        $data['remarks_by_id'] = $user->id;
-        return $this->update($id, $data);
+        $data['processed_by_id'] = $user->id;
+        return $this->update($formRoute->id, $data);
     }
 
     public function proceedNextRoute($formRoute, $nextRoute, $remarks)

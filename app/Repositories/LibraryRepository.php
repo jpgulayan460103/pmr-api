@@ -85,5 +85,33 @@ class LibraryRepository implements LibraryRepositoryInterface
         return $library;
     }
 
+    public function permissions($library_type)
+    {
+
+        // list cases from PermissionSeeder.php
+        switch ($library_type) {
+            case 'items':
+                return "libraries.items.";
+            case 'item_category':
+                return "libraries.items.categories.";
+            case 'user_division':
+                return "libraries.office.divisions.";
+            case 'user_section':
+                return "libraries.office.sections.";
+            case 'unit_of_measure':
+                return "libraries.uom.";
+            case 'uacs_code':
+                return "libraries.uacs.";
+            case 'items':
+                return "libraries.items.";
+                # code...
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
     
 }

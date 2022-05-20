@@ -31,6 +31,8 @@ class FormRouteTransformer extends TransformerAbstract
         'from_office',
         'to_office',
         'form_process',
+        'processed_by',
+        'forwarded_by',
         'user',
         'parent'
     ];
@@ -53,7 +55,7 @@ class FormRouteTransformer extends TransformerAbstract
             'display_log' => $table->remarks,
             'forwarded_remarks' => $table->forwarded_remarks,
             'forwarded_by_id' => $table->forwarded_by_id,
-            'remarks_by_id' => $table->remarks_by_id,
+            'processed_by_id' => $table->processed_by_id,
             'origin_office_id' => $table->origin_office_id,
             'from_office_id' => $table->from_office_id,
             'to_office_id' => $table->to_office_id,
@@ -62,8 +64,10 @@ class FormRouteTransformer extends TransformerAbstract
             'form_process_id' => $table->form_process_id,
             'action_taken' => $table->action_taken,
             'created_at' => $table->created_at->toDayDateTimeString(),
+            'created_at_raw' => $table->created_at->toDateTimeString(),
             'created_at_date' => $table->created_at->toDateString(),
             'updated_at' => $table->updated_at->toDayDateTimeString(),
+            'updated_at_raw' => $table->updated_at->toDateTimeString(),
         ];
     }
 
@@ -107,6 +111,18 @@ class FormRouteTransformer extends TransformerAbstract
     {
         if ($table->user) {
             return $this->item($table->user, new UserTransformer);
+        }
+    }
+    public function includeForwardedBy(FormRoute $table)
+    {
+        if ($table->forwarded_by) {
+            return $this->item($table->forwarded_by, new UserTransformer);
+        }
+    }
+    public function includeProcessedBy(FormRoute $table)
+    {
+        if ($table->processed_by) {
+            return $this->item($table->processed_by, new UserTransformer);
         }
     }
 

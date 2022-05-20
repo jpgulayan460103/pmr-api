@@ -25,12 +25,12 @@ class UserOfficeSeeder extends Seeder
             'parent_id' => $ord->id,
         ]);
 
-        Library::create([
-            'library_type' => 'user_signatory_designation',
-            'name' => 'OIC Regional Director',
-            'title' => 'ORD',
-            'parent_id' => $ord->id,
-        ]);
+        // Library::create([
+        //     'library_type' => 'user_signatory_designation',
+        //     'name' => 'OIC Regional Director',
+        //     'title' => 'ORD',
+        //     'parent_id' => $ord->id,
+        // ]);
 
         $ord_name = Library::create([
             'library_type' => 'user_signatory_name',
@@ -46,12 +46,12 @@ class UserOfficeSeeder extends Seeder
             'parent_id' => $oarda->id,
         ]);
 
-        Library::create([
-            'library_type' => 'user_signatory_designation',
-            'name' => 'Assistant Regional Director for Administration',
-            'title' => 'OARDA',
-            'parent_id' => $oarda->id,
-        ]);
+        // Library::create([
+        //     'library_type' => 'user_signatory_designation',
+        //     'name' => 'Assistant Regional Director for Administration',
+        //     'title' => 'OARDA',
+        //     'parent_id' => $oarda->id,
+        // ]);
 
         $oarda_name = Library::create([
             'library_type' => 'user_signatory_name',
@@ -68,12 +68,12 @@ class UserOfficeSeeder extends Seeder
             'parent_id' => $oardo->id,
         ]);
 
-        Library::create([
-            'library_type' => 'user_signatory_designation',
-            'name' => 'OIC Assistant Regional Director for Operations',
-            'title' => 'OARDO',
-            'parent_id' => $oardo->id,
-        ]);
+        // Library::create([
+        //     'library_type' => 'user_signatory_designation',
+        //     'name' => 'OIC Assistant Regional Director for Operations',
+        //     'title' => 'OARDO',
+        //     'parent_id' => $oardo->id,
+        // ]);
 
         $oardo_name = Library::create([
             'library_type' => 'user_signatory_name',

@@ -20,7 +20,7 @@ class FormRoute extends Model
         'forwarded_remarks',
         'forwarded_by_id',
         'owner_id',
-        'remarks_by_id',
+        'processed_by_id',
         'origin_office_id',
         'from_office_id',
         'to_office_id',
@@ -50,7 +50,7 @@ class FormRoute extends Model
         'form_routable_id',
         'forwarded_by_id',
         'owner_id',
-        'remarks_by_id',
+        'processed_by_id',
         'origin_office_id',
         'from_office_id',
         'to_office_id',
@@ -88,11 +88,15 @@ class FormRoute extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'remarks_by_id');
+        return $this->belongsTo(User::class, 'processed_by_id');
     }
     public function forwarded_by()
     {
         return $this->belongsTo(User::class, 'forwarded_by_id');
+    }
+    public function processed_by()
+    {
+        return $this->belongsTo(User::class, 'processed_by_id');
     }
     public function owner()
     {
