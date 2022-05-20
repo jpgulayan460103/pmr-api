@@ -19,7 +19,7 @@ class SupplierContactLogTransformer extends TransformerAbstract
         "contact_number" => "Contact Person",
         "supplier.name" => "Supplier Name",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -28,7 +28,7 @@ class SupplierContactLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

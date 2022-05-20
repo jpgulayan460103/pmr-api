@@ -14,7 +14,7 @@ class QuotationItemTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -23,7 +23,7 @@ class QuotationItemTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'quotation',
         'purchase_request_item',
     ];

@@ -20,7 +20,7 @@ class LibraryLogTransformer extends TransformerAbstract
         "parent.name" => "Parent",
         "library_type" => "Type",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -29,7 +29,7 @@ class LibraryLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

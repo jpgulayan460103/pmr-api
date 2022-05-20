@@ -15,7 +15,7 @@ class SupplierTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -24,7 +24,7 @@ class SupplierTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'contacts',
         'categories',
         'quotations',

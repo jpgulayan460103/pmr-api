@@ -13,7 +13,7 @@ class BacTaskTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -22,7 +22,7 @@ class BacTaskTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'purchase_request',
         'parent',
     ];

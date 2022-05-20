@@ -13,7 +13,7 @@ class ItemTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -22,7 +22,7 @@ class ItemTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'unit_of_measure',
         'item_category',
     ];

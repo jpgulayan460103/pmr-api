@@ -21,7 +21,7 @@ class ItemLogTransformer extends TransformerAbstract
         "unit_of_measure.name" => "Unit Of Measure",
         "item_category.name" => "Item Category",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -30,7 +30,7 @@ class ItemLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

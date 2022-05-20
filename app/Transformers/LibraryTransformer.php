@@ -6,6 +6,8 @@ use League\Fractal\TransformerAbstract;
 use App\Transformers\UserOfficeTransformer;
 use App\Models\Library;
 use Illuminate\Support\Str;
+
+
 class LibraryTransformer extends TransformerAbstract
 {
     /**
@@ -13,7 +15,7 @@ class LibraryTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'parent'
     ];
     
@@ -22,7 +24,7 @@ class LibraryTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user_office',
         'children'
     ];

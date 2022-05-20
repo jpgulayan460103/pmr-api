@@ -22,7 +22,7 @@ class FormUploadLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -31,7 +31,7 @@ class FormUploadLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

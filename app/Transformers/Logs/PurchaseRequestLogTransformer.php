@@ -43,7 +43,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         "mode_of_procurement_id" => "mode_of_procurement_id",
         "id" => "id",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -52,7 +52,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

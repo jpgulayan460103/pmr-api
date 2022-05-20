@@ -29,7 +29,7 @@ class BacTaskLogTransformer extends TransformerAbstract
         "abstract_of_qoutations" => "Abstract of Quotations",
         // "purchase_request.uuid" => "Purchase Request",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -38,7 +38,7 @@ class BacTaskLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

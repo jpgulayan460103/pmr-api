@@ -17,7 +17,7 @@ class SupplierLogTransformer extends TransformerAbstract
         "name" => "Supplier Name",
         "address" => "Supplier Address",
     ];
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         //
     ];
     
@@ -26,7 +26,7 @@ class SupplierLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'user',
         'subject'
     ];

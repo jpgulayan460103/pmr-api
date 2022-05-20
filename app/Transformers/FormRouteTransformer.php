@@ -16,7 +16,7 @@ class FormRouteTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
 
     ];
     
@@ -25,7 +25,7 @@ class FormRouteTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'form_routable',
         'end_user',
         'from_office',
