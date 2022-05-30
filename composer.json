@@ -22,6 +22,8 @@
         "spatie/laravel-activitylog": "^3.17",
         "spatie/laravel-fractal": "^5.8.1",
         "spatie/laravel-permission": "^5.4",
+        "tinybutstrong/opentbs": "^1.10",
+        "tinybutstrong/tinybutstrong": "^3.13",
         "whichbrowser/parser": "^2.1"
     },
     "require-dev": {

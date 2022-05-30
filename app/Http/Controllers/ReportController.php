@@ -4,16 +4,55 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ReportRepository;
 use Carbon\Carbon;
+use clsTinyButStrong;
+use clsOpenTBS;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
 
     private $reportRepository;
-
+    private $openTbs;
+    private $tbs;
+    
     public function __construct(ReportRepository $reportRepository)
     {
         $this->reportRepository = $reportRepository;
+        $this->tbs = new clsTinyButStrong(); // new instance of TBS
+        $this->openTbs = new clsOpenTBS(); // new instance of TBS
+    }
+    
+    public function tbs()
+    {
+        $this->tbs->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load the OpenTBS plugin
+        // $template = 'tbs.xlsx';
+        $template = '2015 PPMP format.xlsx';
+        $this->tbs->LoadTemplate($template, OPENTBS_ALREADY_UTF8);
+        
+        global $yourname;
+        $yourname  = "asdasdasd";
+
+        $data = array();
+        $data[] = [
+            "code" => 123123,
+            "item_name" => "asdasdasd",
+            "quantity" => 12,
+            "budget" => 232
+        ];
+        for ($i=0; $i < 10; $i++) { 
+            $data[] = [
+                "code" => 123123,
+                "item_name" => "asdasdasd",
+                "quantity" => 12,
+                "budget" => 232
+            ];
+        }
+
+        // $this->tbs->PlugIn(OPENTBS_SELECT_SHEET, "Cells and rows");
+        $this->tbs->MergeBlock('a', $data);
+        // $this->tbs->MergeField()
+        $this->tbs->Show(OPENTBS_DOWNLOAD, "test.xlsx");
+
     }
 
     public function purchaseRequest(Request $request)

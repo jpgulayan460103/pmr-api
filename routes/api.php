@@ -107,5 +107,6 @@ Route::group(['prefix' => '/logger'], function () {
 
 Route::group(['prefix' => '/reports'], function () {
     Route::get('/purchase-request', [ReportController::class, 'purchaseRequest']);
+    Route::get('/tbs', [ReportController::class, 'tbs']);
 });
 
