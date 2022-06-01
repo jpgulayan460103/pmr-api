@@ -45,6 +45,24 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $created_route;
     }
 
+    public function procurementPlan($procurement_plan, $formProcess, $step = 0){
+        $user = Auth::user();
+        $data = [
+            "route_type" => "procurement_plan",
+            "status" => "pending",
+            "remarks" => "Finalization from the end user.",
+            "processed_by_id" => null,
+            "origin_office_id" => $procurement_plan->end_user_id,
+            "from_office_id" => $procurement_plan->end_user_id,
+            "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
+            "form_process_id" => $formProcess['id'],
+            "owner_id" => $user->id,
+            "forwarded_by_id" => $user->id,
+        ];
+        $created_route = $procurement_plan->form_routes()->create($data);
+        return $created_route;
+    }
+
     public function getProcessed($type, $filters)
     {
         $user = Auth::user();

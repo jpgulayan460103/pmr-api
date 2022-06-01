@@ -29,7 +29,7 @@ class LibraryRepository implements LibraryRepositoryInterface
             return json_decode($itemsRedis);
         }
         $items = (new ItemRepository)->attach('unit_of_measure,item_category')->getAll();
-        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category,item_type');
         Redis::set('libraries.items', $items->toJson());
         return $items;
     }

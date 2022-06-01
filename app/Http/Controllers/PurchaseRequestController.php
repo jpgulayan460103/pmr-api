@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreatePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\PurchaseRequest;
+use App\Repositories\FormProcessRepository;
+use App\Repositories\FormRouteRepository;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Repositories\LibraryRepository;
 use App\Repositories\PurchaseRequestRepository;
@@ -79,8 +81,21 @@ class PurchaseRequestController extends Controller
      */
     public function store(CreatePurchaseRequest $request)
     {
-        $created_purchase_request = $this->purchaseRequestRepository->create($request->all());
-        return $created_purchase_request;
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            $items = $this->purchaseRequestRepository->addItems();
+            $data['total_cost'] = $items['total_cost'];
+            $purchase_request = $this->purchaseRequestRepository->create($data);
+            $purchase_request->items()->saveMany($items['items']);
+            $formProcess = (new FormProcessRepository())->purchaseRequest($purchase_request);
+            $formRoute = (new FormRouteRepository())->purchaseRequest($purchase_request, $formProcess);
+            $purchase_request->save();
+            DB::commit();
+            return $purchase_request;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
         
     }
 
@@ -92,7 +107,7 @@ class PurchaseRequestController extends Controller
      */
     public function show($id)
     {
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
         $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, account, mode_of_procurement, uacs_code, items.unit_of_measure, requested_by, approved_by, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
@@ -120,8 +135,30 @@ class PurchaseRequestController extends Controller
      */
     public function update(UpdatePurchaseRequest $request, $id)
     {
-        $this->purchaseRequestRepository->update($request->all(), $id);
-        return $this->show($id);
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            $old_purchase_request = $this->purchaseRequestRepository->getById($id);
+            if(request()->has('items') && request('items') != array()){
+                $items = $this->purchaseRequestRepository->updateItems($id);
+                $data['total_cost'] = $items['total_cost'];
+            }
+            $purchase_request = $this->purchaseRequestRepository->update($id, $data);
+            if(request()->has('items') && request('items') != array()){
+                $purchase_request->items()->saveMany($items['items']);
+            }
+            if(request()->has('requested_by_id')){
+                if($old_purchase_request->requested_by_id != request('requested_by_id')){
+                    $formProcessRepository = new FormProcessRepository;
+                    $formProcess = $formProcessRepository->getByFormType('purchase_request', $id);
+                    $formProcessRepository->updateRouting($formProcess->id, "OARD");
+                }
+            }
+            DB::commit();
+            return $purchase_request;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

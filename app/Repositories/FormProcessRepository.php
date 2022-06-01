@@ -210,4 +210,62 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             return $this->updatePurchaseRequestRouting($process, $type);
         }
     }
+
+    public function procurementPlan($created_procurement_plan)
+    {
+        $origin_office = (new LibraryRepository)->getById($created_procurement_plan->end_user_id);
+        $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
+        $rd_office = (new LibraryRepository)->getUserSectionBy('title','ORD');
+        $routes = [];
+        $routes[] = [
+            "office_id" => $origin_office->id,
+            "office_name" => $origin_office->name,
+            "label" => "ORIGIN",
+            "status" => "pending",
+            "description" => "Finalization from the end user.",
+            "description_code" => "ppmp_aprroval_from_enduser",
+        ];
+
+        $routes[] = [
+            "office_id" => $budget_office->id,
+            "label" => "BS",
+            "office_name" => $budget_office->name,
+            "status" => "pending",
+            "description" => "Budget PPMP Approval.",
+            "description_code" => "ppmp_aprroval_from_budget",
+        ];
+
+        if($origin_office->parent->title == "OARDO" || $origin_office->parent->title == "OARDA"){
+            $oard = (new LibraryRepository)->getUserSectionBy('title',$origin_office->parent->title);
+            $routes[] = [
+                "office_id" => $oard->id,
+                "office_name" => $oard->name,
+                "label" => "OARD",
+                "status" => "pending",
+                "description" => "Approval from the OARD.",
+                "description_code" => "ppmp_aprroval_from_division",
+            ];
+        }else{
+            $routes[] = [
+                "office_id" => $rd_office->id,
+                "label" => "ORD",
+                "office_name" => $rd_office->name,
+                "status" => "pending",
+                "description" => "Approval from the ".$rd_office->title,
+                "description_code" => "ppmp_aprroval_from_ord",
+            ];
+        }
+
+        $data = [
+            'process_description' => "Project Procurement Management Plan (PPMP) Form Routing",
+            'form_type' => "procurement_plan",
+            'office_id' => $origin_office->id,
+            "status" => "pending",
+        ];
+        
+        $created_process = $created_procurement_plan->form_process()->create($data);
+        $created_process->form_routes = $routes;
+        $created_process->save();
+        return $created_process;
+    }
 }

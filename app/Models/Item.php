@@ -16,8 +16,9 @@ class Item extends Model
         'item_name',
         'item_code',
         'item_category_id',
+        'item_type_id',
+        'price',
         'unit_of_measure_id',
-        'is_ppmp',
         'is_active',
     ];
 
@@ -27,6 +28,7 @@ class Item extends Model
         '*',
         'unit_of_measure.name',
         'item_category.name',
+        'item_type.name',
     ];
 
     protected static $logAttributesToIgnore = [
@@ -51,6 +53,11 @@ class Item extends Model
     }
 
     public function item_category()
+    {
+        return $this->belongsTo(Library::class);
+    }
+
+    public function item_type()
     {
         return $this->belongsTo(Library::class);
     }

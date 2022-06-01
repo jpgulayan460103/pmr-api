@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
+use App\Http\Controllers\ProcurementPlanController;
 use App\Http\Controllers\ReportController;
 use App\Models\PurchaseOrder;
 
@@ -47,6 +48,7 @@ Route::resources([
     'form-routes' => FormRouteController::class,
     'suppliers' => SupplierController::class,
     'quotations' => QuotationController::class,
+    'procurement-plans' => ProcurementPlanController::class,
 ]);
 
 Route::group(['prefix' => '/libraries'], function () {

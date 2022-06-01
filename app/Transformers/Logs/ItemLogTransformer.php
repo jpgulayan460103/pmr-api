@@ -15,8 +15,9 @@ class ItemLogTransformer extends TransformerAbstract
      */
     protected $labels = [
         "is_active" => "Enabled",
-        "is_ppmp" => "PPMP",
+        "item_type.name" => "Item Type",
         "item_code" => "Item Code",
+        "price" => "Item Code",
         "item_name" => "Item Name",
         "unit_of_measure.name" => "Unit Of Measure",
         "item_category.name" => "Item Category",

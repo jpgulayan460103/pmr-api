@@ -28,7 +28,7 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $items = $this->itemRepository->getAllPaginated();
-        return fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category');
+        return fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category,item_type');
     }
 
     /**

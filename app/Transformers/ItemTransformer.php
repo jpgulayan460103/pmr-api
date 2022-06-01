@@ -25,6 +25,7 @@ class ItemTransformer extends TransformerAbstract
     protected array $availableIncludes = [
         'unit_of_measure',
         'item_category',
+        'item_type',
     ];
     
     /**
@@ -39,9 +40,8 @@ class ItemTransformer extends TransformerAbstract
             'item_name' => $table->item_name,
             'display_log' => $table->item_name,
             'item_code' => $table->item_code,
+            'price' => $table->price,
             'is_active' => $table->is_active,
-            'is_ppmp' => $table->is_ppmp == 1,
-            'is_ppmp_str' => $table->is_ppmp == 1 ? "Yes" : "No",
             'id' => $table->id,
             'key' => $table->id,
             // 'item_category_id' => $table->item_category_id,
@@ -60,6 +60,12 @@ class ItemTransformer extends TransformerAbstract
     {
         if ($table->item_category) {
             return $this->item($table->item_category, new LibraryTransformer);
+        }
+    }
+    public function includeItemType(Item $table)
+    {
+        if ($table->item_type) {
+            return $this->item($table->item_type, new LibraryTransformer);
         }
     }
 }
