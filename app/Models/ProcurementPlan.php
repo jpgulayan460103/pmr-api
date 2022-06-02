@@ -10,6 +10,8 @@ use App\Models\FormProcess;
 use App\Models\Library;
 use App\Models\FormRoute;
 use App\Models\ProcurementPlanItem;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProcurementPlan extends Model
 {
@@ -19,7 +21,10 @@ class ProcurementPlan extends Model
         'annex',
         'status',
         'remarks',
-        'total',
+        'total_price',
+        'inflation',
+        'contingency',
+        'total_estimated_budget',
         'is_supplemental',
         'created_by_id',
         'end_user_id',
@@ -30,6 +35,20 @@ class ProcurementPlan extends Model
         'approved_by_name',
         'approved_by_position',
     ];
+
+    public static function boot()
+    {
+        $user = Auth::user();
+        parent::boot();
+        self::creating(function ($model) use ($user) {
+            $model->uuid = (string) Str::uuid();
+            $model->created_by_id = $user->id;
+            $model->status = 'Pending';
+        });
+        self::updating(function($model) {
+
+        });
+    }
 
     public function form_process()
     {

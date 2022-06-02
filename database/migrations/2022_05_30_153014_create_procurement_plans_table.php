@@ -15,10 +15,14 @@ class CreateProcurementPlansTable extends Migration
     {
         Schema::create('procurement_plans', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->nullable();
             $table->string('annex')->nullable();
             $table->string('status')->nullable();
             $table->string('remarks')->nullable();
-            $table->float('total',15,2)->nullable();
+            $table->float('total_price',15,2)->nullable();
+            $table->float('inflation',15,2)->nullable();
+            $table->float('contingency',15,2)->nullable();
+            $table->float('total_estimated_budget',15,2)->nullable();
             $table->boolean('is_supplemental')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();
