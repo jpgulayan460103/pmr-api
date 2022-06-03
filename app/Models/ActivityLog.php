@@ -11,7 +11,7 @@ class ActivityLog extends Model
     use HasFactory;
 
     protected $table = 'activity_log';
-    protected $connection = 'mysql_log';
+    protected $connection = 'mysql';
 
     public function user()
     {

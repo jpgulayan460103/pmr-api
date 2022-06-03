@@ -106,6 +106,7 @@ Route::group(['prefix' => '/logger'], function () {
     Route::get('/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
     Route::get('/all', [AuditTrailController::class, 'index']);
     Route::get('/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
+    Route::get('/procurement-plan/{id}', [AuditTrailController::class, 'procurementPlan']);
 });
 
 Route::group(['prefix' => '/reports'], function () {

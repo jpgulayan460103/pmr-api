@@ -235,26 +235,36 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "description_code" => "ppmp_aprroval_from_budget",
         ];
 
-        if($origin_office->parent->title == "OARDO" || $origin_office->parent->title == "OARDA"){
-            $oard = (new LibraryRepository)->getUserSectionBy('title',$origin_office->parent->title);
-            $routes[] = [
-                "office_id" => $oard->id,
-                "office_name" => $oard->name,
-                "label" => "OARD",
-                "status" => "pending",
-                "description" => "Approval from the OARD.",
-                "description_code" => "ppmp_aprroval_from_division",
-            ];
-        }else{
-            $routes[] = [
-                "office_id" => $rd_office->id,
-                "label" => "ORD",
-                "office_name" => $rd_office->name,
-                "status" => "pending",
-                "description" => "Approval from the ".$rd_office->title,
-                "description_code" => "ppmp_aprroval_from_ord",
-            ];
-        }
+        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title', request('approvedBy'));
+        $routes[] = [
+            "office_id" => $approved_by_office->id,
+            "office_name" => $approved_by_office->name,
+            "label" => "OARD",
+            "status" => "pending",
+            "description" => "Approval from the ".$approved_by_office->title.".",
+            "description_code" => "ppmp_aprroval_from_division",
+        ];
+
+        // if($origin_office->parent->title == "OARDO" || $origin_office->parent->title == "OARDA"){
+        //     $oard = (new LibraryRepository)->getUserSectionBy('title', request('approvedBy'));
+        //     $routes[] = [
+        //         "office_id" => $oard->id,
+        //         "office_name" => $oard->name,
+        //         "label" => "OARD",
+        //         "status" => "pending",
+        //         "description" => "Approval from the OARD.",
+        //         "description_code" => "ppmp_aprroval_from_division",
+        //     ];
+        // }else{
+        //     $routes[] = [
+        //         "office_id" => $rd_office->id,
+        //         "label" => "ORD",
+        //         "office_name" => $rd_office->name,
+        //         "status" => "pending",
+        //         "description" => "Approval from the ".$rd_office->title,
+        //         "description_code" => "ppmp_aprroval_from_ord",
+        //     ];
+        // }
 
         $data = [
             'process_description' => "Project Procurement Management Plan (PPMP) Form Routing",

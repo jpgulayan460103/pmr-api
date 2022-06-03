@@ -132,6 +132,9 @@ class FormRouteTransformer extends TransformerAbstract
             case 'purchase_request':
                 return $this->item($table->form_routable, new PurchaseRequestTransformer);
                 break;
+            case 'procurement_plan':
+                return $this->item($table->form_routable, new ProcurementPlanTransformer);
+                break;
             
             default:
                 # code...

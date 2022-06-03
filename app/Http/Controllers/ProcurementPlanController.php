@@ -27,7 +27,11 @@ class ProcurementPlanController extends Controller
      */
     public function index()
     {
-        //
+        $attach = 'form_process,form_routes, form_uploads, end_user, item_type';
+        $this->procurementPlanRepository->attach($attach);
+        $procurement_plans = $this->procurementPlanRepository->search([]);
+        // return $procurement_plans;
+        return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
 
     /**
@@ -73,9 +77,13 @@ class ProcurementPlanController extends Controller
      * @param  \App\Models\ProcurementPlan  $procurementPlan
      * @return \Illuminate\Http\Response
      */
-    public function show($uuid)
+    public function show($id)
     {
-        
+        $attach = 'form_process, end_user, item_type, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads';
+        $this->procurementPlanRepository->attach($attach);
+        $procurement_plans = $this->procurementPlanRepository->getById($id);
+        // return $procurement_plans;
+        return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
 
     /**
@@ -112,9 +120,9 @@ class ProcurementPlanController extends Controller
         //
     }
 
-    public function pdf(Request $request, $id)
+    public function pdf(Request $request, $uuid)
     {
-        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item')->getById($id);
+        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item')->getByUuid($uuid);
         // return $procurement_plan;
         $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item')->toArray();
         // return $procurement_plan;

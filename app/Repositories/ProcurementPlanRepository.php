@@ -6,6 +6,7 @@ use App\Models\ProcurementPlan;
 use App\Models\ProcurementPlanItem;
 use App\Repositories\Interfaces\ProcurementPlanRepositoryInterface;
 use App\Repositories\HasCrud;
+use Carbon\Carbon;
 
 class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
 {
@@ -18,6 +19,62 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         }
         $this->model($procurementPlan);
         $this->perPage(200);
+    }
+
+    public function search($filters)
+    {
+        if(isset($filters['offices_ids'])){
+            $this->modelQuery()->whereIn('end_user_id', $filters['offices_ids']);
+        }
+        if(request()->has('purpose') && request('purpose') != ""){
+            $this->modelQuery()->where('purpose', 'like', "%".request('purpose')."%");
+        }
+        if(request()->has('title') && request('title') != ""){
+            $this->modelQuery()->where('title', 'like', "%".request('title')."%");
+        }
+        if(request()->has('total_cost') && request()->has('total_cost_op') && request('total_cost') != "" && request('total_cost_op') != ""){
+            $total_cost_op = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
+            $this->modelQuery()->where('total_cost', $total_cost_op, request('total_cost'));
+        }
+        if(request()->has('status') && request('status') != ""){
+            $this->modelQuery()->whereIn('status', request('status'));
+        }
+        if(isset($filters['status'])){
+            $this->modelQuery()->whereIn('status', $filters['status']);
+        }
+        if(request()->has('sa_or') && request('sa_or') != ""){
+            $this->modelQuery()->where('sa_or', 'like', "%".request('sa_or')."%");
+        }
+        if(request()->has('purchase_request_number') && request('purchase_request_number') != ""){
+            $this->modelQuery()->where('purchase_request_number', 'like', "%".request('purchase_request_number')."%");
+        }
+        if(request()->has('end_user_id') && request('end_user_id') != ""){
+            $this->modelQuery()->whereIn('end_user_id', request('end_user_id'));
+        }
+        if(request()->has('account_id') && request('account_id') != ""){
+            $this->modelQuery()->whereIn('account_id', request('account_id'));
+        }
+        if(request()->has('mode_of_procurement_id') && request('mode_of_procurement_id') != ""){
+            $this->modelQuery()->whereIn('mode_of_procurement_id', request('mode_of_procurement_id'));
+        }
+        if(request()->has('purchase_request_type_category') && request('purchase_request_type_category') != ""){
+            $account_ids = (new LibraryRepository)->modelQuery()->without('parent')->select('id')->whereIn('parent_id',request('purchase_request_type_category'))->pluck('id');
+            $this->modelQuery()->whereIn('account_id', $account_ids);
+        }
+        if(request()->has('ppmp_date') && request('ppmp_date') != ""){
+            $ppmp_date[] = Carbon::parse(str_replace('"', '', request('ppmp_date')[0]))->toDateString();
+            $ppmp_date[] = Carbon::parse(str_replace('"', '', request('ppmp_date')[1]))->toDateString();
+            $this->modelQuery()->whereBetween('ppmp_date', $ppmp_date);
+        }
+
+        if(request()->has('sortColumn') && request()->has('sortOrder')){
+            $sortOrder = request('sortOrder') ==  'ascend' ? 'ASC' : 'DESC';  
+            $this->modelQuery()->orderBy(request('sortColumn'), $sortOrder);
+        }
+        $this->modelQuery()->orderBy('ppmp_date','desc');
+        // $this->modelQuery()->orderBy('id','desc');
+        $result = $this->modelQuery()->paginate(20);
+        return $result;
     }
 
     public function addItems()

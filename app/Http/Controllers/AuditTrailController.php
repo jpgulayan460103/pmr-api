@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Models\FormUpload;
+use App\Repositories\ProcurementPlanRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Transformers\AuditTrailTransformer;
 use App\Transformers\Logs\BacTaskLogTransformer;
 use App\Transformers\Logs\FormUploadLogTransformer;
+use App\Transformers\Logs\ProcurementPlanItemLogTransformer;
+use App\Transformers\Logs\ProcurementPlanLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use Illuminate\Support\Facades\DB;
@@ -112,34 +115,17 @@ class AuditTrailController extends Controller
         //end items
 
 
-        //bac
-        // if($request->type && $request->type == "procurement"){
-            if($purchase_request->bac_task){
-                $bac_log = $this->bacTask($request, $purchase_request);
-                $merged = array_merge($bac_log['data'], $purchase_request_log['data']);
-                usort($merged, function($a, $b) {
-                    return ($b['id'] - $a['id']);
-                });
+        if($purchase_request->bac_task){
+            $bac_log = $this->bacTask($request, $purchase_request);
+            $merged = array_merge($bac_log['data'], $purchase_request_log['data']);
+            usort($merged, function($a, $b) {
+                return ($b['id'] - $a['id']);
+            });
 
-                $purchase_request_log = [
-                    'data' => $merged
-                ];
-            }
-        // }
-        //end bac
-
-        //uploads
-        // $uploads = $this->formUploads($request, 'purchase_request' , $id);
-
-        // $merged = array_merge($uploads['data'], $purchase_request_log['data']);
-        // usort($merged, function($a, $b) {
-        //     return ($b['id'] - $a['id']);
-        // });
-
-        // $purchase_request_log = [
-        //     'data' => $merged
-        // ];
-        //end uploads
+            $purchase_request_log = [
+                'data' => $merged
+            ];
+        }
         return $purchase_request_log;
     }
 
@@ -194,5 +180,56 @@ class AuditTrailController extends Controller
         // return $log;
         return fractal($log, new FormUploadLogTransformer)->parseIncludes('user.user_information,subject.parent')->toArray();
         return $form_uploads;
+    }
+
+    public function procurementPlan(Request $request, $id)
+    {
+        // return $this->procurementPlanItem($request, $id);
+        $procurement_plan = (new ProcurementPlanRepository())->getById($id);
+        $model = (get_class($procurement_plan));
+        $procurement_plan_log = ActivityLog::with(
+                [
+                    'user.user_information',
+                    'subject' => function($query) {
+                        $query->withTrashed();
+                    },
+                ]
+            )
+            ->where('subject_type',$model)
+            ->where('subject_id',$id)
+            ->get();
+        // return $procurement_plan_log;
+        $procurement_plan_log = fractal($procurement_plan_log, new ProcurementPlanLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+
+        //items
+        $items_logs = $this->procurementPlanItem($request, $id);
+
+        $merged = array_merge($items_logs['data'], $procurement_plan_log['data']);
+        usort($merged, function($a, $b) {
+            return ($b['id'] - $a['id']);
+        });
+
+        $procurement_plan_log = [
+            'data' => $merged
+        ];
+        return $procurement_plan_log;
+    }
+
+    public function procurementPlanItem(Request $request, $id)
+    {
+        $procurementPlan = new ProcurementPlanRepository;
+        $items = $procurementPlan->getById($id)->items()->withTrashed()->pluck('id');
+        $log = ActivityLog::with(
+                [
+                    'user.user_information',
+                    'subject.item' => function($query) {
+                        $query->withTrashed();
+                    },
+                ]
+            )
+            ->whereIn('subject_id',$items)
+            ->where('subject_type','App\Models\ProcurementPlanItem')
+            ->get();
+        return fractal($log, new ProcurementPlanItemLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
     }
 }

@@ -52,6 +52,7 @@ class ProcurementPlanItemTransformer extends TransformerAbstract
             'price' => $table->price,
             'total_quantity' => $table->total_quantity,
             'total_price' => $table->total_price,
+            'display_log' => $table->item->item_name,
         ];
     }
 

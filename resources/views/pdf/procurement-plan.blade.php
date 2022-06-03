@@ -185,24 +185,24 @@
         <table id="pp-sig">
             <tr>
                 <td style="width: 33%;">Prepared by:</td>
-                <td style="width: 33%;">Noted by:</td>
+                <td style="width: 33%;">Certified by:</td>
                 <td style="width: 33%;">Approved by:</td>
             </tr>
             <tr>
                 <td style="text-align: center;">
                     <br>    
-                    <b>Prepared Name</b><br>
-                    Position
+                    <b>{{ $prepared_by_name }}</b><br>
+                    {{ $prepared_by_position }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
-                    <b>Noted Name</b><br>
-                    Position
+                    <b>{{ $certified_by_name }}</b><br>
+                    {{ $certified_by_position }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
-                    <b>Approved Name</b><br>
-                    Position
+                    <b>{{ $approved_by_name }}</b><br>
+                    {{ $approved_by_position }}
                 </td>
             </tr>
         </table>

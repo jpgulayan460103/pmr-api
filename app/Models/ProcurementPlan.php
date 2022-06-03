@@ -15,10 +15,16 @@ use Illuminate\Support\Str;
 
 class ProcurementPlan extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
     
     protected $fillable = [
-        'annex',
+        'title',
+        'purpose',
+        'procurement_plan_type',
+        'item_type_id',
+        'ppmp_date',
+        'calendar_year',
+        'ppmp_number',
         'status',
         'remarks',
         'total_price',
@@ -35,6 +41,27 @@ class ProcurementPlan extends Model
         'approved_by_name',
         'approved_by_position',
     ];
+
+    protected static $logAttributes = [
+        '*',
+        'end_user.name',
+        'item_type.name',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'uuid',
+        'item_type_id',
+        'end_user_id',
+        'created_by_id',
+        'id',
+        'status',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     public static function boot()
     {
@@ -60,6 +87,11 @@ class ProcurementPlan extends Model
         return $this->morphMany(FormRoute::class, 'form_routable');
     }
 
+    public function form_uploads()
+    {
+        return $this->morphMany(FormUpload::class, 'form_uploadable')->orderBy('id','desc');
+    }
+
     public function end_user()
     {
         return $this->belongsTo(Library::class);
@@ -68,6 +100,10 @@ class ProcurementPlan extends Model
     public function items()
     {
         return $this->hasMany(ProcurementPlanItem::class);
+    }
+    public function item_type()
+    {
+        return $this->belongsTo(Library::class);
     }
     
 }

@@ -35,6 +35,11 @@ class FormUploadRepository implements FormUploadRepositoryInterface
                 $uuid = $form->uuid;
                 $yearMonth = $form->created_at->format('Y-m');
                 break;
+            case 'procurement_plan':
+                $form = (new ProcurementPlanRepository)->getById($id);
+                $uuid = $form->uuid;
+                $yearMonth = $form->created_at->format('Y-m');
+                break;
             
             default:
                 # code...

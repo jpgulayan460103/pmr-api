@@ -62,6 +62,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'total_cost' => $table->total_cost,
             'total_cost_formatted' => number_format($table->total_cost, 2),
             'common_amount' => $table->total_cost,
+            'common_amount_formatted' => number_format($table->total_cost, 2),
             'pr_dir' => $table->pr_dir,
             'end_user_id' => $table->end_user_id,
             'account_id' => $table->account_id,
