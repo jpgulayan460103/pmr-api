@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Library;
+use App\Models\ProcurementPlan;
 use App\Rules\LibraryExistRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -34,14 +36,15 @@ class CreateProcurementPlanRequest extends FormRequest
             'approved_by_name' => 'required|string',
             'approved_by_position' => 'required|string',
             'title' => 'required',
-            'procurement_plan_type' => 'required',
+            'procurement_plan_type_id' => ['required', new LibraryExistRule('procurement_plan_type')],
             'item_type_id' => 'required',
             'calendar_year' => 'required|digits:4|integer|min:'.date('Y').'|max:'.(date('Y')+1),
             'ppmp_date' => 'required|date',
             'approvedBy' => 'required',
-            // 'items.*.item_name' => 'required',
+            // 'items.*.item_id' => 'required',
             // 'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'items.*.total_quantity' => 'numeric|min:1',
+            'items.*.item_id' => 'required',
             'items.*.mon1' => 'required|numeric|min:0',
             'items.*.mon2' => 'required|numeric|min:0',
             'items.*.mon3' => 'required|numeric|min:0',
@@ -65,7 +68,7 @@ class CreateProcurementPlanRequest extends FormRequest
             'pr_date.required' => 'Date is required',
             'pr_date.date' => 'Not a valid date.',
             'items.*.unit_of_measure_id.required' => 'Required',
-            'items.*.item_name.required' => 'Required',
+            'items.*.item_id.required' => 'Please select an item.',
             'items.*.mon1.min' => ':min is the minimum',
             'items.*.mon1.numeric' => 'Required',
             'items.*.mon2.min' => ':min is the minimum',
@@ -96,5 +99,37 @@ class CreateProcurementPlanRequest extends FormRequest
             'items.*.total_quantity.min' => ':min is the minimum',
             'items.*.total_quantity.numeric' => 'Required',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $this->validateItems($validator);
+            $this->validateProcurementType($validator);
+        });
+    }
+
+    public function validateItems($validator)
+    {
+        if(request()->has('items')){
+            if(request('items') == array()){
+                $validator->errors()->add("items", "No items added.");
+            }
+        }
+    }
+
+    public function validateProcurementType($validator)
+    {
+        $ppmp = Library::where('library_type', 'procurement_plan_type')->where('name', ppmpValue())->first();
+        $supplementalPpmp = Library::where('library_type', 'procurement_plan_type')->where('name', supplementalPpmpValue())->first();
+        $existing_ppmp = ProcurementPlan::where('end_user_id', request('end_user_id'))
+        ->where('calendar_year', request('calendar_year'))
+        ->where('procurement_plan_type_id', $ppmp->id)
+        ->count();
+        if($ppmp->id == request('procurement_plan_type_id') && $existing_ppmp >= 1){
+            $validator->errors()->add("procurement_plan_type_id", "PPMP of CY ".request('calendar_year')." is already created.");
+        }elseif ($supplementalPpmp->id == request('procurement_plan_type_id') && $existing_ppmp == 0) {
+            $validator->errors()->add("procurement_plan_type_id", "No PPMP of CY ".request('calendar_year')." created.");
+        }
     }
 }

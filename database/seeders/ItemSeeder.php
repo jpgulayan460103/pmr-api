@@ -15,7 +15,7 @@ class ItemSeeder extends Seeder
      */
     public function run()
     {
-        $cse = Library::where('library_type','item_type')->first();
+        $cse = Library::where('library_type','item_type')->where('name', ppmpCse())->first();
         $items = [
             [
                 'item_category_id' => "Others",

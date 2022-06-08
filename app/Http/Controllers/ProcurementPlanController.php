@@ -7,6 +7,7 @@ use App\Models\ProcurementPlan;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Repositories\ProcurementPlanRepository;
+use App\Transformers\ApprovedProcurementPlanItemTransformer;
 use App\Transformers\ProcurementPlanTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class ProcurementPlanController extends Controller
      */
     public function index()
     {
-        $attach = 'form_process,form_routes, form_uploads, end_user, item_type';
+        $attach = 'form_process,form_routes, form_uploads, end_user, item_type, procurement_plan_type';
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->search([]);
         // return $procurement_plans;
@@ -120,11 +121,18 @@ class ProcurementPlanController extends Controller
         //
     }
 
+    public function summary(Request $request)
+    {
+        $items = $this->procurementPlanRepository->getApprovedItems();
+        return $items;
+        // return fractal($items, new ApprovedProcurementPlanItemTransformer)->parseIncludes('item.item_category, item.item_type, item.unit_of_measure');
+    }
+
     public function pdf(Request $request, $uuid)
     {
-        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item')->getByUuid($uuid);
+        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item, procurement_plan_type')->getByUuid($uuid);
         // return $procurement_plan;
-        $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item')->toArray();
+        $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item, procurement_plan_type')->toArray();
         // return $procurement_plan;
         $count = 0;
         foreach ($procurement_plan['items']['data'] as $key => $item) {

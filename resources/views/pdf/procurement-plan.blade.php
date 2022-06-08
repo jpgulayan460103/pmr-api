@@ -67,7 +67,7 @@
     <img src="{{ public_path('images/watermark.png') }}" style="width: 100%;">
 </div> -->
 <div id="pp-container">
-        <p id="txt-header">PROJECT PROCUREMENT MANAGEMENT PLAN (PPMP)</p>
+        <p id="txt-header">{{ strtoupper($procurement_plan_type['name']) }}</p>
         <p>
             <i>
             END-USER/UNIT <span id="txt-unit-head">{{ $end_user['name'] }}</span><br>

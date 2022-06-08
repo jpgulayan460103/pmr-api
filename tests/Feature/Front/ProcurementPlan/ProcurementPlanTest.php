@@ -35,7 +35,7 @@ class ProcurementPlanTest extends TestCase
         $response = $this->post('/api/procurement-plans',[
             'end_user_id' => Library::find($office[0]['office_id'])->id,
             'item_type_id' => 47,
-            'procurement_plan_type' => 'Project Procurement Management Plan (PPMP)',
+            'procurement_plan_type_id' => $this->faker->randomElement(Library::where('library_type','procurement_plan_type')->get()->pluck('id')),
             'prepared_by_name' => $this->faker->name,
             'prepared_by_position' => $this->faker->jobTitle,
             'certified_by_name' => $this->faker->name,

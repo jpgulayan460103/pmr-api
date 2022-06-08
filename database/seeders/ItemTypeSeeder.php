@@ -14,13 +14,19 @@ class ItemTypeSeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
-            "AVAILABLE AT PROCUREMENT SERVICE STORES",
-            "OTHER ITEMS NOT AVALABLE AT PS BUT REGULARLY PURCHASED FROM OTHER SOURCES",
+        $item_types = [
+            [
+                'name' => ppmpCse(),
+                'title' => 'CSE'
+            ],
+            [
+                'name' => ppmpNonCse(),
+                'title' => 'NON-CSE'
+            ],
         ];
 
-        foreach ($categories as $category) {
-            $lib = Library::create(['name' => $category, 'library_type' => 'item_type']);
+        foreach ($item_types as $item_type) {
+            $lib = Library::create(['name' => $item_type['name'], 'title' => $item_type['title'], 'library_type' => 'item_type']);
             echo $lib->library_type.": ".$lib->name."\n";
         }
     }

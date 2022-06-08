@@ -50,6 +50,7 @@ class AddTableForeignKeys extends Migration
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('procurement_plan_type_id')->references('id')->on('libraries')->onDelete('cascade');
         });
         Schema::table('procurement_plan_items', function (Blueprint $table) {
             $table->foreign('procurement_plan_id')->references('id')->on('procurement_plans')->onDelete('cascade');
@@ -170,6 +171,7 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['created_by_id']);
             $table->dropForeign(['end_user_id']);
             $table->dropForeign(['item_type_id']);
+            $table->dropForeign(['procurement_plan_type_id']);
         });
         Schema::table('procurement_plan_items', function (Blueprint $table) {
             $table->dropForeign(['procurement_plan_id']);

@@ -20,7 +20,7 @@ class ProcurementPlan extends Model
     protected $fillable = [
         'title',
         'purpose',
-        'procurement_plan_type',
+        'procurement_plan_type_id',
         'item_type_id',
         'ppmp_date',
         'calendar_year',
@@ -46,10 +46,12 @@ class ProcurementPlan extends Model
         '*',
         'end_user.name',
         'item_type.name',
+        'procurement_plan_type.name',
     ];
 
     protected static $logAttributesToIgnore = [
         'uuid',
+        'procurement_plan_type_id',
         'item_type_id',
         'end_user_id',
         'created_by_id',
@@ -102,6 +104,10 @@ class ProcurementPlan extends Model
         return $this->hasMany(ProcurementPlanItem::class);
     }
     public function item_type()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    public function procurement_plan_type()
     {
         return $this->belongsTo(Library::class);
     }

@@ -7,6 +7,7 @@ use App\Models\ProcurementPlanItem;
 use App\Repositories\Interfaces\ProcurementPlanRepositoryInterface;
 use App\Repositories\HasCrud;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
 {
@@ -112,5 +113,25 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         $total += $items['mon11'];
         $total += $items['mon12'];
         return $total;
+    }
+
+    public function getApprovedItems()
+    {
+        config(['database.connections.mysql.strict' => false]);
+        $items = ProcurementPlanItem::with(['item', 'item.item_category', 'item.item_type', 'item.unit_of_measure']);
+        $items->where('procurement_plans.status','approved');
+        $items->where('procurement_plans.end_user_id',119);
+        $items->select(
+            'procurement_plan_items.item_id',
+            DB::raw('SUM(total_quantity) as sum_quantity'),
+            DB::raw('ROUND(SUM(procurement_plan_items.total_price), 2) as sum_price'),
+            DB::raw('(SELECT SUM(quantity) as total_quantity_pr FROM purchase_request_items left join purchase_requests ON purchase_requests.id = purchase_request_items.purchase_request_id where item_id = procurement_plan_items.item_id and purchase_requests.end_user_id = 119 and purchase_requests.status = "approved") as test')
+        );
+        $items->groupBy('procurement_plan_items.item_id');
+        $items->leftJoin('procurement_plans','procurement_plans.id','=','procurement_plan_items.procurement_plan_id');
+        // $items->leftJoin('purchase_request_items','purchase_request_items.item_id','=','procurement_plan_items.item_id');
+        $items =  $items->get();
+        config(['database.connections.mysql.strict' => true]);
+        return $items;
     }
 }

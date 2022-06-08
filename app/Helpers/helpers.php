@@ -24,3 +24,25 @@ if (!function_exists('dumph')) {
         dump($var);
     }
 }
+
+if (!function_exists('ppmpValue')) {
+    function ppmpValue(){
+        return "PROJECT PROCUREMENT MANAGEMENT PLAN (PPMP)";
+    }
+}
+
+if (!function_exists('supplementalPpmpValue')) {
+    function supplementalPpmpValue(){
+        return "SUPPLEMENTAL PROJECT PROCUREMENT MANAGEMENT PLAN (PPMP)";
+    }
+}
+if (!function_exists('ppmpCse')) {
+    function ppmpCse(){
+        return "AVAILABLE AT PROCUREMENT SERVICE STORES";
+    }
+}
+if (!function_exists('ppmpNonCse')) {
+    function ppmpNonCse(){
+        return "OTHER ITEMS NOT AVALABLE AT PS BUT REGULARLY PURCHASED FROM OTHER SOURCES";
+    }
+}

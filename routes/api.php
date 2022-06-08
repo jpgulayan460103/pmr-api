@@ -113,3 +113,8 @@ Route::group(['prefix' => '/reports'], function () {
     Route::get('/purchase-request', [ReportController::class, 'purchaseRequest']);
 });
 
+
+Route::group(['prefix' => '/summaries'], function () {
+    Route::get('/procurement-plans', [ProcurementPlanController::class, 'summary']);
+});
+

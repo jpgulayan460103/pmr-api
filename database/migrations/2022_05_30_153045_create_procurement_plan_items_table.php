@@ -17,7 +17,6 @@ class CreateProcurementPlanItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('procurement_plan_id')->nullable();
             $table->unsignedBigInteger('item_id')->nullable();
-            $table->string('uuid')->nullable();
             $table->integer('mon1')->nullable();
             $table->integer('mon2')->nullable();
             $table->integer('mon3')->nullable();
