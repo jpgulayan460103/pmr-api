@@ -50,6 +50,7 @@ Route::resources([
     'suppliers' => SupplierController::class,
     'quotations' => QuotationController::class,
     'procurement-plans' => ProcurementPlanController::class,
+    'requisition-issues' => RequisitionIssueController::class,
 ]);
 
 Route::group(['prefix' => '/libraries'], function () {

@@ -15,14 +15,14 @@ class ItemBSeeder extends Seeder
      */
     public function run()
     {
-        $cse = Library::where('library_type','item_type')->where('name', ppmpNonCse())->first();
+        $nonCse = Library::where('library_type','item_type')->where('name', ppmpNonCse())->first();
         $items = [
             [
                 'item_category_id' => "Printer or Facsimile or Photocopier Supplies",
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Printer Ink, HP Laserjet P1102',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -30,7 +30,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Toner, OKI 363, Photocopy/Printer, Black',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -38,7 +38,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Toner, OKI 363, Photocopy/Printer, Cyan',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -46,7 +46,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Toner, OKI 363, Photocopy/Printer, Yellow',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -54,7 +54,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Toner, OKI 363, Photocopy/Printer, Magenta',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -62,7 +62,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Toner, Fuji M225, Black',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
             [
@@ -70,7 +70,7 @@ class ItemBSeeder extends Seeder
                 'unit_of_measure_id' => "PIECE",
                 'item_code' => "",
                 'item_name' => 'Cleaning blade',
-                'item_type_id' => $cse->id,
+                'item_type_id' => $nonCse->id,
                 'price' => 0,
             ],
 
