@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
-use App\Models\ItemCategory;
+use App\Models\ItemStockHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Str;
 
 class Item extends Model
 {
@@ -20,6 +21,7 @@ class Item extends Model
         'price',
         'unit_of_measure_id',
         'is_active',
+        'uuid',
     ];
 
     protected $casts = [];
@@ -46,6 +48,7 @@ class Item extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->is_active = 1;
+            $model->uuid = (string) Str::uuid();
         });
         self::updating(function($model) {
 
@@ -60,6 +63,11 @@ class Item extends Model
     public function item_type()
     {
         return $this->belongsTo(Library::class);
+    }
+
+    public function item_stock_histories()
+    {
+        return $this->hasMany(ItemStockHistory::class);
     }
 
     public function unit_of_measure()

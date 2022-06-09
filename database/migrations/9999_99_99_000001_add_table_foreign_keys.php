@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddTableForeignKeys extends Migration
@@ -44,6 +45,11 @@ class AddTableForeignKeys extends Migration
             $table->foreign('item_category_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
+        });
+
+        Schema::table('item_stock_histories', function (Blueprint $table) {
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->index(['form_sourceable_id', 'form_sourceable_type'], 'item_stock_form_sourceable_id_form_sourceable_type_index');
         });
 
         Schema::table('procurement_plans', function (Blueprint $table) {
@@ -165,6 +171,11 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['item_category_id']);
             $table->dropForeign(['item_type_id']);
             $table->dropForeign(['unit_of_measure_id']);
+        });
+
+        Schema::table('item_stock_histories', function (Blueprint $table) {
+            $table->dropForeign(['item_id']);
+            DB::statement('ALTER TABLE `item_stock_histories` DROP INDEX `item_stock_form_sourceable_id_form_sourceable_type_index`');
         });
 
         Schema::table('procurement_plans', function (Blueprint $table) {

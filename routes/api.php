@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
+use App\Http\Controllers\ItemStockHistoryController;
 use App\Http\Controllers\ProcurementPlanController;
 use App\Http\Controllers\ReportController;
 use App\Models\PurchaseOrder;
@@ -68,6 +69,7 @@ Route::group(['prefix' => '/pdf'], function () {
     Route::get('/procurement-plan/{id}', [ProcurementPlanController::class, 'pdf'])->name('api.procurement-plans.pdf');
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
     Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
+    Route::get('/stock-card/{id}', [ItemStockHistoryController::class, 'pdf'])->name('api.stock-card.pdf');
 });
 
 

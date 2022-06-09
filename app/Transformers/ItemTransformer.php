@@ -26,6 +26,7 @@ class ItemTransformer extends TransformerAbstract
         'unit_of_measure',
         'item_category',
         'item_type',
+        'item_stock_histories',
     ];
     
     /**
@@ -41,6 +42,8 @@ class ItemTransformer extends TransformerAbstract
             'display_log' => $table->item_name,
             'item_code' => $table->item_code,
             'item_type_id' => $table->item_type_id,
+            'file' => route('api.stock-card.pdf', ['id' => $table->uuid]),
+            'uuid' => $table->uuid,
             'price' => $table->price,
             'is_active' => $table->is_active,
             'id' => $table->id,
@@ -67,6 +70,12 @@ class ItemTransformer extends TransformerAbstract
     {
         if ($table->item_type) {
             return $this->item($table->item_type, new LibraryTransformer);
+        }
+    }
+    public function includeItemStockHistories(Item $table)
+    {
+        if ($table->item_stock_histories) {
+            return $this->collection($table->item_stock_histories, new ItemStockHistoryTransformer);
         }
     }
 }

@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AreaOfAssignmentSeeder::class);
         $this->call(EmploymentStatusSeeder::class);
         $this->call(UserOfficeSampleSeeder::class);
+        $this->call(ItemStockSampleSeeder::class);
         $this->call(UserOfficeSeeder::class);
         $this->call(UacsCodeSeeder::class);
         activity()->enableLogging();
