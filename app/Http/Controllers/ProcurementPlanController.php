@@ -6,6 +6,7 @@ use App\Http\Requests\CreateProcurementPlanRequest;
 use App\Models\ProcurementPlan;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
+use App\Repositories\LibraryRepository;
 use App\Repositories\ProcurementPlanRepository;
 use App\Transformers\ApprovedProcurementPlanItemTransformer;
 use App\Transformers\ProcurementPlanTransformer;
@@ -56,13 +57,23 @@ class ProcurementPlanController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $items = $this->procurementPlanRepository->addItems();
-            $data['total_price'] = $items['total_cost'];
-            $data['inflation'] = $items['total_cost'] * 0.1;
-            $data['contingency'] = $items['total_cost'] * 0.1;
-            $data['total_estimated_budget'] = $items['total_cost'] + $data['inflation'] + $data['contingency'];
+            $itemsA = $this->procurementPlanRepository->addItemsA();
+            $itemsB = $this->procurementPlanRepository->addItemsB();
+            $data['total_price_a'] = $itemsA['total_cost'];
+            $data['inflation_a'] = $itemsA['total_cost'] * 0.1;
+            $data['contingency_a'] = $itemsA['total_cost'] * 0.1;
+            $data['total_estimated_budget_a'] = $itemsA['total_cost'] + $data['inflation_a'] + $data['contingency_a'];
+
+            $data['total_price_b'] = $itemsB['total_cost'];
+            $data['inflation_b'] = $itemsB['total_cost'] * 0.1;
+            $data['contingency_b'] = $itemsB['total_cost'] * 0.1;
+            $data['total_estimated_budget_b'] = $itemsB['total_cost'] + $data['inflation_b'] + $data['contingency_b'];
+            
+            $data['total_estimated_budget'] = $data['total_estimated_budget_a'] + $data['total_estimated_budget_b'];
+
             $procurement_plan = $this->procurementPlanRepository->create($data);
-            $procurement_plan->items()->saveMany($items['items']);
+            $procurement_plan->items()->saveMany($itemsA['items']);
+            $procurement_plan->items()->saveMany($itemsB['items']);
             $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan);
             $form_route = (new FormRouteRepository())->procurementPlan($procurement_plan, $form_process);
             DB::commit();
@@ -133,20 +144,37 @@ class ProcurementPlanController extends Controller
         $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item, procurement_plan_type')->getByUuid($uuid);
         // return $procurement_plan;
         $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item, procurement_plan_type')->toArray();
-        // return $procurement_plan;
-        $count = 0;
+        $count_a = 0;
+        $count_b = 0;
+        $itemTypeA = (new LibraryRepository)->getBy("name", ppmpCse())->first();
+        $itemTypeB = (new LibraryRepository)->getBy("name", ppmpNonCse())->first();
+        $itemsA = [];
+        $itemsB = [];
         foreach ($procurement_plan['items']['data'] as $key => $item) {
-            $count++;
-            $count += substr_count($item['item']['item_name'],"\n");
+            if($item['item']['item_type_id'] == $itemTypeA->id){
+                $itemsA[] = $item;
+                $count_a++;
+                $count_a += substr_count($item['item']['item_name'],"\n");
+            }elseif($item['item']['item_type_id'] == $itemTypeB->id){
+                $itemsB[] = $item;
+                $count_b++;
+                $count_b += substr_count($item['item']['item_name'],"\n");
+            }
         }
-        $procurement_plan['count_items'] = $count;
-        $config = ['instanceConfigurator' => function($mpdf) {
-            $mpdf->SetWatermarkText('DRAFT');
-            $mpdf->showWatermarkText = true;
-            $mpdf->setFooter('{PAGENO}');
-        }];
         
-        $pdf = FacadesPdf::loadView('pdf.procurement-plan', $procurement_plan, $config, ['orientation' => 'L']);
+        $procurement_plan['itemsA'] = $itemsA;
+        $procurement_plan['itemsB'] = $itemsB;
+        $procurement_plan['count_items_a'] = $count_a;
+        $procurement_plan['count_items_b'] = $count_b;
+        // return $procurement_plan;
+        $config = [
+            'instanceConfigurator' => function($mpdf) {
+                $mpdf->AddPage('L');
+                $mpdf->setFooter('Page {PAGENO} of {nbpg}');
+            },
+        ];
+        
+        $pdf = FacadesPdf::loadView('pdf.procurement-plan', $procurement_plan, $config, $config);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         // return $procurement_plan;

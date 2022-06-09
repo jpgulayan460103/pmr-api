@@ -40,6 +40,7 @@ class ItemTransformer extends TransformerAbstract
             'item_name' => $table->item_name,
             'display_log' => $table->item_name,
             'item_code' => $table->item_code,
+            'item_type_id' => $table->item_type_id,
             'price' => $table->price,
             'is_active' => $table->is_active,
             'id' => $table->id,

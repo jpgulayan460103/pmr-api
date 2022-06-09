@@ -25,9 +25,14 @@ class CreateProcurementPlansTable extends Migration
             $table->string('ppmp_number')->nullable();
             $table->string('status')->nullable();
             $table->string('remarks')->nullable();
-            $table->float('total_price',15,2)->nullable();
-            $table->float('inflation',15,2)->nullable();
-            $table->float('contingency',15,2)->nullable();
+            $table->float('total_price_a',15,2)->nullable();
+            $table->float('inflation_a',15,2)->nullable();
+            $table->float('contingency_a',15,2)->nullable();
+            $table->float('total_estimated_budget_a',15,2)->nullable();
+            $table->float('total_price_b',15,2)->nullable();
+            $table->float('inflation_b',15,2)->nullable();
+            $table->float('contingency_b',15,2)->nullable();
+            $table->float('total_estimated_budget_b',15,2)->nullable();
             $table->float('total_estimated_budget',15,2)->nullable();
             $table->boolean('is_supplemental')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();

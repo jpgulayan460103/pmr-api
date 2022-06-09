@@ -15,6 +15,8 @@
             margin: 5%;
             background-image-resize: 6;
             opacity: 0.75;
+            header: page-header;
+            footer: page-footer;
             /* background: url("{{ public_path('images/watermark.png') }}") no-repeat 0 0; */
             
         }
@@ -63,6 +65,13 @@
     </style>
 </head>
 <body>
+<htmlpageheader name="page-header">
+{PAGENO}
+</htmlpageheader>
+
+<htmlpagefooter name="page-footer">
+	Your Footer Content
+</htmlpagefooter>
 <!-- <div style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; text-align: center;z-index: -1000; ">
     <img src="{{ public_path('images/watermark.png') }}" style="width: 100%;">
 </div> -->
@@ -102,7 +111,10 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($items['data'] as $key => $item)
+                <tr>
+                    <th colspan="16" style="background-color: #D6EEEE; text-align:left;">PART I. AVAILABLE AT PROCUREMENT SERVICE STORES</th>
+                </tr>
+                @foreach($itemsA as $key => $item)
                 <tr>
                     <td style="height: 40pt;">{{ $item['item']['item_code'] }}</td>
                     <td>{{ $item['item']['item_name'] }}</td>
@@ -122,7 +134,7 @@
                     <td style="text-align: center;">{{ $item['mon12'] }}</td>
                 </tr>
                 @endforeach
-                @for($i = 0; $i<=(3 - $count_items); $i ++)
+                <!-- @for($i = 0; $i<=(3 - $count_items_a); $i ++)
                 <tr>
                     <td style="height: 40pt;"></td>
                     <td></td>
@@ -141,7 +153,83 @@
                     <td style="text-align: center;"></td>
                     <td style="text-align: center;"></td>
                 </tr>
-                @endfor
+                @endfor -->
+                <tr>
+                    <th colspan="3" style="background-color: #EED6D6; text-align:left;">GRAND TOTAL FOR ANNEX A</th>
+                    <th style="background-color: #EED6D6; text-align:right;">{{ number_format(($total_price_a), 2) }}</th>
+                    <th colspan="12" style="background-color: #EED6D6; text-align:left;"></th>
+                </tr>
+                <tr>
+                    <th colspan="16" style="background-color: #D6EEEE; text-align:left;">PART II. OTHER ITEMS NOT AVALABLE AT PS BUT REGULARLY PURCHASED FROM OTHER SOURCES (Note: Please indicate price of items)</th>
+                </tr>
+                <tr>
+                    <th rowspan="2" style="width: 80pt;">CODE</th>
+                    <th rowspan="2" style="width: 250pt;">GENERAL DESCRIPTION</th>
+                    <th>QUANTITY</th>
+                    <th rowspan="2"  style="width: 80pt;">ESTIMATED BUDGET</th>
+                    <th colspan="12">SCHEDULE/MILESTONE OF ACTIVITIES</th>
+                </tr>										 	
+
+                <tr>
+                    <th>SIZE</th>
+                    <th>Jan</th>
+                    <th>Feb</th>
+                    <th>Mar</th>
+                    <th>Apr</th>
+                    <th>May</th>
+                    <th>Jun</th>
+                    <th>July</th>
+                    <th>Aug</th>
+                    <th>Sept</th>
+                    <th>Oct</th>
+                    <th>Nov</th>
+                    <th>Dec</th>
+                </tr>
+                @foreach($itemsB as $key => $item)
+                <tr>
+                    <td style="height: 40pt;">{{ $item['item']['item_code'] }}</td>
+                    <td>{{ $item['item']['item_name'] }}</td>
+                    <td style="text-align: center;">{{ $item['total_quantity'] }}</td>
+                    <td style="text-align: right;">{{ number_format($item['total_price'], 2) }}</td>
+                    <td style="text-align: center;">{{ $item['mon1'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon2'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon3'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon4'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon5'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon6'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon7'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon8'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon9'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon10'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon11'] }}</td>
+                    <td style="text-align: center;">{{ $item['mon12'] }}</td>
+                </tr>
+                @endforeach
+                <!-- @for($i = 0; $i<=(3 - $count_items_b); $i ++)
+                <tr>
+                    <td style="height: 40pt;"></td>
+                    <td></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                </tr>
+                @endfor -->
+                <tr>
+                    <th colspan="3" style="background-color: #EED6D6; text-align:left;">GRAND TOTAL FOR ANNEX B</th>
+                    <th style="background-color: #EED6D6; text-align:right;">{{ number_format(($total_price_b), 2) }}</th>
+                    <th colspan="12" style="background-color: #EED6D6; text-align:left;"></th>
+                </tr>
             </tbody>
         </table>
         <br>
@@ -151,7 +239,7 @@
                     <b>TOTAL BUDGET:</b>
                 </td>
                 <td style="text-align: right;">
-                    {{ number_format($total_price, 2) }}
+                    {{ number_format(($total_price_a + $total_price_b), 2) }}
                 </td>
             </tr>
             <tr>
@@ -159,7 +247,7 @@
                     <b>+ 10% Provision for Inflation</b>
                 </td>
                 <td style="text-align: right;">
-                    {{ number_format($inflation, 2) }}
+                    {{ number_format(($inflation_a + $inflation_b), 2) }}
                 </td>
             </tr>
             <tr>
@@ -167,7 +255,7 @@
                     <b>+ 10% Contingency</b>
                 </td>
                 <td style="text-align: right;">
-                    {{ number_format($contingency, 2) }}
+                    {{ number_format(($contingency_a + $contingency_b), 2) }}
                 </td>
             </tr>
             <tr>
@@ -175,7 +263,7 @@
                     <b>TOTAL ESTIMATED BUDGET:  </b>
                 </td>
                 <td style="text-align: right;">
-                    {{ number_format($total_estimated_budget, 2) }}
+                    {{ number_format(($total_estimated_budget_a + $total_estimated_budget_b), 2) }}
                 </td>
             </tr>
         </table>

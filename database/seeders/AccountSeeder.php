@@ -48,7 +48,7 @@ class AccountSeeder extends Seeder
                 'category' => 'Inventory Held for Consumption'
             ],
             [
-                'name' => 'Welfare Goods,Food Supplies, Drugs and Medicines, etc.',
+                'name' => 'Welfare Goods, Food Supplies, Drugs and Medicines, etc.',
                 'category' => 'Inventory Held for Distribution'
             ],
             [

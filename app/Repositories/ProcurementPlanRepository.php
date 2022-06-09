@@ -78,12 +78,31 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         return $result;
     }
 
-    public function addItems()
+    public function addItemsA()
     {
         $total_cost = 0;
         $new_items = array();
-        if(request()->has('items') && request('items') != array()){
-            foreach (request('items') as $key => $item) {
+        if(request()->has('itemsA') && request('itemsA') != array()){
+            foreach (request('itemsA') as $key => $item) {
+                $total_quantity = $this->sumAllMon($item);
+                $item['total_price'] = $item['price'] * $total_quantity;
+                $total_cost += $item['total_price'];
+                $item['total_quantity'] = $total_quantity;
+                $new_items[$key] = new ProcurementPlanItem($item);
+            }
+        }
+        return [
+            'items' => $new_items,
+            'total_cost' => $total_cost,
+        ];
+    }
+
+    public function addItemsB()
+    {
+        $total_cost = 0;
+        $new_items = array();
+        if(request()->has('itemsB') && request('itemsB') != array()){
+            foreach (request('itemsB') as $key => $item) {
                 $total_quantity = $this->sumAllMon($item);
                 $item['total_price'] = $item['price'] * $total_quantity;
                 $total_cost += $item['total_price'];
