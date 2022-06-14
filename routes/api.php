@@ -16,6 +16,8 @@ use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
 use App\Http\Controllers\ItemStockHistoryController;
+use App\Http\Controllers\ProcurementManagementController;
+use App\Http\Controllers\RequisitionIssueController;
 use App\Http\Controllers\ProcurementPlanController;
 use App\Http\Controllers\ReportController;
 use App\Models\PurchaseOrder;
@@ -51,6 +53,7 @@ Route::resources([
     'quotations' => QuotationController::class,
     'procurement-plans' => ProcurementPlanController::class,
     'requisition-issues' => RequisitionIssueController::class,
+    'procurement-managements' => ProcurementManagementController::class,
 ]);
 
 Route::group(['prefix' => '/libraries'], function () {

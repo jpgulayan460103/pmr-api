@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\RequisitionIssue;
+use App\Repositories\FormProcessRepository;
+use App\Repositories\FormRouteRepository;
 use App\Repositories\RequisitionIssueRepository;
+use App\Transformers\RequisitionIssueTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RequisitionIssueController extends Controller
 {
@@ -42,7 +46,19 @@ class RequisitionIssueController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            $items = $this->requisitionIssueRepository->addItems();
+            $requisition_issue = $this->requisitionIssueRepository->create($data);
+            $requisition_issue->items()->saveMany($items['items']);
+            $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
+            $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
+            DB::commit();
+            return $requisition_issue;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -51,9 +67,13 @@ class RequisitionIssueController extends Controller
      * @param  \App\Models\RequisitionIssue  $requisitionIssue
      * @return \Illuminate\Http\Response
      */
-    public function show(RequisitionIssue $requisitionIssue)
+    public function show(Request $request, $id)
     {
-        //
+        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads';
+        $this->requisitionIssueRepository->attach($attach);
+        $requisition_isse = $this->requisitionIssueRepository->getById($id);
+        // return $requisition_isse;
+        return fractal($requisition_isse, new RequisitionIssueTransformer)->parseIncludes($attach);
     }
 
     /**

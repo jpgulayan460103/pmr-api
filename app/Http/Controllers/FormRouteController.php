@@ -167,6 +167,7 @@ class FormRouteController extends Controller
             $lastRoute = $formRoutes[count($formRoutes) - 1];
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user." && $formRoute->status == "pending"){
                 $this->formRouteRepository->completeForm($formRoute);
+                $this->formRouteRepository->updateProcurementManagement($formRoute);
                 $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Approved for procurement process." ]);
             }else{
                 $currentRoute = $formRoutes[$step];

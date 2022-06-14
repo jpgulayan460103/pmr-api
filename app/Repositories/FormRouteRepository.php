@@ -62,6 +62,23 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $created_route = $procurement_plan->form_routes()->create($data);
         return $created_route;
     }
+    public function requisitionIssue($requisition_issue, $formProcess, $step = 0){
+        $user = Auth::user();
+        $data = [
+            "route_type" => "requisition_issue",
+            "status" => "pending",
+            "remarks" => "Finalization from the end user.",
+            "processed_by_id" => null,
+            "origin_office_id" => $requisition_issue->end_user_id,
+            "from_office_id" => $requisition_issue->end_user_id,
+            "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
+            "form_process_id" => $formProcess['id'],
+            "owner_id" => $user->id,
+            "forwarded_by_id" => $user->id,
+        ];
+        $created_route = $requisition_issue->form_routes()->create($data);
+        return $created_route;
+    }
 
     public function getProcessed($type, $filters)
     {
@@ -200,6 +217,22 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form->status = "Approved";
         $formProcess->save();
         $form->save();
+    }
+
+    public function updateProcurementManagement($formRoute)
+    {
+        $formProcess = $formRoute->form_process;
+        $form = $formRoute->form_routable;
+        switch ($formProcess->form_type) {
+            case 'procurement_plan':
+                $procurementManagement = new ProcurementManagementRepository();
+                return $procurementManagement->createOrUpdateFromProcurementPlan($form);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 
     public function returnTo($id, $data)

@@ -15,7 +15,13 @@ class CreateRequisitionIssueItemsTable extends Migration
     {
         Schema::create('requisition_issue_items', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('requisition_issue_id')->nullable();
+            $table->unsignedBigInteger('item_id')->nullable();
+            $table->integer('request_quantity')->nullable();
+            $table->integer('issue_quantity')->nullable();
+            $table->boolean('has_stock')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

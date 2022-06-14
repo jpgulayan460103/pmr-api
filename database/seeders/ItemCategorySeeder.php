@@ -21,7 +21,10 @@ class ItemCategorySeeder extends Seeder
             "Batteries and Cells and Accessories",
             "Cleaning Equipment and Supplies",
             "Color Compounds and Dispersions",
+            "Construction Supplies",
             "Consumer Electronics",
+            "Donations",
+            "Equipment",
             "Films",
             "Fire Fighting Equipment",
             "Flag or Accessories",
@@ -31,8 +34,12 @@ class ItemCategorySeeder extends Seeder
             "Lighting and Fixtures and Accessories",
             "Manufacturing Components and Supplies",
             "Measuring and Observing and Testing Equipment",
+            "Medical Supplies",
             "Office Equipment and Accessories and Supplies",
-            "Other Software",
+            "Office Supplies",
+            "Other Supplies - Janitorial Services",
+            "Other Supplies - Non Food Items",
+            "Other Supplies - Toiletries",
             "Others",
             "Paper Materials and Products",
             "Pesticides or Pest Repellents",
@@ -41,7 +48,8 @@ class ItemCategorySeeder extends Seeder
             "Purfumes or Colognes or Fragrances",
             "Software",
             "Solvents",
-            
+            "Welfare Goods for Consumption",
+            "Welfare Goods for Distribution",
         ];
 
         foreach ($categories as $category) {

@@ -10,6 +10,7 @@ use App\Models\FormProcess;
 use App\Models\Library;
 use App\Models\FormRoute;
 use App\Models\ProcurementPlanItem;
+use App\Models\ProcurementManagementItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -97,6 +98,11 @@ class ProcurementPlan extends Model
     public function form_uploads()
     {
         return $this->morphMany(FormUpload::class, 'form_uploadable')->orderBy('id','desc');
+    }
+
+    public function form_sources()
+    {
+        return $this->morphMany(ProcurementManagementItem::class, 'form_sourceable');
     }
 
     public function end_user()

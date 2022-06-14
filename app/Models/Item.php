@@ -17,6 +17,7 @@ class Item extends Model
         'item_name',
         'item_code',
         'item_category_id',
+        'item_subclassification_id',
         'item_type_id',
         'price',
         'unit_of_measure_id',

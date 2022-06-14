@@ -45,11 +45,21 @@ class AddTableForeignKeys extends Migration
             $table->foreign('item_category_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->foreign('item_subclassification_id')->references('id')->on('libraries')->onDelete('set null');
         });
 
         Schema::table('item_stock_histories', function (Blueprint $table) {
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->index(['form_sourceable_id', 'form_sourceable_type'], 'item_stock_form_sourceable_id_form_sourceable_type_index');
+        });
+
+        Schema::table('procurement_management', function (Blueprint $table) {
+            $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
+        });
+        Schema::table('procurement_management_items', function (Blueprint $table) {
+            $table->foreign('procurement_management_id')->references('id')->on('procurement_management')->onDelete('cascade');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('set null');
+            $table->index(['form_sourceable_id', 'form_sourceable_type'], 'pm_items_form_sourceable_id_form_sourceable_type_index');
         });
 
         Schema::table('procurement_plans', function (Blueprint $table) {
@@ -87,6 +97,15 @@ class AddTableForeignKeys extends Migration
             $table->foreign('item_id')->references('id')->on('items')->onDelete('set null');
             $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
+        });
+
+        Schema::table('requisition_issues', function (Blueprint $table) {
+            $table->foreign('created_by_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
+        });
+        Schema::table('requisition_issue_items', function (Blueprint $table) {
+            $table->foreign('requisition_issue_id')->references('id')->on('requisition_issues')->onDelete('cascade');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('set null');
         });
 
         Schema::table('quotations', function (Blueprint $table) {
@@ -171,13 +190,22 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['item_category_id']);
             $table->dropForeign(['item_type_id']);
             $table->dropForeign(['unit_of_measure_id']);
+            $table->dropForeign(['item_subclassification_id']);
         });
 
         Schema::table('item_stock_histories', function (Blueprint $table) {
             $table->dropForeign(['item_id']);
             DB::statement('ALTER TABLE `item_stock_histories` DROP INDEX `item_stock_form_sourceable_id_form_sourceable_type_index`');
         });
-
+        
+        Schema::table('procurement_management', function (Blueprint $table) {
+            $table->dropForeign(['end_user_id']);
+        });
+        Schema::table('procurement_management_items', function (Blueprint $table) {
+            $table->dropForeign(['procurement_management_id']);
+            $table->dropForeign(['item_id']);
+            DB::statement('ALTER TABLE `procurement_management_items` DROP INDEX `pm_items_form_sourceable_id_form_sourceable_type_index`');
+        });
         Schema::table('procurement_plans', function (Blueprint $table) {
             $table->dropForeign(['created_by_id']);
             $table->dropForeign(['end_user_id']);
@@ -213,6 +241,14 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['item_id']);
             $table->dropForeign(['purchase_request_id']);
             $table->dropForeign(['unit_of_measure_id']);
+        });
+        Schema::table('requisition_issues', function (Blueprint $table) {
+            $table->dropForeign(['created_by_id']);
+            $table->dropForeign(['end_user_id']);
+        });
+        Schema::table('requisition_issue_items', function (Blueprint $table) {
+            $table->dropForeign(['requisition_issue_id']);
+            $table->dropForeign(['item_id']);
         });
 
         Schema::table('quotations', function (Blueprint $table) {

@@ -278,4 +278,75 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $created_process->save();
         return $created_process;
     }
+
+    public function requisitionIssue($created_requisition_issue)
+    {
+        $origin_office = (new LibraryRepository)->getById($created_requisition_issue->end_user_id);
+        $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
+        $rd_office = (new LibraryRepository)->getUserSectionBy('title','ORD');
+        $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
+        $property_office = (new LibraryRepository)->getUserSectionBy('title','PSAMS');
+        $routes = [];
+        $routes[] = [
+            "office_id" => $origin_office->id,
+            "office_name" => $origin_office->name,
+            "label" => "ORIGIN",
+            "status" => "pending",
+            "description" => "Finalization from the end user.",
+            "description_code" => "ris_aprroval_from_enduser",
+        ];
+
+        //skip route if user division chief if parent is ORD, OARDA and OARDO
+        if($origin_office->parent->title != "ORD" && $origin_office->parent->title != "OARDA" && $origin_office->parent->title != "OARDO"){
+            $division = (new LibraryRepository)->getUserSectionBy('title', $origin_office->parent->title);
+            $routes[] = [
+                "office_id" => $division->id,
+                "office_name" => $division->name,
+                "label" => "DIVISION_CHIEF",
+                "status" => "pending",
+                "description" => "Approval from the division chief.",
+                "description_code" => "ris_aprroval_from_division",
+            ];
+        }
+
+        $routes[] = [
+            "office_id" => $property_office->id,
+            "label" => "PSAMS",
+            "office_name" => $property_office->name,
+            "status" => "pending",
+            "description" => "Approval from the $property_office->name.",
+            "description_code" => "ris_aprroval_from_property",
+        ];
+
+        $routes[] = [
+            "office_id" => $property_office->id,
+            "label" => "PSAMS",
+            "office_name" => $property_office->name,
+            "status" => "pending",
+            "description" => "Issuance from the $property_office->name.",
+            "description_code" => "ris_issuance_from_property",
+        ];
+
+        $routes[] = [
+            "office_id" => $origin_office->id,
+            "office_name" => $origin_office->name,
+            "label" => "RECEIVE",
+            "status" => "pending",
+            "description" => "To receive by the end user.",
+            "description_code" => "ris_received_by_enduser",
+        ];
+
+
+        $data = [
+            'process_description' => "Requisition and Issue Slip Routing",
+            'form_type' => "requisition_issue",
+            'office_id' => $origin_office->id,
+            "status" => "pending",
+        ];
+        
+        $created_process = $created_requisition_issue->form_process()->create($data);
+        $created_process->form_routes = $routes;
+        $created_process->save();
+        return $created_process;
+    }
 }

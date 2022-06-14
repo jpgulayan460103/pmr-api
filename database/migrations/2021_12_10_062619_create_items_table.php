@@ -21,6 +21,7 @@ class CreateItemsTable extends Migration
             $table->string('uuid')->nullable();
             $table->float('price',15,2)->nullable();
             $table->unsignedBigInteger('item_type_id')->nullable();
+            $table->unsignedBigInteger('item_subclassification_id')->nullable();
             $table->unsignedBigInteger('item_category_id')->nullable();
             $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->timestamps();

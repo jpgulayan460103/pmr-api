@@ -17,11 +17,14 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UnitOfMeasureSeeder::class);
+        $this->call(ItemClassificationSeeder::class);
+        $this->call(ItemSubClassificationSeeder::class);
         $this->call(ItemCategorySeeder::class);
         $this->call(ItemTypeSeeder::class);
         $this->call(ProcurementPlanTypeSeeder::class);
-        $this->call(ItemSeeder::class);
-        $this->call(ItemBSeeder::class);
+        $this->call(ItemPsdbmSeeder::class);
+        $this->call(ItemPremisSeeder::class);
+        $this->call(ItemRpciSeeder::class);
         // $this->call(UserSeeder::class);
         $this->call(DivisionSeeder::class);
         $this->call(SectionSeeder::class);
