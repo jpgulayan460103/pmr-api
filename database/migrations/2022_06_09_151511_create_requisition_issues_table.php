@@ -23,6 +23,7 @@ class CreateRequisitionIssuesTable extends Migration
             $table->string('recommendation')->nullable();
             $table->date('ris_date')->nullable();
             $table->string('ris_number')->nullable();
+            $table->boolean('from_ppmp')->nullable();
             $table->string('status')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();

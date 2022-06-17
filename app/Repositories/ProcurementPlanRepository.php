@@ -78,6 +78,45 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         return $result;
     }
 
+    public function updateProcurementPlan($id, $data)
+    {
+        $requisition_issue = $this->update($id, $data);
+        if(request()->has('items') && request('items') != array()){
+            $itemsA = $this->updateItems($id, "A");
+            $itemsB = $this->updateItems($id, "B");
+            $requisition_issue->items()->saveMany($itemsA['items']);
+            $requisition_issue->items()->saveMany($itemsB['items']);
+        }
+    }
+
+    public function updateItems($id, $type)
+    {
+        $item_ids_form = array();
+        $item_ids = ProcurementPlanItem::where('requisition_issue_id',$id)->pluck('id')->toArray();
+        $new_items = array();
+        $items = ($type == "A" ? request('itemsA') : request('itemsB'));
+        foreach ($items as $key => $item) {
+            if(isset($item['id'])){
+                ProcurementPlanItem::find($item['id'])->update($item);
+                $item_ids_form[] = $item['id']; 
+            }else{
+                $new_items[$key] = new ProcurementPlanItem($item);
+            }
+        }
+        $this->removeItems($item_ids,$item_ids_form);
+        return [
+            'items' => $new_items,
+        ];
+    }
+
+    public function removeItems($item_ids,$item_ids_form)
+    {
+        $removed_item_ids = array_diff($item_ids,$item_ids_form);
+        foreach ($removed_item_ids as $removed_item_id) {
+            ProcurementPlanItem::where('id', $removed_item_id)->first()->delete();
+        }
+    }
+
     public function addItemsA()
     {
         $total_cost = 0;

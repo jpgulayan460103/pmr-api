@@ -18,10 +18,11 @@ class CreateItemsTable extends Migration
             $table->string('item_name')->nullable();
             $table->string('item_code')->nullable();
             $table->boolean('is_active')->nullable();
+            $table->boolean('is_article')->nullable();
             $table->string('uuid')->nullable();
             $table->float('price',15,2)->nullable();
             $table->unsignedBigInteger('item_type_id')->nullable();
-            $table->unsignedBigInteger('item_subclassification_id')->nullable();
+            $table->unsignedBigInteger('item_category_cse_id')->nullable();
             $table->unsignedBigInteger('item_category_id')->nullable();
             $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->timestamps();

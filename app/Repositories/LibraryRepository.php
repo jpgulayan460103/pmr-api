@@ -28,8 +28,8 @@ class LibraryRepository implements LibraryRepositoryInterface
         if (($itemsRedis = Redis::get('libraries.items')) && !$refresh) {
             return json_decode($itemsRedis);
         }
-        $items = (new ItemRepository)->attach('unit_of_measure,item_category')->getAll();
-        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category,item_type');
+        $items = (new ItemRepository)->attach('unit_of_measure,item_category,item_type,item_category_cse')->getAll();
+        $items = fractal($items, new ItemTransformer)->parseIncludes('unit_of_measure,item_category,item_type,item_category_cse');
         Redis::set('libraries.items', $items->toJson());
         return $items;
     }

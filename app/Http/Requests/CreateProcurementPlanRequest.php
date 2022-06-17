@@ -58,6 +58,22 @@ class CreateProcurementPlanRequest extends FormRequest
             'itemsA.*.mon11' => 'required|numeric|min:0',
             'itemsA.*.mon12' => 'required|numeric|min:0',
             'itemsA.*.price' => ['numeric','min:0.01','regex:/^\d{1,15}(\.\d{1,2})?$/'],
+
+            'itemsB.*.total_quantity' => 'numeric|min:1',
+            'itemsB.*.item_id' => 'required',
+            'itemsB.*.mon1' => 'required|numeric|min:0',
+            'itemsB.*.mon2' => 'required|numeric|min:0',
+            'itemsB.*.mon3' => 'required|numeric|min:0',
+            'itemsB.*.mon4' => 'required|numeric|min:0',
+            'itemsB.*.mon5' => 'required|numeric|min:0',
+            'itemsB.*.mon6' => 'required|numeric|min:0',
+            'itemsB.*.mon7' => 'required|numeric|min:0',
+            'itemsB.*.mon8' => 'required|numeric|min:0',
+            'itemsB.*.mon9' => 'required|numeric|min:0',
+            'itemsB.*.mon10' => 'required|numeric|min:0',
+            'itemsB.*.mon11' => 'required|numeric|min:0',
+            'itemsB.*.mon12' => 'required|numeric|min:0',
+            'itemsB.*.price' => ['numeric','min:0','regex:/^\d{1,15}(\.\d{1,2})?$/'],
         ];
     }
 
@@ -110,7 +126,6 @@ class CreateProcurementPlanRequest extends FormRequest
             'itemsA.*.price.regex' => '2 decimal places only',
             'itemsA.*.total_quantity.min' => ':min is the minimum',
             'itemsA.*.total_quantity.numeric' => 'Required',
-
             'itemsB.*.unit_of_measure_id.required' => 'Required',
             'itemsB.*.item_id.required' => 'Please select an item.',
             'itemsB.*.mon1.min' => ':min is the minimum',

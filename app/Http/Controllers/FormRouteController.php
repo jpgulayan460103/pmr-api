@@ -148,7 +148,7 @@ class FormRouteController extends Controller
         $this->formRouteRepository->verifyRoute($id);
         DB::beginTransaction();
         try {
-            $this->formRouteRepository->modifyRoute($request, $id);
+            $this->formRouteRepository->updateFormRoutable($request, $id);
             $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
@@ -165,7 +165,7 @@ class FormRouteController extends Controller
                 $step++;
             }
             $lastRoute = $formRoutes[count($formRoutes) - 1];
-            if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->remarks != "Finalization from the end user." && $formRoute->status == "pending"){
+            if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->route_code != "route_origin" && $formRoute->status == "pending"){
                 $this->formRouteRepository->completeForm($formRoute);
                 $this->formRouteRepository->updateProcurementManagement($formRoute);
                 $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Approved for procurement process." ]);
@@ -185,6 +185,7 @@ class FormRouteController extends Controller
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
             $form = $formRoute->form_routable;
+            $this->formRouteRepository->addFormNumbers($form->id, $formRoute->route_type, $formRoute->route_code);
             $user = Auth::user();
             
             $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');

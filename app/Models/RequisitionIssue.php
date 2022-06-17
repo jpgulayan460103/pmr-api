@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Str;
 
 class RequisitionIssue extends Model
 {
@@ -20,23 +22,38 @@ class RequisitionIssue extends Model
         'recommendation',
         'ris_date',
         'ris_number',
+        'from_ppmp',
         'status',
         'remarks',
         'created_by_id',
         'end_user_id',
         'requested_by_name',
-        'requested_by_name',
+        'requested_by_designation',
         'requested_by_date',
         'approved_by_name',
-        'approved_by_name',
+        'approved_by_designation',
         'approved_by_date',
         'issued_by_name',
-        'issued_by_name',
+        'issued_by_designation',
         'issued_by_date',
         'received_by_name',
-        'received_by_name',
+        'received_by_designation',
         'received_by_date',
     ];
+
+    public static function boot()
+    {
+        $user = Auth::user();
+        parent::boot();
+        self::creating(function ($model) use ($user) {
+            $model->uuid = (string) Str::uuid();
+            $model->created_by_id = $user->id;
+            $model->status = 'Pending';
+        });
+        self::updating(function($model) {
+
+        });
+    }
 
     public function form_process()
     {

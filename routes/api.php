@@ -74,6 +74,7 @@ Route::group(['prefix' => '/pdf'], function () {
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
     Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
     Route::get('/stock-card/{id}', [ItemStockHistoryController::class, 'pdf'])->name('api.stock-card.pdf');
+    Route::get('/requisition-and-issue-slip/{id}', [RequisitionIssueController::class, 'pdf'])->name('api.ris.pdf');
 });
 
 

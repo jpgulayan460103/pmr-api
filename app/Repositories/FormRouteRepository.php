@@ -37,6 +37,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "origin_office_id" => $purchase_request->end_user_id,
             "from_office_id" => $purchase_request->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
+            "route_code" => $formProcess['form_routes'][$step]['description_code'],
             "form_process_id" => $formProcess['id'],
             "owner_id" => $user->id,
             "forwarded_by_id" => $user->id,
@@ -55,6 +56,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "origin_office_id" => $procurement_plan->end_user_id,
             "from_office_id" => $procurement_plan->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
+            "route_code" => $formProcess['form_routes'][$step]['description_code'],
             "form_process_id" => $formProcess['id'],
             "owner_id" => $user->id,
             "forwarded_by_id" => $user->id,
@@ -72,6 +74,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "origin_office_id" => $requisition_issue->end_user_id,
             "from_office_id" => $requisition_issue->end_user_id,
             "to_office_id" => $formProcess['form_routes'][$step]['office_id'],
+            "route_code" => $formProcess['form_routes'][$step]['description_code'],
             "form_process_id" => $formProcess['id'],
             "owner_id" => $user->id,
             "forwarded_by_id" => $user->id,
@@ -198,6 +201,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             "origin_office_id" => $formRoute->origin_office_id,
             "from_office_id" => $formRoute->to_office_id,
             "to_office_id" => $nextRoute['office_id'],
+            "route_code" => $nextRoute['description_code'],
             "form_process_id" => $formRoute->form_process_id,
             "form_routable_id" => $formRoute->form_routable_id,
             "form_routable_type" => $formRoute->form_routable_type,
@@ -266,9 +270,26 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
     }
 
-    public function modifyRoute($request, $id)
+    public function updateFormRoutable($request, $id)
     {
         $formRoute = $this->attach('form_process, form_routable.end_user')->getById($id);
+        switch ($formRoute->route_type) {
+            case 'purchase_request':
+                $this->updatePurchaseRequestForm($formRoute, $request);
+                break;
+            case 'requisition_issue':
+                $this->updateRequisitionIssueForm($formRoute, $request);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function updatePurchaseRequestForm($formRoute, $request)
+    {
+        if(request()->input() != array()){
             if(request()->has("updater") && (request('updater') == "procurement" || request('updater') == "budget")){
                 switch (request('updater')) {
                     case 'procurement':
@@ -305,15 +326,45 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                         break;
                 }
                 $formId = $formRoute->form_process->form_processable_id;
-                (new PurchaseRequestRepository())->update($request->all(), $formId);
-
-                if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
-                    $formProcessId = $formRoute->form_process->id;
-                    (new FormProcessRepository())->updateRouting($formProcessId, request("type"));
-                }
+                (new PurchaseRequestRepository())->update($formId, $request->all());
+    
+                $this->modifyRoute($formRoute);
             }
+        }
     }
 
+    public function updateRequisitionIssueForm($formRoute, $request)
+    {
+        if(request()->input() != array()){
+            $formId = $formRoute->form_process->form_processable_id;
+            (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $request->all());
+        }
+    }
 
+    public function modifyRoute($formRoute)
+    {
+        if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
+            $formProcessId = $formRoute->form_process->id;
+            (new FormProcessRepository())->updateRouting($formProcessId, request("type"));
+        }
+    }
+
+    public function addFormNumbers($form_id, $route_type, $route_code)
+    {
+        switch ($route_type) {
+            case 'requisition_issue':
+                if($route_code == "ris_aprroval_from_property"){
+                    $form = (new RequisitionIssueRepository())->getById($form_id);
+                    $last_number = (new RequisitionIssueRepository())->getLastNumber();
+                    $form->ris_number = "RIS-".Carbon::now()->format('Y-m-').str_pad(++$last_number, 5, "0", STR_PAD_LEFT);
+                    $form->save();
+                }
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
 
 }

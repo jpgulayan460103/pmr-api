@@ -20,6 +20,10 @@ class ItemSubClassificationSeeder extends Seeder
                 'item_classification' => 'Equipments'
             ],
             [
+                'name' => 'Equipment',
+                'item_classification' => 'Equipments'
+            ],
+            [
                 'name' => 'Property Plant and Equipment',
                 'item_classification' => 'Equipments'
             ],
@@ -30,6 +34,14 @@ class ItemSubClassificationSeeder extends Seeder
             [
                 'name' => 'Services',
                 'item_classification' => 'Services'
+            ],
+            [
+                'name' => 'Advocacy Supplies',
+                'item_classification' => 'Supplies and Consumables'
+            ],
+            [
+                'name' => 'Other Supplies and Consumables',
+                'item_classification' => 'Supplies and Consumables'
             ],
             [
                 'name' => 'Construction Supplies',
@@ -75,6 +87,7 @@ class ItemSubClassificationSeeder extends Seeder
                 'name' => 'Welfare Goods for Distribution',
                 'item_classification' => 'Supplies and Consumables'
             ],
+
 
         ];
     

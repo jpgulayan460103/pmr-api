@@ -37,6 +37,8 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
     {
         return [
             'requisition_issue_id' => $table->requisition_issue_id,
+            'id' => $table->id,
+            'key' => $table->id,
             'item_id' => $table->item_id,
             'request_quantity' => $table->request_quantity,
             'issue_quantity' => $table->issue_quantity,

@@ -16,6 +16,7 @@ class ProcurementPlanItem extends Model
     protected $fillable = [
         'procurement_plan_id',
         'item_id',
+        'description',
         'mon1',
         'mon2',
         'mon3',

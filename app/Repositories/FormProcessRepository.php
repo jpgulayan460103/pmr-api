@@ -46,7 +46,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 "label" => "ORIGIN",
                 "status" => "pending",
                 "description" => "Finalization from the end user.",
-                "description_code" => "aprroval_from_enduser",
+                "description_code" => "route_origin",
             ];
         }
 
@@ -56,7 +56,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $procurement_office->name,
             "status" => "pending",
             "description" => "Specification checking.",
-            "description_code" => "select_action",
+            "description_code" => "pr_select_action",
         ];
 
         //skip route if user division chief if parent is ORD, OARDA and OARDO
@@ -68,7 +68,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 "label" => "DIVISION_CHIEF",
                 "status" => "pending",
                 "description" => "Approval from the division chief.",
-                "description_code" => "aprroval_from_division",
+                "description_code" => "pr_aprroval_from_division",
             ];
         }
 
@@ -78,7 +78,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $bacs_office->name,
             "status" => "pending",
             "description" => "PPMP checking.",
-            "description_code" => "aprroval_from_bac",
+            "description_code" => "pr_aprroval_from_bac",
         ];
 
         
@@ -88,7 +88,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $requested_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$requested_by_office->title,
-            "description_code" => "aprroval_from_oard",
+            "description_code" => "pr_aprroval_from_oard",
         ];
 
         $routes[] = [
@@ -97,7 +97,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $budget_office->name,
             "status" => "pending",
             "description" => "Budget allocation.",
-            "description_code" => "aprroval_from_budget",
+            "description_code" => "pr_aprroval_from_budget",
         ];
 
         $routes[] = [
@@ -106,7 +106,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $approved_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$approved_by_office->title,
-            "description_code" => "aprroval_from_ord",
+            "description_code" => "pr_aprroval_from_ord",
         ];
         
         $data = [
@@ -150,7 +150,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $form_routes = $process['form_routes'];
         $new_routes = [];
         foreach ($form_routes as $key => $form_route) {
-            if($form_route['description_code'] == "select_action"){
+            if($form_route['description_code'] == "pr_select_action"){
                 $new_routes[] = $form_route;
                 $technical_working_group = (new LibraryRepository)->getById(request('technical_working_group_id'));
                 $new_routes[] = [
@@ -159,7 +159,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                     "office_name" => $technical_working_group->name,
                     "status" => "pending",
                     "description" => "Approval from the Technical Working Group",
-                    "description_code" => "aprroval_from_twg",
+                    "description_code" => "pr_aprroval_from_twg",
                 ];
 
                 $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
@@ -170,7 +170,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                     "office_name" => $procurement_office->name,
                     "status" => "pending",
                     "description" => "Approval from the Procurement Section",
-                    "description_code" => "aprroval_from_proc",
+                    "description_code" => "pr_aprroval_from_proc",
                 ];
             }else{
                 $new_routes[] = $form_route;
@@ -192,7 +192,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $requested_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$requested_by_office->title,
-            "description_code" => "aprroval_from_oard",
+            "description_code" => "pr_aprroval_from_oard",
         ];
         $old_oard_route = $form_routes[$key];
         $form_routes[$key] = $new_oard_route;
@@ -206,8 +206,14 @@ class FormProcessRepository implements FormProcessRepositoryInterface
     public function updateRouting($id, $type)
     {
         $process = $this->getById($id);
-        if($process['form_processable_type'] == "App\\Models\\PurchaseRequest"){
-            return $this->updatePurchaseRequestRouting($process, $type);
+        switch ($process['form_type']) {
+            case 'purchase_request':
+                return $this->updatePurchaseRequestRouting($process, $type);
+                break;
+            
+            default:
+                # code...
+                break;
         }
     }
 
@@ -223,7 +229,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => "ORIGIN",
             "status" => "pending",
             "description" => "Finalization from the end user.",
-            "description_code" => "ppmp_aprroval_from_enduser",
+            "description_code" => "route_origin",
         ];
 
         $routes[] = [
@@ -293,7 +299,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => "ORIGIN",
             "status" => "pending",
             "description" => "Finalization from the end user.",
-            "description_code" => "ris_aprroval_from_enduser",
+            "description_code" => "route_origin",
         ];
 
         //skip route if user division chief if parent is ORD, OARDA and OARDO

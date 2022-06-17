@@ -20,6 +20,19 @@ class RequisitionIssueItem extends Model
         'has_stock',
     ];
 
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model){
+            $model->issue_quantity = 0;
+            $model->has_stock = 0;
+        });
+        self::updating(function($model) {
+
+        });
+    }
+
     public function requisition_issue()
     {
         return $this->belongsTo(RequisitionIssue::class);

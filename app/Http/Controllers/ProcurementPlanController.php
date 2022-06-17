@@ -116,9 +116,17 @@ class ProcurementPlanController extends Controller
      * @param  \App\Models\ProcurementPlan  $procurementPlan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProcurementPlan $procurementPlan)
+    public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            $procurement_plan = $this->procurementPlanRepository->updateProcurementPlan($id, $data);
+            DB::commit();
+            return $procurement_plan;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

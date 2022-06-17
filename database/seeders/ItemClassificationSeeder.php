@@ -16,10 +16,10 @@ class ItemClassificationSeeder extends Seeder
     {
         $item_classifications = [
             [
-                'name' => 'Equipments',
+                'name' => 'Equipments/Properties',
             ],
             [
-                'name' => 'Supplies and Consumables',
+                'name' => 'Supplies/Goods',
             ],
             [
                 'name' => 'Services',

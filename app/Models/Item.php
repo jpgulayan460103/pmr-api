@@ -17,11 +17,13 @@ class Item extends Model
         'item_name',
         'item_code',
         'item_category_id',
-        'item_subclassification_id',
+        'item_classification_id',
+        'item_category_cse_id',
         'item_type_id',
         'price',
         'unit_of_measure_id',
         'is_active',
+        'is_article',
         'uuid',
     ];
 
@@ -72,6 +74,16 @@ class Item extends Model
     }
 
     public function unit_of_measure()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function item_classification()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    
+    public function item_category_cse()
     {
         return $this->belongsTo(Library::class);
     }

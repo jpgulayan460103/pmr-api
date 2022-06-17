@@ -27,6 +27,8 @@ class ItemTransformer extends TransformerAbstract
         'item_category',
         'item_type',
         'item_stock_histories',
+        'item_classification',
+        'item_category_cse',
     ];
     
     /**
@@ -42,6 +44,8 @@ class ItemTransformer extends TransformerAbstract
             'display_log' => $table->item_name,
             'item_code' => $table->item_code,
             'item_type_id' => $table->item_type_id,
+            'item_classification_id' => $table->item_classification_id,
+            'item_category_cse_id' => $table->item_category_cse_id,
             'file' => route('api.stock-card.pdf', ['id' => $table->uuid]),
             'uuid' => $table->uuid,
             'price' => $table->price,
@@ -76,6 +80,18 @@ class ItemTransformer extends TransformerAbstract
     {
         if ($table->item_stock_histories) {
             return $this->collection($table->item_stock_histories, new ItemStockHistoryTransformer);
+        }
+    }
+    public function includeItemClassification(Item $table)
+    {
+        if ($table->item_classification) {
+            return $this->item($table->item_classification, new LibraryTransformer);
+        }
+    }
+    public function includeItemCategoryCse(Item $table)
+    {
+        if ($table->item_category_cse) {
+            return $this->item($table->item_category_cse, new LibraryTransformer);
         }
     }
 }

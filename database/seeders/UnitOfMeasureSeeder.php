@@ -45,6 +45,7 @@ class UnitOfMeasureSeeder extends Seeder
             'ROLL',
             'SACHET',
             'SACK',
+            'SHEET',
             'SET',
             'SPOOL',
             'TABLET',

@@ -28,6 +28,7 @@ class FormRoute extends Model
         'form_routable_type',
         'form_process_id',
         'action_taken',
+        'route_code',
     ];
 
     protected static $logAttributes = [

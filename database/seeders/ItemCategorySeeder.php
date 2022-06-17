@@ -16,44 +16,112 @@ class ItemCategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            "Arts and Crafts Equipment and Accessories and Supplies",
-            "Audio and Visual Equipment and Supplies",
-            "Batteries and Cells and Accessories",
-            "Cleaning Equipment and Supplies",
-            "Color Compounds and Dispersions",
-            "Construction Supplies",
-            "Consumer Electronics",
-            "Donations",
-            "Equipment",
-            "Films",
-            "Fire Fighting Equipment",
-            "Flag or Accessories",
-            "Furniture and Furnishings",
-            "Heating and Ventilation and Air Circulation",
-            "Information and Communication Technology (ICT) Equipment and Devices and Accessories",
-            "Lighting and Fixtures and Accessories",
-            "Manufacturing Components and Supplies",
-            "Measuring and Observing and Testing Equipment",
-            "Medical Supplies",
-            "Office Equipment and Accessories and Supplies",
-            "Office Supplies",
-            "Other Supplies - Janitorial Services",
-            "Other Supplies - Non Food Items",
-            "Other Supplies - Toiletries",
-            "Others",
-            "Paper Materials and Products",
-            "Pesticides or Pest Repellents",
-            "Printed Publications",
-            "Printer or Facsimile or Photocopier Supplies",
-            "Purfumes or Colognes or Fragrances",
-            "Software",
-            "Solvents",
-            "Welfare Goods for Consumption",
-            "Welfare Goods for Distribution",
+            [
+                'name' => "Office Supplies - Semi-expendable",
+                'parent_id' => "Equipments/Properties",
+            ],
+            [
+                'name' => "Other Equipments",
+                'parent_id' => "Equipments/Properties",
+            ],
+            [
+                'name' => "Construction Supplies",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Donations",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Medical Supplies",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Office Supplies - Consumables",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Other Supplies - Food Items",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Other Supplies - Janitorial Supplies",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Other Supplies - Non Food Items",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Other Supplies - Toiletries",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Other Consumables",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Welfare Goods for Consumption",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Welfare Goods for Distribution",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Advocacy Supplies",
+                'parent_id' => "Supplies/Goods",
+            ],
+            [
+                'name' => "Board and Lodging",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Catering Services",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Food and Venue",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Janitorial Services",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Office Rent",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Others",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Petroleum Oil and Lubricant",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Printing and Publication",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Security",
+                'parent_id' => "Services",
+            ],
+            [
+                'name' => "Transportation",
+                'parent_id' => "Services",
+            ],
+
         ];
 
         foreach ($categories as $category) {
-            $lib = Library::create(['name' => $category, 'library_type' => 'item_category']);
+            $item_classification = Library::where('name',$category['parent_id'])->where('library_type', 'item_classification')->first();
+            $lib = Library::create([
+                'name' => $category['name'],
+                'parent_id' => $item_classification->id,
+                'library_type' => 'item_category'
+            ]);
             echo $lib->library_type.": ".$lib->name."\n";
         }
     }

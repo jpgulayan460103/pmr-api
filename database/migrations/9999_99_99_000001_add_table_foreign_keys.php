@@ -45,7 +45,7 @@ class AddTableForeignKeys extends Migration
             $table->foreign('item_category_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
-            $table->foreign('item_subclassification_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->foreign('item_category_cse_id')->references('id')->on('libraries')->onDelete('set null');
         });
 
         Schema::table('item_stock_histories', function (Blueprint $table) {
@@ -190,7 +190,7 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['item_category_id']);
             $table->dropForeign(['item_type_id']);
             $table->dropForeign(['unit_of_measure_id']);
-            $table->dropForeign(['item_subclassification_id']);
+            $table->dropForeign(['item_category_cse_id']);
         });
 
         Schema::table('item_stock_histories', function (Blueprint $table) {
