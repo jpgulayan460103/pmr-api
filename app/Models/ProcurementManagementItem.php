@@ -12,6 +12,7 @@ class ProcurementManagementItem extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'procurement_management_id',
+        'procurement_plan_item_id',
         'item_id',
         'mon1',
         'mon2',
@@ -36,6 +37,10 @@ class ProcurementManagementItem extends Model
     public function procurement_management()
     {
         return $this->belongsTo(ProcurementManagement::class);
+    }
+    public function procurement_plan_item()
+    {
+        return $this->belongsTo(ProcurementPlanItem::class);
     }
 
     public function item()

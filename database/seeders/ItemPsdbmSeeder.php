@@ -34,21 +34,11 @@ class ItemPsdbmSeeder extends Seeder
             $item['item_category_cse_id'] = isset($res[4]) ? $res[4] : "";
             $item['unit_of_measure_id'] = isset($res[5]) ? $res[5] : "";
             $item['price'] = isset($res[6]) ? $res[6] : 0;
-            $item['item_category_id'] = isset($res[7]) ? $res[7] : "";
             $item['item_type_id'] = $cse->id;
-            $item['is_article'] = 0;
-            
-            $parent_lib = Library::where('library_type','user_division')->where('name', $item['item_category_id'])->first();
-            $parent_id = null;
-            if($parent_lib){
-                $parent_id = $parent_lib->id;
-            }
             
             $item_category_cse_library = Library::where('name',$item['item_category_cse_id'])->where('library_type', 'item_category_cse')->first();
-            $item_category_library = Library::where('name',$item['item_category_id'])->where('library_type', 'item_category')->first();
             $unit_of_measure_library = Library::where('name',$item['unit_of_measure_id'])->where('library_type', 'unit_of_measure')->first();
             $item['item_category_cse_id'] = $item_category_cse_library ? $item_category_cse_library->id : null;
-            $item['item_category_id'] = $item_category_library ? $item_category_library->id : null;
             $item['unit_of_measure_id'] = $unit_of_measure_library ? $unit_of_measure_library->id : null;
             $createdItem = Item::create($item);
             echo "item name: ".$createdItem->item_name." item code: ".$createdItem->item_code."\n";

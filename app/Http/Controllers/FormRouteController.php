@@ -148,10 +148,16 @@ class FormRouteController extends Controller
         $this->formRouteRepository->verifyRoute($id);
         DB::beginTransaction();
         try {
-            $this->formRouteRepository->updateFormRoutable($request, $id);
+            
             $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
+            $form = $formRoute->form_routable;
+            if($formRoute->status == "pending"){
+                (new FormRouteRepository())->addFormNumber($formRoute, $form->id);
+                (new FormRouteRepository())->updateFormRoutable($request, $id);
+                (new FormRouteRepository())->updateProcurementManagement($formRoute);
+            }
             $step = 0;
             foreach ($formRoutes as $key => $route) {
                 if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
@@ -167,7 +173,6 @@ class FormRouteController extends Controller
             $lastRoute = $formRoutes[count($formRoutes) - 1];
             if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->route_code != "route_origin" && $formRoute->status == "pending"){
                 $this->formRouteRepository->completeForm($formRoute);
-                $this->formRouteRepository->updateProcurementManagement($formRoute);
                 $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Approved for procurement process." ]);
             }else{
                 $currentRoute = $formRoutes[$step];
@@ -184,8 +189,7 @@ class FormRouteController extends Controller
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
-            $form = $formRoute->form_routable;
-            $this->formRouteRepository->addFormNumbers($form->id, $formRoute->route_type, $formRoute->route_code);
+
             $user = Auth::user();
             
             $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use App\Models\ProcurementPlan;
 use App\Models\Item;
+use App\Models\Library;
 
 class ProcurementPlanItem extends Model
 {
@@ -16,6 +17,8 @@ class ProcurementPlanItem extends Model
     protected $fillable = [
         'procurement_plan_id',
         'item_id',
+        'unit_of_measure_id',
+        'item_type_id',
         'description',
         'mon1',
         'mon2',
@@ -59,5 +62,13 @@ class ProcurementPlanItem extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+    public function unit_of_measure()
+    {
+        return $this->belongsTo(Library::class);
+    }
+    public function item_type()
+    {
+        return $this->belongsTo(Library::class);
     }
 }

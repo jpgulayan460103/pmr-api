@@ -40,7 +40,7 @@ class ProcurementManagement extends Model
         return $this->hasMany(ProcurementManagementItem::class)
         ->select(
             'procurement_management_items.procurement_management_id',
-            'procurement_management_items.item_id',
+            'procurement_management_items.procurement_plan_item_id',
             DB::raw('round(sum(total_price), 2) as total_price'),
             DB::raw('sum(total_quantity) as total_quantity'),
             DB::raw('sum(mon1) as mon1'),
@@ -56,7 +56,7 @@ class ProcurementManagement extends Model
             DB::raw('sum(mon11) as mon11'),
             DB::raw('sum(mon12) as mon12'),
         )
-        ->groupBy('item_id');
+        ->groupBy('procurement_plan_item_id');
         
     }
 

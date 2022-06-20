@@ -17,6 +17,8 @@ class CreateRequisitionIssueItemsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('requisition_issue_id')->nullable();
             $table->unsignedBigInteger('item_id')->nullable();
+            $table->unsignedBigInteger('procurement_plan_item_id')->nullable();
+            $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->integer('request_quantity')->nullable();
             $table->integer('issue_quantity')->nullable();
             $table->boolean('has_stock')->nullable();

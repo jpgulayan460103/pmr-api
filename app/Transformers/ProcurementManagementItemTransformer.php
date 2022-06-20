@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\ProcurementManagementItem;
+use App\Models\ProcurementPlanItem;
 use League\Fractal\TransformerAbstract;
 
 class ProcurementManagementItemTransformer extends TransformerAbstract
@@ -23,7 +24,7 @@ class ProcurementManagementItemTransformer extends TransformerAbstract
      */
     protected array $availableIncludes = [
         'procurement_management',
-        'item',
+        'procurement_plan_item',
     ];
     
     /**
@@ -36,8 +37,9 @@ class ProcurementManagementItemTransformer extends TransformerAbstract
         $is_consolidated = ($table->id == null);
         if($is_consolidated){
             return [
-                'key' => $table->item_id,
+                'key' => $table->procurement_plan_item_id,
                 'procurement_management_id' => $table->procurement_management_id,
+                'procurement_plan_item_id' => $table->procurement_plan_item_id,
                 'item_id' => $table->item_id,
                 'mon1' => (int) $table->mon1,
                 'mon2' => (int) $table->mon2,
@@ -59,6 +61,7 @@ class ProcurementManagementItemTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'procurement_management_id' => $table->procurement_management_id,
+            'procurement_plan_item_id' => $table->procurement_plan_item_id,
             'item_id' => $table->item_id,
             'mon1' => (int) $table->mon1,
             'mon2' => (int) $table->mon2,
@@ -81,10 +84,10 @@ class ProcurementManagementItemTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeItem(ProcurementManagementItem $table)
+    public function includeProcurementPlanItem(ProcurementManagementItem $table)
     {
-        if ($table->item) {
-            return $this->item($table->item, new ItemTransformer);
+        if ($table->procurement_plan_item) {
+            return $this->item($table->procurement_plan_item, new ProcurementPlanItemTransformer());
         }
     }
 }

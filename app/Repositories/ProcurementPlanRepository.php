@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Library;
 use App\Models\ProcurementPlan;
 use App\Models\ProcurementPlanItem;
 use App\Repositories\Interfaces\ProcurementPlanRepositoryInterface;
@@ -138,6 +139,7 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
 
     public function addItemsB()
     {
+        $nonCse = Library::where('library_type','item_type')->where('name', ppmpNonCse())->first();
         $total_cost = 0;
         $new_items = array();
         if(request()->has('itemsB') && request('itemsB') != array()){
@@ -146,6 +148,7 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
                 $item['total_price'] = $item['price'] * $total_quantity;
                 $total_cost += $item['total_price'];
                 $item['total_quantity'] = $total_quantity;
+                $item['item_type_id'] = $nonCse->id;
                 $new_items[$key] = new ProcurementPlanItem($item);
             }
         }

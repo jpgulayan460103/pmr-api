@@ -248,7 +248,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => "OARD",
             "status" => "pending",
             "description" => "Approval from the ".$approved_by_office->title.".",
-            "description_code" => "ppmp_aprroval_from_division",
+            "description_code" => "ppmp_aprroval_from_rd",
         ];
 
         // if($origin_office->parent->title == "OARDO" || $origin_office->parent->title == "OARDA"){
@@ -259,7 +259,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         //         "label" => "OARD",
         //         "status" => "pending",
         //         "description" => "Approval from the OARD.",
-        //         "description_code" => "ppmp_aprroval_from_division",
+        //         "description_code" => "ppmp_aprroval_from_rd",
         //     ];
         // }else{
         //     $routes[] = [

@@ -91,7 +91,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             $results->where('processed_by_id',$user->id);
         }
         if($type == "approved"){
-            $results->where('remarks','<>','Finalization from the end user.');
+            $results->where('route_code','<>','route_origin');
         }
         $results = $this->filters($results, $filters);
         $results = $results->paginate(20);
@@ -229,8 +229,16 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form = $formRoute->form_routable;
         switch ($formProcess->form_type) {
             case 'procurement_plan':
-                $procurementManagement = new ProcurementManagementRepository();
-                return $procurementManagement->createOrUpdateFromProcurementPlan($form);
+                if($formRoute->route_code == "ppmp_aprroval_from_rd"){
+                    $procurementManagement = new ProcurementManagementRepository();
+                    return $procurementManagement->createOrUpdateFromProcurementPlan($form);
+                }
+                break;
+            case 'requisition_issue':
+                if($formRoute->route_code == "ris_issuance_from_property"){
+                    $procurementManagement = new ProcurementManagementRepository();
+                    return $procurementManagement->updateFromRequisitionIssue($form);
+                }
                 break;
             
             default:
@@ -349,11 +357,11 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
     }
 
-    public function addFormNumbers($form_id, $route_type, $route_code)
+    public function addFormNumber($formRoute, $form_id)
     {
-        switch ($route_type) {
+        switch ($formRoute->route_type) {
             case 'requisition_issue':
-                if($route_code == "ris_aprroval_from_property"){
+                if($formRoute->route_code == "ris_aprroval_from_property"){
                     $form = (new RequisitionIssueRepository())->getById($form_id);
                     $last_number = (new RequisitionIssueRepository())->getLastNumber();
                     $form->ris_number = "RIS-".Carbon::now()->format('Y-m-').str_pad(++$last_number, 5, "0", STR_PAD_LEFT);

@@ -159,14 +159,14 @@ class ProcurementPlanController extends Controller
         $itemsA = [];
         $itemsB = [];
         foreach ($procurement_plan['items']['data'] as $key => $item) {
-            if($item['item']['item_type_id'] == $itemTypeA->id){
+            if($item['item_type_id'] == $itemTypeA->id){
                 $itemsA[] = $item;
                 $count_a++;
                 $count_a += substr_count($item['item']['item_name'],"\n");
-            }elseif($item['item']['item_type_id'] == $itemTypeB->id){
+            }elseif($item['item_type_id'] == $itemTypeB->id){
                 $itemsB[] = $item;
                 $count_b++;
-                $count_b += substr_count($item['item']['item_name'],"\n");
+                $count_b += substr_count($item['description'],"\n");
             }
         }
         

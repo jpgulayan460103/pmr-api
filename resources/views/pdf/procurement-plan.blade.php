@@ -187,8 +187,8 @@
                 </tr>
                 @foreach($itemsB as $key => $item)
                 <tr>
-                    <td style="height: 40pt;">{{ $item['item']['item_code'] }}</td>
-                    <td>{{ $item['item']['item_name'] }}</td>
+                    <td style="height: 40pt;"></td>
+                    <td>{{ $item['description'] }}</td>
                     <td style="text-align: center;">{{ $item['total_quantity'] }}</td>
                     <td style="text-align: right;">{{ number_format($item['total_price'], 2) }}</td>
                     <td style="text-align: center;">{{ $item['mon1'] }}</td>

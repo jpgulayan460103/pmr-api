@@ -22,7 +22,9 @@ class ProcurementPlanItemTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-        'item'
+        'item',
+        'unit_of_measure',
+        'item_type',
     ];
     
     /**
@@ -36,7 +38,10 @@ class ProcurementPlanItemTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'procurement_plan_id' => $table->procurement_plan_id,
+            'unit_of_measure_id' => $table->unit_of_measure_id,
+            'item_type_id' => $table->item_type_id,
             'item_id' => $table->item_id,
+            'description' => $table->description,
             'mon1' => $table->mon1,
             'mon2' => $table->mon2,
             'mon3' => $table->mon3,
@@ -52,7 +57,7 @@ class ProcurementPlanItemTransformer extends TransformerAbstract
             'price' => $table->price,
             'total_quantity' => $table->total_quantity,
             'total_price' => $table->total_price,
-            'display_log' => $table->item->item_name,
+            'display_log' => $table->item ? $table->item->item_name : $table->description,
         ];
     }
 
@@ -60,6 +65,18 @@ class ProcurementPlanItemTransformer extends TransformerAbstract
     {
         if ($table->item) {
             return $this->item($table->item, new ItemTransformer);
+        }
+    }
+    public function includeUnitOfMeasure(ProcurementPlanItem $table)
+    {
+        if ($table->unit_of_measure) {
+            return $this->item($table->unit_of_measure, new LibraryTransformer);
+        }
+    }
+    public function includeItemType(ProcurementPlanItem $table)
+    {
+        if ($table->item_type_id) {
+            return $this->item($table->item_type_id, new LibraryTransformer);
         }
     }
 }

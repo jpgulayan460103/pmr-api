@@ -32,11 +32,20 @@ class SectionSeeder extends Seeder
             $category['name'] = isset($res[0]) ? $res[0] : "";
             $category['title'] = isset($res[1]) ? $res[1] : "";
             $category['division'] = isset($res[2]) ? $res[2] : "";
+            $category['officer'] = isset($res[3]) ? $res[3] : "";
+            $category['designation'] = isset($res[4]) ? $res[4] : "";
             
             
             $parent_lib = Library::where('library_type','user_division')->where('name', $category['division'])->first();
             $lib = Library::create(['name' => $category['name'], 'title' => $category['title'], 'library_type' => 'user_section', 'parent_id' => $parent_lib->id]);
             echo $lib->library_type.": ".$lib->name." ".$lib->title."\n";
+
+            $user_section_signatory = Library::create([
+                'name' => $category['officer'],
+                'title' => $category['designation'],
+                'library_type' => 'user_section_signatory',
+                'parent_id' => $lib->id
+            ]);
 
             $username = isset($res[3]) ? $res[3] : "";
             $user = User::where('username', $username)->first();

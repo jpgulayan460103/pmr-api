@@ -55,11 +55,11 @@ class ProcurementManagementController extends Controller
      */
     public function show(Request $request, $uuid)
     {
-        $this->procurementManagementRepository->attach('items.item.unit_of_measure, end_user');
+        $this->procurementManagementRepository->attach('items.procurement_plan_item.unit_of_measure, end_user');
         // $procurement_management = $this->procurementManagementRepository->getByUuid($uuid);
         $procurement_management = $this->procurementManagementRepository->getAll()->first();
         // return $procurement_management;
-        return fractal($procurement_management, new ProcurementManagementTransformer)->parseIncludes('items.item.unit_of_measure, end_user');
+        return fractal($procurement_management, new ProcurementManagementTransformer)->parseIncludes('items.procurement_plan_item.unit_of_measure, end_user');
     }
 
     /**

@@ -14,6 +14,8 @@ class RequisitionIssueItem extends Model
 
     protected $fillable = [
         'requisition_issue_id',
+        'procurement_plan_item_id',
+        'unit_of_measure_id',
         'item_id',
         'request_quantity',
         'issue_quantity',
@@ -37,9 +39,17 @@ class RequisitionIssueItem extends Model
     {
         return $this->belongsTo(RequisitionIssue::class);
     }
+    public function procurement_plan_item()
+    {
+        return $this->belongsTo(ProcurementPlanItem::class);
+    }
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+    public function unit_of_measure()
+    {
+        return $this->belongsTo(Library::class);
     }
 
 }

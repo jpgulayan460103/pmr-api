@@ -21,8 +21,16 @@ class ItemCategorySeeder extends Seeder
                 'parent_id' => "Equipments/Properties",
             ],
             [
-                'name' => "Other Equipments",
+                'name' => "Plant Property and Equipments",
                 'parent_id' => "Equipments/Properties",
+            ],
+            [
+                'name' => "Semi-expendable Equipments",
+                'parent_id' => "Equipments/Properties",
+            ],
+            [
+                'name' => "Advocacy Supplies",
+                'parent_id' => "Supplies/Goods",
             ],
             [
                 'name' => "Construction Supplies",
@@ -57,10 +65,6 @@ class ItemCategorySeeder extends Seeder
                 'parent_id' => "Supplies/Goods",
             ],
             [
-                'name' => "Other Consumables",
-                'parent_id' => "Supplies/Goods",
-            ],
-            [
                 'name' => "Welfare Goods for Consumption",
                 'parent_id' => "Supplies/Goods",
             ],
@@ -68,51 +72,6 @@ class ItemCategorySeeder extends Seeder
                 'name' => "Welfare Goods for Distribution",
                 'parent_id' => "Supplies/Goods",
             ],
-            [
-                'name' => "Advocacy Supplies",
-                'parent_id' => "Supplies/Goods",
-            ],
-            [
-                'name' => "Board and Lodging",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Catering Services",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Food and Venue",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Janitorial Services",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Office Rent",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Others",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Petroleum Oil and Lubricant",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Printing and Publication",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Security",
-                'parent_id' => "Services",
-            ],
-            [
-                'name' => "Transportation",
-                'parent_id' => "Services",
-            ],
-
         ];
 
         foreach ($categories as $category) {

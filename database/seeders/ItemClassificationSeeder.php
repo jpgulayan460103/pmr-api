@@ -21,9 +21,6 @@ class ItemClassificationSeeder extends Seeder
             [
                 'name' => 'Supplies/Goods',
             ],
-            [
-                'name' => 'Services',
-            ],
         ];
 
         foreach ($item_classifications as $item_classification) {

@@ -4,7 +4,7 @@ namespace App\Transformers;
 
 use App\Models\RequisitionIssueItem;
 use League\Fractal\TransformerAbstract;
-use App\Transformers\ItemTransformer;
+use App\Transformers\ProcurementPlanItemTransformer;
 use App\Transformers\RequisitionIssueTransformer;
 
 class RequisitionIssueItemTransformer extends TransformerAbstract
@@ -25,6 +25,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
      */
     protected array $availableIncludes = [
         'requisition_issue',
+        'procurement_plan_item',
         'item',
     ];
     
@@ -39,6 +40,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
             'requisition_issue_id' => $table->requisition_issue_id,
             'id' => $table->id,
             'key' => $table->id,
+            'procurement_plan_item_id' => $table->procurement_plan_item_id,
             'item_id' => $table->item_id,
             'request_quantity' => $table->request_quantity,
             'issue_quantity' => $table->issue_quantity,
@@ -53,6 +55,12 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
         }
     }
 
+    public function includeProcurementPlanItem(RequisitionIssueItem $table)
+    {
+        if ($table->procurement_plan_item) {
+            return $this->item($table->procurement_plan_item, new ProcurementPlanItemTransformer);
+        }
+    }
     public function includeItem(RequisitionIssueItem $table)
     {
         if ($table->item) {

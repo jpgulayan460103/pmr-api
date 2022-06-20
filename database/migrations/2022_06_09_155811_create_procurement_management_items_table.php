@@ -16,6 +16,7 @@ class CreateProcurementManagementItemsTable extends Migration
         Schema::create('procurement_management_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('procurement_management_id')->nullable();
+            $table->unsignedBigInteger('procurement_plan_item_id')->nullable();
             $table->unsignedBigInteger('item_id')->nullable();
             $table->integer('mon1')->nullable();
             $table->integer('mon2')->nullable();
