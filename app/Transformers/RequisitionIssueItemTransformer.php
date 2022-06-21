@@ -26,6 +26,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
     protected array $availableIncludes = [
         'requisition_issue',
         'procurement_plan_item',
+        'unit_of_measure',
         'item',
     ];
     
@@ -43,6 +44,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
             'procurement_plan_item_id' => $table->procurement_plan_item_id,
             'item_id' => $table->item_id,
             'request_quantity' => $table->request_quantity,
+            'description' => $table->description,
             'issue_quantity' => $table->issue_quantity,
             'has_stock' => $table->has_stock,
         ];
@@ -65,6 +67,12 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
     {
         if ($table->item) {
             return $this->item($table->item, new ItemTransformer);
+        }
+    }
+    public function includeUnitOfMeasure(RequisitionIssueItem $table)
+    {
+        if ($table->unit_of_measure) {
+            return $this->item($table->unit_of_measure, new LibraryTransformer);
         }
     }
     

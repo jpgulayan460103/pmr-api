@@ -86,4 +86,10 @@ class ProcurementManagementRepository implements ProcurementManagementRepository
         }
         return $new_items;
     }
+
+    public function getItem($procurement_plan_item_id)
+    {
+        $procurement_management = ProcurementManagement::first();
+        return $procurement_management->items($procurement_plan_item_id)->first();
+    }
 }

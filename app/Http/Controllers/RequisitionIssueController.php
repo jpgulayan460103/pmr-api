@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateRequisitionIssueRequest;
 use App\Models\RequisitionIssue;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
@@ -49,7 +50,7 @@ class RequisitionIssueController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequisitionIssueRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -74,7 +75,7 @@ class RequisitionIssueController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items.procurement_plan_item.unit_of_measure';
+        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items.unit_of_measure';
         $this->requisitionIssueRepository->attach($attach);
         $requisition_isse = $this->requisitionIssueRepository->getById($id);
         // return $requisition_isse;
@@ -125,8 +126,8 @@ class RequisitionIssueController extends Controller
 
     public function pdf(Request $request, $uuid)
     {
-        $requisition_issue = $this->requisitionIssueRepository->attach('end_user,items.item.unit_of_measure')->getByUuid($uuid);
-        $requisition_issue = fractal($requisition_issue, new RequisitionIssueTransformer)->parseIncludes('end_user,items.item.unit_of_measure')->toArray();
+        $requisition_issue = $this->requisitionIssueRepository->attach('end_user,items.unit_of_measure')->getByUuid($uuid);
+        $requisition_issue = fractal($requisition_issue, new RequisitionIssueTransformer)->parseIncludes('end_user,items.unit_of_measure')->toArray();
         // return $requisition_issue;
         $config = [
             'instanceConfigurator' => function($mpdf) {

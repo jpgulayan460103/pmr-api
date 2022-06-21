@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\LibraryExistRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\MaxQuantity;
 
 class CreateQuotationRequest extends FormRequest
 {

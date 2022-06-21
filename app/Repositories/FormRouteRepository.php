@@ -6,6 +6,8 @@ use App\Models\FormRoute;
 use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
 use App\Rules\LibraryExistRule;
+use App\Rules\RequisitionIssue\MaxIfHasStock;
+use App\Rules\RequisitionIssue\MinIfHasStock;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -235,7 +237,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 }
                 break;
             case 'requisition_issue':
-                if($formRoute->route_code == "ris_issuance_from_property"){
+                if($formRoute->route_code == "ris_issuance_from_property" && $form->from_ppmp == 1){
                     $procurementManagement = new ProcurementManagementRepository();
                     return $procurementManagement->updateFromRequisitionIssue($form);
                 }
@@ -343,7 +345,18 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function updateRequisitionIssueForm($formRoute, $request)
     {
-        if(request()->input() != array()){
+        if($formRoute->route_code == "ris_issuance_from_property"){
+            $rules = [];
+            $validated = $request->validate([
+                'items.*.has_stock' => 'required',
+                'items.*.issue_quantity' => [
+                    'required',
+                    'integer',
+                    new MinIfHasStock(),
+                    new MaxIfHasStock("request"),
+                    $request->from_ppmp == 1 ? new MaxIfHasStock("ppmp") : "",
+                ],
+            ]);
             $formId = $formRoute->form_process->form_processable_id;
             (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $request->all());
         }

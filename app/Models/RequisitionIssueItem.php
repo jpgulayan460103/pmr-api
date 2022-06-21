@@ -16,6 +16,7 @@ class RequisitionIssueItem extends Model
         'requisition_issue_id',
         'procurement_plan_item_id',
         'unit_of_measure_id',
+        'description',
         'item_id',
         'request_quantity',
         'issue_quantity',

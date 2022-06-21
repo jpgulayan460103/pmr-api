@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\RequisitionIssue;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class MaxQuantity implements Rule
+class MinIfHasStock implements Rule
 {
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public $quantity;
-    public function __construct($quantity)
+    public function __construct()
     {
-        $this->quantity = $quantity;
+
     }
 
     /**
@@ -27,13 +26,12 @@ class MaxQuantity implements Rule
     public function passes($attribute, $value)
     {
         $exploded = explode(".", $attribute);
-        $quantity_attribute = implode(".",[
+        $has_stock_attribute = implode(".",[
             $exploded[0],
             $exploded[1],
-            $this->quantity
+            "has_stock"
         ]);
-
-        return $value <= request($quantity_attribute);
+        return request($has_stock_attribute) == 1 && $value > 0;
     }
 
     /**
@@ -43,6 +41,6 @@ class MaxQuantity implements Rule
      */
     public function message()
     {
-        return 'Invalid quantity';
+        return '1 is the minimum.';
     }
 }

@@ -33,7 +33,7 @@ class ProcurementPlanController extends Controller
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->search([]);
         // return $procurement_plans;
-        return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
+        return fractal($procurement_plasns, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
 
     /**

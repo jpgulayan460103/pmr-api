@@ -124,8 +124,8 @@
                 @foreach($items['data'] as $item)
                 <tr>
                     <td></td>
-                    <td style="text-align: center;">{{ $item['item']['unit_of_measure']['name'] }}</td>
-                    <td style="text-align: center;">{{ $item['item']['item_name'] }}</td>
+                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td style="text-align: center;">{{ $item['description'] }}</td>
                     <td style="text-align: center;">{{ $item['request_quantity'] }}</td>
                     <td style="text-align: center;">
                         @if($item['has_stock'] == 1)

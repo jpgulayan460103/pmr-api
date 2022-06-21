@@ -35,10 +35,9 @@ class ProcurementManagement extends Model
         return $this->belongsTo(Library::class);
     }
 
-    public function items()
+    public function items($procurement_plan_item_id = null)
     {
-        return $this->hasMany(ProcurementManagementItem::class)
-        ->select(
+        $select = [
             'procurement_management_items.procurement_management_id',
             'procurement_management_items.procurement_plan_item_id',
             DB::raw('round(sum(total_price), 2) as total_price'),
@@ -55,8 +54,22 @@ class ProcurementManagement extends Model
             DB::raw('sum(mon10) as mon10'),
             DB::raw('sum(mon11) as mon11'),
             DB::raw('sum(mon12) as mon12'),
-        )
+        ];
+
+        if($procurement_plan_item_id != null){
+            unset($select[0]);
+        }
+
+        $items =  $this->hasMany(ProcurementManagementItem::class)
+        ->select($select)
         ->groupBy('procurement_plan_item_id');
+        
+        if($procurement_plan_item_id != null){
+            $items->where('procurement_plan_item_id', $procurement_plan_item_id);
+        }
+        
+
+        return $items;
         
     }
 

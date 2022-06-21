@@ -240,7 +240,12 @@ class FormRouteController extends Controller
             $data['remarks'] = request('remarks');
             $office = (new LibraryRepository)->getById($data['to_office_id']);
             $this->formRouteRepository->create($data);
-            $this->formRouteRepository->updateRoute($formRoute, ['status'=>'rejected','remarks' => request('remarks'), 'action_taken' => "Returned to ".$office->name."."]);
+            $this->formRouteRepository->updateRoute($formRoute, [
+                'status'=>'rejected',
+                'route_code'=>'rejected',
+                'remarks' => request('remarks'),
+                'action_taken' => "Returned to ".$office->name."."
+            ]);
             $form = $formRoute->form_routable;
             $return = [
                 'form_route' => $formRoute,

@@ -717,6 +717,30 @@ class UserOfficeSampleSeeder extends Seeder
         $user->assignRole('admin');
 
 
+        $office = Library::where('library_type','user_section')->whereTitle('PSAMS')->first();
+        $user = User::create([
+            "username" => "property",
+            "password" => config('services.ad.default_password'),
+            "account_type" => "app_account",
+        ]);
+        $user->user_information()->create([
+            'firstname' => 'property_f',
+            'middlename' => 'property_m',
+            'lastname' => 'property_l',
+            'user_dn' => '',
+            'cellphone_number' => '',
+            'email_address' => '',
+            'position_id' => Library::where('library_type','user_position')->first()->id,
+        ]);
+        UserOffice::create([
+            "office_id" => $office->id,
+            "user_id" => $user->id,
+            "designation" => "Test Account",
+        ]);
+        $user->givePermissionTo(Permission::all()->pluck('name'));
+        $user->assignRole('admin');
+
+
 
     }
 }
