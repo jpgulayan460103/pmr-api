@@ -33,7 +33,7 @@ class ProcurementPlanController extends Controller
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->search([]);
         // return $procurement_plans;
-        return fractal($procurement_plasns, new ProcurementPlanTransformer)->parseIncludes($attach);
+        return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
 
     /**
@@ -71,10 +71,13 @@ class ProcurementPlanController extends Controller
             
             $data['total_estimated_budget'] = $data['total_estimated_budget_a'] + $data['total_estimated_budget_b'];
 
+            $certified_by_office = $data['certified_by_office'];
+            $approved_by_office = $data['approved_by_office'];
+
             $procurement_plan = $this->procurementPlanRepository->create($data);
             $procurement_plan->items()->saveMany($itemsA['items']);
             $procurement_plan->items()->saveMany($itemsB['items']);
-            $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan);
+            $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan, $certified_by_office, $approved_by_office);
             $form_route = (new FormRouteRepository())->procurementPlan($procurement_plan, $form_process);
             DB::commit();
             return $procurement_plan;
@@ -94,7 +97,6 @@ class ProcurementPlanController extends Controller
         $attach = 'form_process, end_user, item_type, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads';
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->getById($id);
-        // return $procurement_plans;
         return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
 
@@ -144,7 +146,6 @@ class ProcurementPlanController extends Controller
     {
         $items = $this->procurementPlanRepository->getApprovedItems();
         return $items;
-        // return fractal($items, new ApprovedProcurementPlanItemTransformer)->parseIncludes('item.item_category, item.item_type, item.unit_of_measure');
     }
 
     public function pdf(Request $request, $uuid)
@@ -174,7 +175,6 @@ class ProcurementPlanController extends Controller
         $procurement_plan['itemsB'] = $itemsB;
         $procurement_plan['count_items_a'] = $count_a;
         $procurement_plan['count_items_b'] = $count_b;
-        // return $procurement_plan;
         $config = [
             'instanceConfigurator' => function($mpdf) {
                 $mpdf->AddPage('L');
@@ -185,8 +185,6 @@ class ProcurementPlanController extends Controller
         $pdf = FacadesPdf::loadView('pdf.procurement-plan', $procurement_plan, $config, $config);
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
-        // return $procurement_plan;
-        // return view('pdf.purchase-request', $procurement_plan);
         if($request['view']){
             return $pdf->stream('purchase-request-'.'1111'.'.pdf');
         }

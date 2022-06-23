@@ -70,11 +70,11 @@ class ProcurementPlanTransformer extends TransformerAbstract
             'created_by_id' => $table->created_by_id,
             'end_user_id' => $table->end_user_id,
             'prepared_by_name' => $table->prepared_by_name,
-            'prepared_by_position' => $table->prepared_by_position,
+            'prepared_by_designation' => $table->prepared_by_designation,
             'certified_by_name' => $table->certified_by_name,
-            'certified_by_position' => $table->certified_by_position,
+            'certified_by_designation' => $table->certified_by_designation,
             'approved_by_name' => $table->approved_by_name,
-            'approved_by_position' => $table->approved_by_position,
+            'approved_by_designation' => $table->approved_by_designation,
             'file' => route('api.procurement-plans.pdf', ['id' => $table->uuid]),
         ];
     }

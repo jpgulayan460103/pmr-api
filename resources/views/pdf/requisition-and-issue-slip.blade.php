@@ -164,31 +164,31 @@
             <tr>
                 <td>Printed Name:</td>
                 <td style="text-align: center;"  nowrap="nowrap">
-                    <b>{{ $requested_by_name }}</b>
+                    <b>{{ $requested_by_date ? $requested_by_name : "" }}</b>
                 </td>
                 <td style="text-align: center;"  nowrap="nowrap">
-                    <b>{{ $approved_by_name }}</b>
+                    <b>{{ $approved_by_date ? $approved_by_name : "" }}</b>
                 </td>
                 <td style="text-align: center;"  nowrap="nowrap">
-                    <b>{{ $issued_by_name }}</b>
+                    <b>{{ $issued_by_date ? $issued_by_name : "" }}</b>
                 </td>
                 <td style="text-align: center;"  nowrap="nowrap">
-                    <b>{{ $approved_by_name }}</b>
+                    <b>{{ $received_by_date ? $received_by_name : "" }}</b>
                 </td>
             </tr>
             <tr>
                 <td>Designation:</td>
                 <td style="text-align: center;">
-                    <b>{{ $requested_by_designation }}</b>
+                    <b>{{ $requested_by_date ? $requested_by_designation : "" }}</b>
                 </td>
                 <td style="text-align: center;">
-                    <b>{{ $approved_by_designation }}</b>
+                    <b>{{ $approved_by_date ? $approved_by_designation : "" }}</b>
                 </td>
                 <td style="text-align: center;">
-                    <b>{{ $issued_by_designation }}</b>
+                    <b>{{ $issued_by_date ? $issued_by_designation : "" }}</b>
                 </td>
                 <td style="text-align: center;">
-                    <b>{{ $approved_by_designation }}</b>
+                    <b>{{ $received_by_date ? $received_by_designation : "" }}</b>
                 </td>
             </tr>
             <tr>
@@ -203,7 +203,7 @@
                     <b>{{ $issued_by_date }}</b>
                 </td>
                 <td style="text-align: center;">
-                    <b>{{ $approved_by_date }}</b>
+                    <b>{{ $received_by_date }}</b>
                 </td>
             </tr>
         </table>

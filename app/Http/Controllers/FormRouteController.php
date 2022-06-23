@@ -16,6 +16,7 @@ use App\Repositories\LibraryRepository;
 use App\Repositories\PurchaseRequestRepository;
 use App\Rules\LibraryExistRule;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class FormRouteController extends Controller
 {
@@ -153,6 +154,7 @@ class FormRouteController extends Controller
             $formProcess = $formRoute->form_process;
             $formRoutes = $formProcess->form_routes;
             $form = $formRoute->form_routable;
+            $current_route_code = $formRoute->route_code;
             if($formRoute->status == "pending"){
                 (new FormRouteRepository())->addFormNumber($formRoute, $form->id);
                 (new FormRouteRepository())->updateFormRoutable($request, $id);
@@ -170,10 +172,14 @@ class FormRouteController extends Controller
                 }
                 $step++;
             }
-            $lastRoute = $formRoutes[count($formRoutes) - 1];
-            if($lastRoute['office_id'] == $formRoutes[$step]['office_id'] && $formRoute->route_code != "route_origin" && $formRoute->status == "pending"){
-                $this->formRouteRepository->completeForm($formRoute);
-                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Approved for procurement process." ]);
+            if($formRoute->route_code == "last_route" && $formRoute->status == "pending"){
+                $action_taken = $this->formRouteRepository->completeForm($formRoute);
+                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> $action_taken ]);
+                $nextRoute = [
+                    'office_name' => "",
+                    'office_id' => "",
+                    'description' => $action_taken,
+                ];
             }else{
                 $currentRoute = $formRoutes[$step];
                 if($formRoute->to_office_id == $currentRoute['office_id']){
@@ -182,35 +188,32 @@ class FormRouteController extends Controller
                     $nextRoute = $currentRoute;
                 }
                 $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
-                if($nextRoute['description_code'] == 'aprroval_from_twg'){
+                if($nextRoute['description_code'] == 'pr_aprroval_from_twg'){
                     $nextRoute['office_name'] .= " Techinical Working Group";
                 }
-                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> "Forwarded to ".$nextRoute['office_name']."." ]);
+                $action_taken = "Forwarded to ".$nextRoute['office_name'].".";
+                $this->formRouteRepository->updateRoute($formRoute, ['action_taken'=> $action_taken]);
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
 
             $user = Auth::user();
             
-            $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
             $return = [
                 'form_route' => $formRoute,
-                'next_route' => isset($nextRoute) ? $nextRoute : [
-                    'office_name' => $procurement_office->name,
-                    'office_id' => $procurement_office->id,
-                    'description' => "Procurement Process"
+                'next_route' => $nextRoute,
+                'notify_offices' => $nextRoute['office_id'],
+                'alert_message' => [
+                    "message" => Str::headline($formRoute->route_type),
+                    "action_taken" => $current_route_code != "last_route" ? $action_taken : "The ".strtolower(Str::headline($formRoute->route_type))." has completed its routing offices.",
+                    "status" => $formRoute->status == "with_issues" ? "is resolved." : "is approved.",
+                    "route_type" => $current_route_code,
                 ],
-                'notification_type' => 'approved_form',
-                'notify_offices' => isset($nextRoute) ? $nextRoute['office_id'] : $procurement_office->id,
-                'notification_title' => "New forwarded purchase request",
-                'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
-                'notification_title' => ($formRoute->status == "with_issues" ? "Resolved" : "For Approval ")." Purchase Request",
-                'notification_message' =>  isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process",
                 'notification_data' => [
                     "status" => $formRoute->status == "with_issues" ? "Resolved" : "For Approval",
                     "user" => $user->username,
                     "remarks" => $formRoute->status == "with_issues" ? request('remarks') : (isset($nextRoute) ? "For ".$nextRoute['description'] : "For Procurement Process"),
-                    "form" => $form->title,
+                    "form" => Str::headline($formRoute->route_type),
                     "datetime" => Carbon::now()->toDayDateTimeString()
                 ],
             ];
@@ -265,7 +268,7 @@ class FormRouteController extends Controller
                     "status" => "Disapproved",
                     "user" => $user->username,
                     "remarks" => request('remarks'),
-                    "form" => $form->title,
+                    "form" => Str::headline($formRoute->route_type),
                     "datetime" => Carbon::now()->toDayDateTimeString()
                 ],
             ];

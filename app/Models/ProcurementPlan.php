@@ -41,11 +41,11 @@ class ProcurementPlan extends Model
         'created_by_id',
         'end_user_id',
         'prepared_by_name',
-        'prepared_by_position',
+        'prepared_by_designation',
         'certified_by_name',
-        'certified_by_position',
+        'certified_by_designation',
         'approved_by_name',
-        'approved_by_position',
+        'approved_by_designation',
     ];
 
     protected static $logAttributes = [

@@ -35,6 +35,8 @@ class CreateRequisitionIssueRequest extends FormRequest
             ],
             'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'from_ppmp' => ['required'],
+            'requested_by_name' => ['required', 'string'],
+            'approved_by_name' => ['required', 'string'],
         ];
     }
 

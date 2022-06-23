@@ -223,6 +223,24 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form->status = "Approved";
         $formProcess->save();
         $form->save();
+
+        switch ($formRoute->route_type) {
+            case 'purchase_request':
+                return "The purchase request is approved.";
+                break;
+            case 'procurement_plan':
+                return "The procurement plan is approved.";
+                break;
+            case 'requisition_issue':
+                $form->status = "Received";
+                $form->save();
+                return "The items on requisition and issue slip is received.";
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 
     public function updateProcurementManagement($formRoute)
@@ -231,7 +249,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $form = $formRoute->form_routable;
         switch ($formProcess->form_type) {
             case 'procurement_plan':
-                if($formRoute->route_code == "ppmp_aprroval_from_rd"){
+                if($formRoute->route_code == "last_route"){
                     $procurementManagement = new ProcurementManagementRepository();
                     return $procurementManagement->createOrUpdateFromProcurementPlan($form);
                 }
@@ -345,20 +363,43 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function updateRequisitionIssueForm($formRoute, $request)
     {
-        if($formRoute->route_code == "ris_issuance_from_property"){
-            $rules = [];
-            $validated = $request->validate([
-                'items.*.has_stock' => 'required',
-                'items.*.issue_quantity' => [
-                    'required',
-                    'integer',
-                    new MinIfHasStock(),
-                    new MaxIfHasStock("request"),
-                    $request->from_ppmp == 1 ? new MaxIfHasStock("ppmp") : "",
-                ],
-            ]);
-            $formId = $formRoute->form_process->form_processable_id;
-            (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $request->all());
+        $user = Auth::user();
+        $formId = $formRoute->form_process->form_processable_id;
+        switch ($formRoute->route_code) {
+            case 'ris_aprroval_from_division':
+            case 'ris_aprroval_from_section':
+                $data = [
+                    'requested_by_date' => Carbon::now()
+                ];
+                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                break;
+            case 'ris_aprroval_from_property':
+                $data = [
+                    'approved_by_date' => Carbon::now(),
+                    'status' => 'Approved'
+                ];
+                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                break;
+            case 'ris_issuance_from_property':
+                $data = [
+                    'issued_by_date' => Carbon::now(),
+                    'issued_by_designation' => $user->user_information->position->name,
+                    'issued_by_name' => $user->user_information->fullname,
+                ];
+                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                break;
+            case 'last_route':
+                $data = [
+                    'received_by_date' => Carbon::now(),
+                    'received_by_designation' => $user->user_information->position->name,
+                    'received_by_name' => $user->user_information->fullname,
+                    'status' => 'Received'
+                ];
+                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                break;
+            default:
+                # code...
+                break;
         }
     }
 

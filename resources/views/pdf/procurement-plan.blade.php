@@ -280,17 +280,17 @@
                 <td style="text-align: center;">
                     <br>    
                     <b>{{ $prepared_by_name }}</b><br>
-                    {{ $prepared_by_position }}
+                    {{ $prepared_by_designation }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
                     <b>{{ $certified_by_name }}</b><br>
-                    {{ $certified_by_position }}
+                    {{ $certified_by_designation }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
                     <b>{{ $approved_by_name }}</b><br>
-                    {{ $approved_by_position }}
+                    {{ $approved_by_designation }}
                 </td>
             </tr>
         </table>

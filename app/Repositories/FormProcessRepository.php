@@ -106,7 +106,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $approved_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$approved_by_office->title,
-            "description_code" => "pr_aprroval_from_ord",
+            "description_code" => "last_route",
         ];
         
         $data = [
@@ -217,11 +217,11 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         }
     }
 
-    public function procurementPlan($created_procurement_plan)
+    public function procurementPlan($created_procurement_plan, $certified_by_office, $approved_by_office)
     {
         $origin_office = (new LibraryRepository)->getById($created_procurement_plan->end_user_id);
-        $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
-        $rd_office = (new LibraryRepository)->getUserSectionBy('title','ORD');
+        $certified_office = (new LibraryRepository)->getUserSectionBy('title', $certified_by_office);
+        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title', $approved_by_office);
         $routes = [];
         $routes[] = [
             "office_id" => $origin_office->id,
@@ -233,44 +233,23 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         ];
 
         $routes[] = [
-            "office_id" => $budget_office->id,
+            "office_id" => $certified_office->id,
             "label" => "BS",
-            "office_name" => $budget_office->name,
+            "office_name" => $certified_office->name,
             "status" => "pending",
-            "description" => "Budget PPMP Approval.",
-            "description_code" => "ppmp_aprroval_from_budget",
+            "description" => "Approval from the ".$certified_office->name.".",
+            "description_code" => "ppmp_aprroval_from_certified_by",
         ];
 
-        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title', request('approvedBy'));
         $routes[] = [
             "office_id" => $approved_by_office->id,
             "office_name" => $approved_by_office->name,
             "label" => "OARD",
             "status" => "pending",
-            "description" => "Approval from the ".$approved_by_office->title.".",
-            "description_code" => "ppmp_aprroval_from_rd",
+            "description" => "Approval from the ".$approved_by_office->name.".",
+            "description_code" => "last_route",
         ];
 
-        // if($origin_office->parent->title == "OARDO" || $origin_office->parent->title == "OARDA"){
-        //     $oard = (new LibraryRepository)->getUserSectionBy('title', request('approvedBy'));
-        //     $routes[] = [
-        //         "office_id" => $oard->id,
-        //         "office_name" => $oard->name,
-        //         "label" => "OARD",
-        //         "status" => "pending",
-        //         "description" => "Approval from the OARD.",
-        //         "description_code" => "ppmp_aprroval_from_rd",
-        //     ];
-        // }else{
-        //     $routes[] = [
-        //         "office_id" => $rd_office->id,
-        //         "label" => "ORD",
-        //         "office_name" => $rd_office->name,
-        //         "status" => "pending",
-        //         "description" => "Approval from the ".$rd_office->title,
-        //         "description_code" => "ppmp_aprroval_from_ord",
-        //     ];
-        // }
 
         $data = [
             'process_description' => "Project Procurement Management Plan (PPMP) Form Routing",
@@ -285,12 +264,10 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         return $created_process;
     }
 
-    public function requisitionIssue($created_requisition_issue)
+    public function requisitionIssue($created_requisition_issue, $requested_by_office)
     {
         $origin_office = (new LibraryRepository)->getById($created_requisition_issue->end_user_id);
-        $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
-        $rd_office = (new LibraryRepository)->getUserSectionBy('title','ORD');
-        $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
+        $request_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by_office);
         $property_office = (new LibraryRepository)->getUserSectionBy('title','PSAMS');
         $routes = [];
         $routes[] = [
@@ -302,16 +279,23 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "description_code" => "route_origin",
         ];
 
-        //skip route if user division chief if parent is ORD, OARDA and OARDO
-        if($origin_office->parent->title != "ORD" && $origin_office->parent->title != "OARDA" && $origin_office->parent->title != "OARDO"){
-            $division = (new LibraryRepository)->getUserSectionBy('title', $origin_office->parent->title);
+        if($request_office->id != $origin_office->id){
             $routes[] = [
-                "office_id" => $division->id,
-                "office_name" => $division->name,
+                "office_id" => $request_office->id,
+                "office_name" => $request_office->name,
                 "label" => "DIVISION_CHIEF",
                 "status" => "pending",
                 "description" => "Approval from the division chief.",
                 "description_code" => "ris_aprroval_from_division",
+            ];
+        }else{
+            $routes[] = [
+                "office_id" => $request_office->id,
+                "office_name" => $request_office->name,
+                "label" => "SECTION_HEAD",
+                "status" => "pending",
+                "description" => "Approval from the unit/section head.",
+                "description_code" => "ris_aprroval_from_section",
             ];
         }
 
@@ -339,7 +323,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "label" => "RECEIVE",
             "status" => "pending",
             "description" => "To receive by the end user.",
-            "description_code" => "ris_received_by_enduser",
+            "description_code" => "last_route",
         ];
 
 

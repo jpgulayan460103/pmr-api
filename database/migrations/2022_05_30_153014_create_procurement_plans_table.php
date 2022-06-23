@@ -38,11 +38,11 @@ class CreateProcurementPlansTable extends Migration
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();
             $table->string('prepared_by_name')->nullable();
-            $table->string('prepared_by_position')->nullable();
+            $table->string('prepared_by_designation')->nullable();
             $table->string('certified_by_name')->nullable();
-            $table->string('certified_by_position')->nullable();
+            $table->string('certified_by_designation')->nullable();
             $table->string('approved_by_name')->nullable();
-            $table->string('approved_by_position')->nullable();
+            $table->string('approved_by_designation')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -6,6 +6,8 @@ use App\Models\RequisitionIssue;
 use App\Models\RequisitionIssueItem;
 use App\Repositories\Interfaces\RequisitionIssueRepositoryInterface;
 use App\Repositories\HasCrud;
+use App\Rules\RequisitionIssue\MaxIfHasStock;
+use App\Rules\RequisitionIssue\MinIfHasStock;
 use Carbon\Carbon;
 
 class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
@@ -83,7 +85,24 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
             $items = $this->updateItems($id);
             $requisition_issue->items()->saveMany($items['items']);
         }
+        return $requisition_issue;
     }
+
+    public function issueItems($id, $request)
+    {
+        $rules = [];
+        $validated = $request->validate([
+            'items.*.has_stock' => 'required',
+            'items.*.issue_quantity' => [
+                'required',
+                'integer',
+                new MinIfHasStock(),
+                new MaxIfHasStock("request"),
+                $request->from_ppmp == 1 ? new MaxIfHasStock("ppmp") : "",
+            ],
+        ]);
+        return (new RequisitionIssueRepository())->updateRequisitionIssue($id, $request->all());
+    }    
 
     public function addItems()
     {

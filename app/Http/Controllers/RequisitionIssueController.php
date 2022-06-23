@@ -55,10 +55,12 @@ class RequisitionIssueController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
+            $requested_by_office = $data['requested_by_office'];
+            $approved_by_office = $data['approved_by_office'];
             $items = $this->requisitionIssueRepository->addItems();
             $requisition_issue = $this->requisitionIssueRepository->create($data);
             $requisition_issue->items()->saveMany($items['items']);
-            $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
+            $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue, $requested_by_office);
             $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
             DB::commit();
             return $requisition_issue;
