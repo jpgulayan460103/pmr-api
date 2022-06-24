@@ -122,6 +122,7 @@ Route::group(['prefix' => '/reports'], function () {
 
 
 Route::group(['prefix' => '/summaries'], function () {
-    Route::get('/procurement-plans', [ProcurementPlanController::class, 'summary']);
+    // Route::get('/procurement-plans', [ProcurementPlanController::class, 'summary']);
+    Route::get('/procurement-management', [ProcurementManagementController::class, 'summary'])->middleware('auth:api');
 });
 

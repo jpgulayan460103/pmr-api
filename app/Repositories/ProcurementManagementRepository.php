@@ -20,6 +20,11 @@ class ProcurementManagementRepository implements ProcurementManagementRepository
         $this->perPage(200);
     }
 
+    public function currentPpmp($end_user_id)
+    {
+        return $this->modelQuery()->where('end_user_id', $end_user_id)->where('calendar_year', date("Y"))->first();
+    }
+
     public function createOrUpdateFromProcurementPlan($form)
     {
         $procurementPlanRepository = new ProcurementPlanRepository();
