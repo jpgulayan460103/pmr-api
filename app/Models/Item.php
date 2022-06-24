@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
-use App\Models\ItemStockHistory;
+use App\Models\ItemSupplyHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Str;
@@ -65,11 +65,6 @@ class Item extends Model
     public function item_type()
     {
         return $this->belongsTo(Library::class);
-    }
-
-    public function item_stock_histories()
-    {
-        return $this->hasMany(ItemStockHistory::class);
     }
 
     public function unit_of_measure()

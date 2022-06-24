@@ -15,7 +15,8 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
-use App\Http\Controllers\ItemStockHistoryController;
+use App\Http\Controllers\ItemSupplyController;
+use App\Http\Controllers\ItemSupplyHistoryController;
 use App\Http\Controllers\ProcurementManagementController;
 use App\Http\Controllers\RequisitionIssueController;
 use App\Http\Controllers\ProcurementPlanController;
@@ -54,6 +55,7 @@ Route::resources([
     'procurement-plans' => ProcurementPlanController::class,
     'requisition-issues' => RequisitionIssueController::class,
     'procurement-managements' => ProcurementManagementController::class,
+    'item-supplies' => ItemSupplyController::class,
 ]);
 
 Route::group(['prefix' => '/libraries'], function () {
@@ -73,7 +75,7 @@ Route::group(['prefix' => '/pdf'], function () {
     Route::get('/procurement-plan/{id}', [ProcurementPlanController::class, 'pdf'])->name('api.procurement-plans.pdf');
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
     Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
-    Route::get('/stock-card/{id}', [ItemStockHistoryController::class, 'pdf'])->name('api.stock-card.pdf');
+    Route::get('/stock-card/{id}', [ItemSupplyHistoryController::class, 'pdf'])->name('api.stock-card.pdf');
     Route::get('/requisition-and-issue-slip/{id}', [RequisitionIssueController::class, 'pdf'])->name('api.ris.pdf');
 });
 

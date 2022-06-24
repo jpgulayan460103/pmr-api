@@ -89,30 +89,30 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($item_stock_histories['data'] as $item_stock_history)
+                @foreach($item_supply_histories['data'] as $item_supply_history)
                 <tr>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{  $item_stock_history['created_at_str'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{  $item_supply_history['created_at_str'] }}</td>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;">RIS</td>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;">
-                        @if($item_stock_history['movement_type'] == "in")
-                            {{ $item_stock_history['movement_quantity'] }}
+                        @if($item_supply_history['movement_type'] == "in")
+                            {{ $item_supply_history['movement_quantity'] }}
                         @else
                             
                         @endif
                     </td>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;">
-                        @if($item_stock_history['movement_type'] == "out")
-                            {{ $item_stock_history['movement_quantity'] }}
+                        @if($item_supply_history['movement_type'] == "out")
+                            {{ $item_supply_history['movement_quantity'] }}
                         @else
                             
                         @endif
                     </td>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;">OFFICE</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_stock_history['remaining_quantity'] }}</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_stock_history['remarks'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_supply_history['remaining_quantity'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_supply_history['remarks'] }}</td>
                 </tr>
                 @endforeach
-                @for($i = 0; $i<=(45 - count($item_stock_histories['data'])); $i ++)
+                @for($i = 0; $i<=(45 - count($item_supply_histories['data'])); $i ++)
                 <tr>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;">&nbsp;</td>
                     <td style="text-align: center;border-bottom: 0;border-top: 0;"></td>

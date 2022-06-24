@@ -47,9 +47,14 @@ class AddTableForeignKeys extends Migration
             $table->foreign('item_category_cse_id')->references('id')->on('libraries')->onDelete('set null');
         });
 
-        Schema::table('item_stock_histories', function (Blueprint $table) {
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->index(['form_sourceable_id', 'form_sourceable_type'], 'item_stock_form_sourceable_id_form_sourceable_type_index');
+        Schema::table('item_supplies', function (Blueprint $table) {
+            $table->foreign('item_category_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
+        });
+
+        Schema::table('item_supply_histories', function (Blueprint $table) {
+            $table->foreign('item_supply_id')->references('id')->on('item_supplies')->onDelete('cascade');
+            $table->index(['form_sourceable_id', 'form_sourceable_type'], 'item_supply_form_sourceable_id_form_sourceable_type_index');
         });
 
         Schema::table('procurement_management', function (Blueprint $table) {
@@ -196,9 +201,14 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['item_category_cse_id']);
         });
 
-        Schema::table('item_stock_histories', function (Blueprint $table) {
-            $table->dropForeign(['item_id']);
-            DB::statement('ALTER TABLE `item_stock_histories` DROP INDEX `item_stock_form_sourceable_id_form_sourceable_type_index`');
+        Schema::table('item_supplies', function (Blueprint $table) {
+            $table->dropForeign(['item_category_id']);
+            $table->dropForeign(['unit_of_measure_id']);
+        });
+
+        Schema::table('item_supply_histories', function (Blueprint $table) {
+            $table->dropForeign(['item_supply_id']);
+            DB::statement('ALTER TABLE `item_supply_histories` DROP INDEX `item_supply_form_sourceable_id_form_sourceable_type_index`');
         });
         
         Schema::table('procurement_management', function (Blueprint $table) {

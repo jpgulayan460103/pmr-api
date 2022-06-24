@@ -26,7 +26,7 @@ class ItemTransformer extends TransformerAbstract
         'unit_of_measure',
         'item_category',
         'item_type',
-        'item_stock_histories',
+        'item_supply_histories',
         'item_classification',
         'item_category_cse',
     ];
@@ -76,10 +76,10 @@ class ItemTransformer extends TransformerAbstract
             return $this->item($table->item_type, new LibraryTransformer);
         }
     }
-    public function includeItemStockHistories(Item $table)
+    public function includeItemSupplyHistories(Item $table)
     {
-        if ($table->item_stock_histories) {
-            return $this->collection($table->item_stock_histories, new ItemStockHistoryTransformer);
+        if ($table->item_supply_histories) {
+            return $this->collection($table->item_supply_histories, new ItemSupplyHistoryTransformer);
         }
     }
     public function includeItemClassification(Item $table)

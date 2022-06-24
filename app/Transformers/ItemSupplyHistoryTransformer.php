@@ -2,10 +2,11 @@
 
 namespace App\Transformers;
 
-use App\Models\ItemStockHistory;
+use App\Models\ItemSupply;
+use App\Models\ItemSupplyHistory;
 use League\Fractal\TransformerAbstract;
 
-class ItemStockHistoryTransformer extends TransformerAbstract
+class ItemSupplyHistoryTransformer extends TransformerAbstract
 {
     /**
      * List of resources to automatically include
@@ -31,12 +32,12 @@ class ItemStockHistoryTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(ItemStockHistory $table)
+    public function transform(ItemSupplyHistory $table)
     {
         return [
             'id' => $table->id,
-            'key' => $table->item_id,
-            'item_id' => $table->item_id,
+            'key' => $table->id,
+            'item_supply_id' => $table->item_supply_id,
             'movement_quantity' => $table->movement_quantity,
             'remaining_quantity' => $table->remaining_quantity,
             'movement_type' => $table->movement_type,
@@ -50,14 +51,14 @@ class ItemStockHistoryTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeItem(ItemStockHistory $table)
+    public function includeItemSupply(ItemSupplyHistory $table)
     {
-        if ($table->item) {
-            return $this->item($table->item, new ItemTransformer);
+        if ($table->item_supply) {
+            return $this->item($table->item_supply, new ItemSupplyTransformer);
         }
     }
 
-    public function includeFormSourceable(ItemStockHistory $table)
+    public function includeFormSourceable(ItemSupplyHistory $table)
     {
         switch ($table->form_source) {
             case 'purchase_request':

@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ItemStockHistory;
+use App\Models\ItemSupplyHistory;
 use App\Repositories\ItemRepository;
-use App\Repositories\ItemStockHistoryRepository;
-use App\Transformers\ItemStockHistoryTransformer;
+use App\Repositories\ItemSupplyHistoryRepository;
+use App\Transformers\ItemSupplyHistoryTransformer;
 use App\Transformers\ItemTransformer;
 use Illuminate\Http\Request;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 
-class ItemStockHistoryController extends Controller
+class ItemSupplyHistoryController extends Controller
 {
-    private $itemStockHistoryRepository;
+    private $itemSupplyHistoryRepository;
 
-    public function __construct(ItemStockHistoryRepository $itemStockHistoryRepository)
+    public function __construct(ItemSupplyHistoryRepository $itemSupplyHistoryRepository)
     {
-        $this->itemStockHistoryRepository = $itemStockHistoryRepository;
+        $this->itemSupplyHistoryRepository = $itemSupplyHistoryRepository;
     }
     /**
      * Display a listing of the resource.
@@ -52,10 +52,10 @@ class ItemStockHistoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ItemStockHistory  $itemStockHistory
+     * @param  \App\Models\ItemSupplyHistory  $itemSupplyHistory
      * @return \Illuminate\Http\Response
      */
-    public function show(ItemStockHistory $itemStockHistory)
+    public function show(ItemSupplyHistory $itemSupplyHistory)
     {
         //
     }
@@ -63,10 +63,10 @@ class ItemStockHistoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ItemStockHistory  $itemStockHistory
+     * @param  \App\Models\ItemSupplyHistory  $itemSupplyHistory
      * @return \Illuminate\Http\Response
      */
-    public function edit(ItemStockHistory $itemStockHistory)
+    public function edit(ItemSupplyHistory $itemSupplyHistory)
     {
         //
     }
@@ -75,10 +75,10 @@ class ItemStockHistoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ItemStockHistory  $itemStockHistory
+     * @param  \App\Models\ItemSupplyHistory  $itemSupplyHistory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ItemStockHistory $itemStockHistory)
+    public function update(Request $request, ItemSupplyHistory $itemSupplyHistory)
     {
         //
     }
@@ -86,10 +86,10 @@ class ItemStockHistoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ItemStockHistory  $itemStockHistory
+     * @param  \App\Models\ItemSupplyHistory  $itemSupplyHistory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ItemStockHistory $itemStockHistory)
+    public function destroy(ItemSupplyHistory $itemSupplyHistory)
     {
         //
     }
@@ -97,9 +97,9 @@ class ItemStockHistoryController extends Controller
     public function pdf(Request $request, $uuid)
     {
         $itemRepository = new ItemRepository();
-        $itemRepository->attach('item_stock_histories,item_category,unit_of_measure');
+        $itemRepository->attach('item_supply_histories,item_category,unit_of_measure');
         $item = $itemRepository->getByUuid($uuid);
-        $item = fractal($item, new ItemTransformer)->parseIncludes('item_stock_histories,item_category,unit_of_measure')->toArray();
+        $item = fractal($item, new ItemTransformer)->parseIncludes('item_supply_histories,item_category,unit_of_measure')->toArray();
         // return $item;
         $pdf = FacadesPdf::loadView('pdf.stock-card', $item, [], []);
         // $pdf = FacadesPdf::loadView('pdf.procurement-plan', $procurement_plan, $config, $config);

@@ -98,8 +98,10 @@ class ProcurementPlanTest extends TestCase
             'prepared_by_designation' => $this->faker->jobTitle,
             'certified_by_name' => $this->faker->name,
             'certified_by_designation' => $this->faker->jobTitle,
+            'certified_by_office' => "BS",
             'approved_by_name' => $this->faker->name,
             'approved_by_designation' => $this->faker->jobTitle,
+            'approved_by_office' => "OARDA",
             'ppmp_date' => Carbon::now(),
             'calendar_year' => Carbon::now()->format("Y"),
             'title' => $this->faker->text(200),
@@ -129,12 +131,12 @@ class ProcurementPlanTest extends TestCase
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
         $response->assertStatus(200);
     }
-    // public function test_oard()
-    // {
-    //     $user = User::with('user_offices.office')->where('username','ict')->first();
-    //     Passport::actingAs($user);
-    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-    //     $response->assertStatus(200);
-    // }
+    public function test_oard()
+    {
+        $user = User::with('user_offices.office')->where('username','ict')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response->assertStatus(200);
+    }
 }

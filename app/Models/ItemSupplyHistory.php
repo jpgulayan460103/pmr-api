@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Item;
 
-class ItemStockHistory extends Model
+class ItemSupplyHistory extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'item_id',
+        'item_supply_id',
         'movement_quantity',
         'remaining_quantity',
         'movement_type',
