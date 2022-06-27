@@ -73,8 +73,8 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
             $sortOrder = request('sortOrder') ==  'ascend' ? 'ASC' : 'DESC';  
             $this->modelQuery()->orderBy(request('sortColumn'), $sortOrder);
         }
-        $this->modelQuery()->orderBy('ppmp_date','desc');
-        // $this->modelQuery()->orderBy('id','desc');
+        // $this->modelQuery()->orderBy('ppmp_date','desc');
+        $this->modelQuery()->orderBy('id','desc');
         $result = $this->modelQuery()->paginate(20);
         return $result;
     }

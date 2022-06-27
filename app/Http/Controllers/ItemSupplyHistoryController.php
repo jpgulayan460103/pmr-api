@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ItemSupplyHistory;
-use App\Repositories\ItemRepository;
 use App\Repositories\ItemSupplyHistoryRepository;
-use App\Transformers\ItemSupplyHistoryTransformer;
+use App\Repositories\ItemSupplyRepository;
+use App\Transformers\ItemSupplyTransformer;
 use App\Transformers\ItemTransformer;
 use Illuminate\Http\Request;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
@@ -96,10 +96,11 @@ class ItemSupplyHistoryController extends Controller
 
     public function pdf(Request $request, $uuid)
     {
-        $itemRepository = new ItemRepository();
-        $itemRepository->attach('item_supply_histories,item_category,unit_of_measure');
-        $item = $itemRepository->getByUuid($uuid);
-        $item = fractal($item, new ItemTransformer)->parseIncludes('item_supply_histories,item_category,unit_of_measure')->toArray();
+        $itemSupplyRepository = new ItemSupplyRepository();
+        $attach = 'item_supply_histories.form_sourceable.end_user';
+        $itemSupplyRepository->attach($attach);
+        $item = $itemSupplyRepository->getByUuid($uuid);
+        $item = fractal($item, new ItemSupplyTransformer)->parseIncludes($attach)->toArray();
         // return $item;
         $pdf = FacadesPdf::loadView('pdf.stock-card', $item, [], []);
         // $pdf = FacadesPdf::loadView('pdf.procurement-plan', $procurement_plan, $config, $config);
@@ -108,9 +109,9 @@ class ItemSupplyHistoryController extends Controller
         // return $procurement_plan;
         // return view('pdf.purchase-request', $procurement_plan);
         if($request['view']){
-            return $pdf->stream('purchase-request-'.'1111'.'.pdf');
+            return $pdf->stream('stock-card-'.$item['uuid'].'.pdf');
         }
-        return $pdf->stream('purchase-request-'.'1111'.'.pdf');
-        return $pdf->download('purchase-request-'.'1111'.'.pdf');
+        // return $pdf->stream('stock-card-'.$item['uuid'].'.pdf');
+        return $pdf->download('stock-card-'.$item['uuid'].'.pdf');
     }
 }

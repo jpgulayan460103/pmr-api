@@ -26,6 +26,18 @@ class ItemSupplyRepository implements ItemSupplyRepositoryInterface
             $search = request('search');
             $items->where('item_name', 'like', "%$search%");
         }
+        if (request()->has('item_name') && request('item_name') != "") {
+            $item_name = request('item_name');
+            $items->where('item_name', 'like', "%$item_name%");
+        }
+        if(request()->has('item_category_id') && request('item_category_id') != ""){
+            $this->modelQuery()->whereIn('item_category_id', request('item_category_id'));
+        }
+        if(request()->has('sortColumn') && request()->has('sortOrder')){
+            $sortOrder = request('sortOrder') ==  'ascend' ? 'ASC' : 'DESC';  
+            $this->modelQuery()->orderBy(request('sortColumn'), $sortOrder);
+        }
+
         $items->orderBy('item_name');
         $items = $items->paginate($this->perPage);
         return $items;

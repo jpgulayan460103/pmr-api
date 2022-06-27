@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
 use App\Rules\LibraryExistRule;
 use App\Rules\RequisitionIssue\MaxIfHasStock;
+use App\Rules\RequisitionIssue\MaxInventoryQuantity;
 use App\Rules\RequisitionIssue\MinIfHasStock;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -385,8 +386,16 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                     'issued_by_date' => Carbon::now(),
                     'issued_by_designation' => $user->user_information->position->name,
                     'issued_by_name' => $user->user_information->fullname,
+                    'issued_items' => request('issued_items')
                 ];
-                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                if(request()->has('issued_items') && request('issued_items') != []){
+                    $validated = $request->validate([
+                        'issued_items.*.quantity' => ['required', new MaxInventoryQuantity],
+                        'issued_items.*.item_supply_id' => ['required'],
+                    ]);
+                }
+                $form = (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                (new ItemSupplyHistoryRepository())->createFromRequisitionIssue($form, $data);
                 break;
             case 'last_route':
                 $data = [

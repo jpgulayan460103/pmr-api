@@ -91,25 +91,27 @@
             <tbody>
                 @foreach($item_supply_histories['data'] as $item_supply_history)
                 <tr>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{  $item_supply_history['created_at_str'] }}</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">RIS</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">{{  $item_supply_history['created_at_str'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">{{  isset($item_supply_history['form_sourceable']) ? $item_supply_history['form_sourceable']['form_number'] : ""  }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">
                         @if($item_supply_history['movement_type'] == "in")
                             {{ $item_supply_history['movement_quantity'] }}
                         @else
                             
                         @endif
                     </td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">
                         @if($item_supply_history['movement_type'] == "out")
-                            {{ $item_supply_history['movement_quantity'] }}
+                            {{ abs($item_supply_history['movement_quantity']) }}
                         @else
                             
                         @endif
                     </td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">OFFICE</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_supply_history['remaining_quantity'] }}</td>
-                    <td style="text-align: center;border-bottom: 0;border-top: 0;">{{ $item_supply_history['remarks'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">
+                        {{ isset($item_supply_history['form_sourceable']) ? $item_supply_history['form_sourceable']['end_user']['name'] : ""  }}
+                    </td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">{{ $item_supply_history['remaining_quantity'] }}</td>
+                    <td style="text-align: center;border-bottom: 0;border-top: 0;vertical-align: top;">{{ $item_supply_history['remarks'] }}</td>
                 </tr>
                 @endforeach
                 @for($i = 0; $i<=(45 - count($item_supply_histories['data'])); $i ++)

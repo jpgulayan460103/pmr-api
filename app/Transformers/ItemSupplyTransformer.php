@@ -38,10 +38,12 @@ class ItemSupplyTransformer extends TransformerAbstract
         return [
             'id' => $table->id,
             'key' => $table->id,
+            'uuid' => $table->uuid,
             'item_name' => $table->item_name,
             'item_category_id' => $table->item_category_id,
             'unit_of_measure_id' => $table->unit_of_measure_id,
             'is_active' => $table->is_active,
+            'file' => route('api.stock-card.pdf', ['id' => $table->uuid]),
         ];
     }
 

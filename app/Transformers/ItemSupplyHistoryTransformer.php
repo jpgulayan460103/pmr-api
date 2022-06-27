@@ -61,11 +61,14 @@ class ItemSupplyHistoryTransformer extends TransformerAbstract
     public function includeFormSourceable(ItemSupplyHistory $table)
     {
         switch ($table->form_source) {
-            case 'purchase_request':
-                return $this->item($table->form_sourceable, new PurchaseRequestTransformer);
-                break;
-            case 'procurement_plan':
-                return $this->item($table->form_sourceable, new ProcurementPlanTransformer);
+            // case 'purchase_request':
+            //     return $this->item($table->form_sourceable, new PurchaseRequestTransformer);
+            //     break;
+            // case 'procurement_plan':
+            //     return $this->item($table->form_sourceable, new ProcurementPlanTransformer);
+            //     break;
+            case 'requisition_issue':
+                return $this->item($table->form_sourceable, new RequisitionIssueTransformer);
                 break;
             
             default:

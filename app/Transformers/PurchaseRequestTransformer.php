@@ -55,6 +55,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'uuid_last' => end($uuid_last),
             'display_log' => $table->purchase_request_number ? $table->purchase_request_number : $table->title,
             'purchase_request_number' => $table->purchase_request_number,
+            'form_number' => $table->purchase_request_number,
             'purpose' => $table->purpose,
             'title' => $table->title,
             'fund_cluster' => $table->fund_cluster,

@@ -65,15 +65,15 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
         if(request()->has('ris_date') && request('ris_date') != ""){
             $ris_date[] = Carbon::parse(str_replace('"', '', request('ris_date')[0]))->toDateString();
             $ris_date[] = Carbon::parse(str_replace('"', '', request('ris_date')[1]))->toDateString();
-            $this->modelQuery()->whereBetween('ris_date', $ppmp_date);
+            $this->modelQuery()->whereBetween('ris_date', $ris_date);
         }
 
         if(request()->has('sortColumn') && request()->has('sortOrder')){
             $sortOrder = request('sortOrder') ==  'ascend' ? 'ASC' : 'DESC';  
             $this->modelQuery()->orderBy(request('sortColumn'), $sortOrder);
         }
-        $this->modelQuery()->orderBy('ris_date','desc');
-        // $this->modelQuery()->orderBy('id','desc');
+        // $this->modelQuery()->orderBy('ris_date','desc');
+        $this->modelQuery()->orderBy('id','desc');
         $result = $this->modelQuery()->paginate(20);
         return $result;
     }
@@ -160,7 +160,7 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
 
         $last_number = 0;
         $last_requisition_issue = $this->model
-        ->where('status','approved')
+        ->whereIn('status',['Approved','Received'])
         ->whereBetween('created_at', [$start_year, $end_year])
         ->limit(1)
         ->orderBy('id', 'desc')

@@ -52,6 +52,7 @@ class RequisitionIssueTransformer extends TransformerAbstract
             'recommendation' => $table->recommendation,
             'ris_date' => $table->ris_date,
             'ris_number' => $table->ris_number,
+            'form_number' => $table->ris_number,
             'status' => $table->status,
             'remarks' => $table->remarks,
             'from_ppmp' => $table->from_ppmp,
