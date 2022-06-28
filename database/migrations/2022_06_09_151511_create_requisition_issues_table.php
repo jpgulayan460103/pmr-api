@@ -28,9 +28,11 @@ class CreateRequisitionIssuesTable extends Migration
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('end_user_id')->nullable();
+            $table->unsignedBigInteger('requested_by_id')->nullable();
             $table->string('requested_by_name')->nullable();
             $table->string('requested_by_designation')->nullable();
             $table->date('requested_by_date')->nullable();
+            $table->unsignedBigInteger('approved_by_id')->nullable();
             $table->string('approved_by_name')->nullable();
             $table->string('approved_by_designation')->nullable();
             $table->date('approved_by_date')->nullable();

@@ -55,12 +55,10 @@ class RequisitionIssueController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $requested_by_office = $data['requested_by_office'];
-            $approved_by_office = $data['approved_by_office'];
             $items = $this->requisitionIssueRepository->addItems();
             $requisition_issue = $this->requisitionIssueRepository->create($data);
             $requisition_issue->items()->saveMany($items['items']);
-            $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue, $requested_by_office);
+            $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
             $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
             DB::commit();
             return $requisition_issue;
@@ -79,9 +77,9 @@ class RequisitionIssueController extends Controller
     {
         $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items.unit_of_measure';
         $this->requisitionIssueRepository->attach($attach);
-        $requisition_isse = $this->requisitionIssueRepository->getById($id);
-        // return $requisition_isse;
-        return fractal($requisition_isse, new RequisitionIssueTransformer)->parseIncludes($attach);
+        $requisition_issue = $this->requisitionIssueRepository->getById($id);
+        // return $requisition_issue;
+        return fractal($requisition_issue, new RequisitionIssueTransformer)->parseIncludes($attach);
     }
 
     /**
@@ -102,12 +100,19 @@ class RequisitionIssueController extends Controller
      * @param  \App\Models\RequisitionIssue  $requisitionIssue
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreateRequisitionIssueRequest $request, $id)
     {
         DB::beginTransaction();
         try {
             $data = $request->all();
+            $old_requisition_issue = (new RequisitionIssueRepository())->getById($id);
             $requisition_issue = $this->requisitionIssueRepository->updateRequisitionIssue($id, $data);
+            if($old_requisition_issue->requested_by_name != request('requested_by_name')){
+                $form_process = $old_requisition_issue->form_process;
+                (new FormProcessRepository())->delete($form_process->id);
+                $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
+                $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
+            }
             DB::commit();
             return $requisition_issue;
         } catch (\Throwable $th) {

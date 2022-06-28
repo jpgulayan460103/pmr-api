@@ -43,6 +43,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
             'key' => $table->id,
             'procurement_plan_item_id' => $table->procurement_plan_item_id,
             'item_id' => $table->item_id,
+            'unit_of_measure_id' => $table->unit_of_measure_id,
             'request_quantity' => $table->request_quantity,
             'description' => $table->description,
             'issue_quantity' => $table->issue_quantity,

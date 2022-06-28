@@ -172,4 +172,11 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
         return (integer) $last_number;
     }
 
+    public function isRequestedSameOffice($formId)
+    {
+        $requisition_issue = $this->getById($formId);
+        $requested_by = (new LibraryRepository())->getById($requisition_issue->requested_by_id);
+        return $requested_by->parent->id == $requisition_issue->end_user_id;
+    }
+
 }

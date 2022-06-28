@@ -23,6 +23,7 @@ class FormUpload extends Model
         'user_id',
         'form_uploadable_id',
         'form_uploadable_type',
+        'is_removable',
     ];
 
     protected static $logAttributes = [

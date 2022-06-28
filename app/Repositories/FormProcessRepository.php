@@ -264,10 +264,13 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         return $created_process;
     }
 
-    public function requisitionIssue($created_requisition_issue, $requested_by_office)
+    public function requisitionIssue($created_requisition_issue)
     {
         $origin_office = (new LibraryRepository)->getById($created_requisition_issue->end_user_id);
-        $request_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by_office);
+        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
+        $requested_office = (new LibraryRepository)->getById($requested_by->parent_id);
+        $approved_by = (new LibraryRepository)->getById(request('approved_by_id'));
+        $approved_office = (new LibraryRepository)->getById($approved_by->parent_id);
         $property_office = (new LibraryRepository)->getUserSectionBy('title','PSAMS');
         $routes = [];
         $routes[] = [
@@ -279,32 +282,32 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "description_code" => "route_origin",
         ];
 
-        if($request_office->id != $origin_office->id){
+        if($requested_office->id != $origin_office->id){
             $routes[] = [
-                "office_id" => $request_office->id,
-                "office_name" => $request_office->name,
+                "office_id" => $requested_office->id,
+                "office_name" => $requested_office->name,
                 "label" => "DIVISION_CHIEF",
                 "status" => "pending",
                 "description" => "Approval from the division chief.",
                 "description_code" => "ris_aprroval_from_division",
             ];
         }else{
-            $routes[] = [
-                "office_id" => $request_office->id,
-                "office_name" => $request_office->name,
-                "label" => "SECTION_HEAD",
-                "status" => "pending",
-                "description" => "Approval from the unit/section head.",
-                "description_code" => "ris_aprroval_from_section",
-            ];
+            // $routes[] = [
+            //     "office_id" => $requested_office->id,
+            //     "office_name" => $requested_office->name,
+            //     "label" => "SECTION_HEAD",
+            //     "status" => "pending",
+            //     "description" => "Approval from the unit/section head.",
+            //     "description_code" => "ris_aprroval_from_section",
+            // ];
         }
 
         $routes[] = [
-            "office_id" => $property_office->id,
+            "office_id" => $approved_office->id,
             "label" => "PSAMS",
-            "office_name" => $property_office->name,
+            "office_name" => $approved_office->name,
             "status" => "pending",
-            "description" => "Approval from the $property_office->name.",
+            "description" => "Approval from the $approved_office->name.",
             "description_code" => "ris_aprroval_from_property",
         ];
 

@@ -367,6 +367,15 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         $user = Auth::user();
         $formId = $formRoute->form_process->form_processable_id;
         switch ($formRoute->route_code) {
+            case 'route_origin':
+                $data = [
+                    'requested_by_date' => Carbon::now()
+                ];
+                $is_same_office = (new RequisitionIssueRepository())->isRequestedSameOffice($formId);
+                if($is_same_office){
+                    (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                }
+                break;
             case 'ris_aprroval_from_division':
             case 'ris_aprroval_from_section':
                 $data = [

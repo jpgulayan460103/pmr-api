@@ -24,6 +24,7 @@ class CreateFormUploadsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('form_uploadable_id')->nullable();
             $table->string('form_uploadable_type')->nullable();
+            $table->boolean('is_removable')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

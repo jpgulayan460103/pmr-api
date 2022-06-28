@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Repositories\LibraryRepository;
+use App\Repositories\RequisitionIssueRepository;
 use App\Rules\LibraryExistRule;
 use App\Rules\MaxQuantity;
+use App\Transformers\FormProcessTransformer;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateRequisitionIssueRequest extends FormRequest
@@ -59,7 +62,39 @@ class CreateRequisitionIssueRequest extends FormRequest
                 if(request('items') == array()){
                     $validator->errors()->add("items", "No items added.");
                 }
-            }         
+            }
+
+            if(request()->has("id")){
+                $requisition_issue = (new RequisitionIssueRepository())->attach('form_process')->getById(request('id'));
+                $this->validateRequestedBy($validator, $requisition_issue);
+            }
         });
+    }
+
+    public function validateRequestedBy($validator, $requisition_issue)
+    {
+        $process = fractal($requisition_issue->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("ris_aprroval_from_division", array_column($form_routes, 'description_code'));
+        if($key){
+            if($form_routes[$key]['status'] == "approved"){
+                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+            }
+        }else{
+            $key = array_search("route_origin", array_column($form_routes, 'description_code'));
+            if($form_routes[$key]['status'] == "approved"){
+                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+            }
+        }
+    }
+
+    public function validateUpdatability($validator, $requisition_issue)
+    {
+        $process = fractal($requisition_issue->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("ris_aprroval_from_property", array_column($form_routes, 'description_code'));
+        if($form_routes[$key]['status'] != "pending"){
+            $validator->errors()->add("update_error", "Update unavailable");
+        }
     }
 }
