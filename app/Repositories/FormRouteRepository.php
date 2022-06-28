@@ -431,7 +431,14 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                     $form->save();
                 }
                 break;
-            
+            case 'procurement_plan':
+                if($formRoute->route_code == "ppmp_aprroval_from_certified_by"){
+                    $form = (new ProcurementPlanRepository())->getById($form_id);
+                    $last_number = (new ProcurementPlanRepository())->getLastNumber();
+                    $form->ppmp_number = "PPMP-".Carbon::now()->format('Y-m-').str_pad(++$last_number, 5, "0", STR_PAD_LEFT);
+                    $form->save();
+                }
+                break;
             default:
                 # code...
                 break;

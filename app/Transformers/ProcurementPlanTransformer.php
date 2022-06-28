@@ -54,6 +54,7 @@ class ProcurementPlanTransformer extends TransformerAbstract
             'ppmp_date' => $table->ppmp_date,
             'calendar_year' => $table->calendar_year,
             'ppmp_number' => $table->ppmp_number,
+            'form_number' => $table->ppmp_number,
             'status' => $table->status,
             'remarks' => $table->remarks,
             'total_price_a' => $table->total_price_a,
