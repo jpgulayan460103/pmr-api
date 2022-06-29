@@ -46,8 +46,10 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
             'unit_of_measure_id' => $table->unit_of_measure_id,
             'request_quantity' => $table->request_quantity,
             'description' => $table->description,
+            'remarks' => $table->remarks,
             'issue_quantity' => $table->issue_quantity,
             'has_stock' => $table->has_stock,
+            'has_issued_item' => $table->has_issued_item,
             'is_pr_recommended' => $table->is_pr_recommended,
         ];
     }

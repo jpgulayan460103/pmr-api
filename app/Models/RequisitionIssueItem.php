@@ -17,10 +17,12 @@ class RequisitionIssueItem extends Model
         'procurement_plan_item_id',
         'unit_of_measure_id',
         'description',
+        'remarks',
         'item_id',
         'request_quantity',
         'issue_quantity',
         'has_stock',
+        'has_issued_item',
         'is_pr_recommended',
     ];
 
@@ -32,6 +34,7 @@ class RequisitionIssueItem extends Model
             $model->issue_quantity = 0;
             $model->has_stock = 0;
             $model->is_pr_recommended = 1;
+            $model->has_issued_item = 0;
         });
         self::updating(function($model) {
 

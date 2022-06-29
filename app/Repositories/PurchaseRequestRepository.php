@@ -85,7 +85,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
     public function updatePurchaseRequest($id, $data)
     {
-        $old_purchase_request = $this->getById($id);
+        $old_purchase_request = $this->attach('form_process')->getById($id);
         if(request()->has('items') && request('items') != array()){
             $items = $this->updateItems($id);
             $data['total_cost'] = $items['total_cost'];
@@ -97,7 +97,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(request()->has('requested_by_id')){
             if($old_purchase_request->requested_by_id != request('requested_by_id')){
                 $formProcessRepository = new FormProcessRepository();
-                $formProcess = $formProcessRepository->getByFormType('purchase_request', $id);
+                $formProcess = $old_purchase_request->form_process;
                 $formProcessRepository->updateRouting($formProcess->id, "OARD");
             }
         }

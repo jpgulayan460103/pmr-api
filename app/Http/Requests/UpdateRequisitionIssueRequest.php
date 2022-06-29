@@ -9,7 +9,7 @@ use App\Rules\MaxQuantity;
 use App\Transformers\FormProcessTransformer;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateRequisitionIssueRequest extends FormRequest
+class UpdateRequisitionIssueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -63,6 +63,38 @@ class CreateRequisitionIssueRequest extends FormRequest
                     $validator->errors()->add("items", "No items added.");
                 }
             }
+            $requisition_issue = (new RequisitionIssueRepository())->attach('form_process')->getById(request('id'));
+            if($requisition_issue->requested_by_id != request('requested_by_id')){
+                $this->validateRequestedBy($validator, $requisition_issue);
+            }
+            $this->validateUpdatability($validator, $requisition_issue);
         });
+    }
+
+    public function validateRequestedBy($validator, $requisition_issue)
+    {
+        $process = fractal($requisition_issue->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("ris_aprroval_from_division", array_column($form_routes, 'description_code'));
+        if($key){
+            if($form_routes[$key]['status'] == "approved"){
+                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+            }
+        }else{
+            $key = array_search("route_origin", array_column($form_routes, 'description_code'));
+            if($form_routes[$key]['status'] == "approved"){
+                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+            }
+        }
+    }
+
+    public function validateUpdatability($validator, $requisition_issue)
+    {
+        $process = fractal($requisition_issue->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("last_route", array_column($form_routes, 'description_code'));
+        if($form_routes[$key]['status'] != "pending"){
+            $validator->errors()->add("update_error", "Update unavailable");
+        }
     }
 }

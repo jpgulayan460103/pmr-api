@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
         $this->call(EmploymentStatusSeeder::class);
         $this->call(UserOfficeSampleSeeder::class);
         $this->call(ItemStockSampleSeeder::class);
-        $this->call(UserOfficeSeeder::class);
+        // $this->call(UserOfficeSeeder::class);
         $this->call(UacsCodeSeeder::class);
         activity()->enableLogging();
         // $this->call(FakerDataSeeders::class);

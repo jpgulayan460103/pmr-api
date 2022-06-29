@@ -51,7 +51,7 @@
                     <th colspan="6" style="border: 0;height:25pt">PURCHASE REQUEST</th>
                 </tr>
                 <tr>
-                    <td colspan="4">Entity Name: <b>Department of Social Welfare and Development Field Office XI</b></td>
+                    <td colspan="4">Entity Name: <br> <b>Department of Social Welfare and Development Field Office XI</b></td>
                     <td colspan="2">Fund Cluster: <b>{{ $fund_cluster }}</b></td>
                 </tr>
                 <tr>
@@ -144,13 +144,13 @@
                 </tr>
                 @foreach($items['data'] as $key => $item)
                 <tr>
-                    <td style="text-align: center">{{ $item['item_code'] }}</td>
-                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
-                    <td nowrap="nowrap">{!! nl2br(e($item['item_name'])) !!}</td>
+                    <td style="vertical-align: top; text-align: center">{{ $item['item_code'] }}</td>
+                    <td style="vertical-align: top; text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td style="vertical-align: top; text-align: left;">{!! nl2br(e($item['item_name'])) !!}</td>
                     <!-- <td>{{ $item['item_name'] }}</td> -->
-                    <td style="text-align: center;">{{ $item['quantity'] }}</td>
-                    <td style="text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
-                    <td style="text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
+                    <td style="vertical-align: top; text-align: center;">{{ $item['quantity'] }}</td>
+                    <td style="vertical-align: top; text-align: right;">{{ number_format($item['unit_cost'], 2) }}</td>
+                    <td style="vertical-align: top; text-align: right;">{{ number_format($item['total_unit_cost'], 2) }}</td>
                 </tr>
                 @endforeach
                 <tr>

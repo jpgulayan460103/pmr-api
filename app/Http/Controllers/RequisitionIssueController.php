@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateRequisitionIssueRequest;
+use App\Http\Requests\UpdateRequisitionIssueRequest;
 use App\Models\RequisitionIssue;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
@@ -100,7 +101,7 @@ class RequisitionIssueController extends Controller
      * @param  \App\Models\RequisitionIssue  $requisitionIssue
      * @return \Illuminate\Http\Response
      */
-    public function update(CreateRequisitionIssueRequest $request, $id)
+    public function update(UpdateRequisitionIssueRequest $request, $id)
     {
         DB::beginTransaction();
         try {

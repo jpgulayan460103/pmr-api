@@ -23,7 +23,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
 
     public function getByFormType($type, $id)
     {
-        return $this->modelQuery()->where('form_type', $type)->where('id', $id)->first();
+        return $this->modelQuery()->where('form_type', $type)->where('form_processable_id', $id)->first();
     }
 
     public function purchaseRequest($created_purchase_request)
@@ -182,7 +182,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
     public function purchaseRequestUpdateOardRoute($process)
     {
         $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
-        $requested_by_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by->title);
+        $requested_by_office = (new LibraryRepository)->getById($requested_by->parent_id);
         $process = fractal($process, new FormProcessTransformer)->toArray();
         $form_routes = $process['form_routes'];
         $key = array_search("OARD", array_column($form_routes, 'label'));

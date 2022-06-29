@@ -124,20 +124,26 @@
                 @foreach($items['data'] as $item)
                 <tr>
                     <td></td>
-                    <td style="text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
-                    <td style="text-align: center;">{{ $item['description'] }}</td>
-                    <td style="text-align: center;">{{ $item['request_quantity'] }}</td>
-                    <td style="text-align: center;">
+                    <td style="vertical-align: top; text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td style="vertical-align: top; text-align: center;">
+                        <!-- <div style="white-space: pre-line;">{{ $item['description'] }}</div> -->
+                        <div style="white-space: pre-line;">{!! nl2br(e($item['description'])) !!}</div>
+                    </td>
+                    <td style="vertical-align: top; text-align: center;">{{ $item['request_quantity'] }}</td>
+                    <td style="vertical-align: top; text-align: center;">
                         @if($item['has_stock'] == 1)
                             <span style='font-family:helvetica'>&#10004;</span>
                         @endif
                     </td>
-                    <td style="text-align: center;">
+                    <td style="vertical-align: top; text-align: center;">
                         @if($item['has_stock'] == 0)
                             <span style='font-family:helvetica'>&#10004;</span>
                         @endif
-                    <td style="text-align: center;">{{ $item['issue_quantity'] }}</td>
-                    <td style="text-align: center;"></td>
+                    <td style="vertical-align: top; text-align: center;">{{ $item['issue_quantity'] }}</td>
+                    <td style="vertical-align: top; text-align: left;">
+                        <span>{{ $item['is_pr_recommended'] == 1 ? "PR Recommended" : "" }}</span>
+                        <span>{{ $item['remarks'] ? $item['remarks'] : "" }}</span>
+                    </td>
 
                 </tr>
                 @endforeach

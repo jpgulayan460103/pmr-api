@@ -66,7 +66,7 @@ class UpdatePurchaseRequest extends FormRequest
         $validator->after(function ($validator) {
             $purchaseRequestRepository = new PurchaseRequestRepository;
             $purchase_request = $purchaseRequestRepository->attach('form_process')->getById(request('id'));
-            if(request()->has('requested_by_id')){
+            if($purchase_request->requested_by_id != request('requested_by_id')){
                 $this->validateRequestedBy($validator, $purchase_request);
             }
             $this->validateUpdatability($validator, $purchase_request);
@@ -77,12 +77,9 @@ class UpdatePurchaseRequest extends FormRequest
     {
         $process = fractal($purchase_request->form_process, new FormProcessTransformer)->toArray();
         $form_routes = $process['form_routes'];
-        $key = array_search("OARD", array_column($form_routes, 'label'));
-        $received_by_id_office_id = (new LibraryRepository)->getById(request('requested_by_id'))->parent->parent_id;
-        if($received_by_id_office_id != $form_routes[$key]['office_id']){
-            if($form_routes[$key]['status'] == "approved"){
-                $validator->errors()->add("requested_by_id", "The purchase number already approved by ".$form_routes[$key]['office_name']);
-            }
+        $key = array_search("pr_approval_from_oard", array_column($form_routes, 'description_code'));
+        if($form_routes[$key]['status'] == "approved"){
+            $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
         }
     }
 
@@ -90,7 +87,7 @@ class UpdatePurchaseRequest extends FormRequest
     {
         $process = fractal($purchase_request->form_process, new FormProcessTransformer)->toArray();
         $form_routes = $process['form_routes'];
-        $key = array_search("BS", array_column($form_routes, 'label'));
+        $key = array_search("pr_approval_from_budget", array_column($form_routes, 'description_code'));
         if($form_routes[$key]['status'] != "pending"){
             $validator->errors()->add("update_error", "Update unavailable");
         }
