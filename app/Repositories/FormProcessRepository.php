@@ -317,15 +317,6 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $property_office->name,
             "status" => "pending",
             "description" => "Issuance from the $property_office->name.",
-            "description_code" => "ris_issuance_from_property",
-        ];
-
-        $routes[] = [
-            "office_id" => $origin_office->id,
-            "office_name" => $origin_office->name,
-            "label" => "RECEIVE",
-            "status" => "pending",
-            "description" => "To receive by the end user.",
             "description_code" => "last_route",
         ];
 

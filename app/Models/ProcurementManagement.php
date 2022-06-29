@@ -62,7 +62,7 @@ class ProcurementManagement extends Model
 
         $items =  $this->hasMany(ProcurementManagementItem::class)
         ->select($select)
-        ->groupBy('procurement_plan_item_id');
+        ->groupBy('procurement_plan_item_id','procurement_management_id');
         
         if($procurement_plan_item_id != null){
             $items->where('procurement_plan_item_id', $procurement_plan_item_id);

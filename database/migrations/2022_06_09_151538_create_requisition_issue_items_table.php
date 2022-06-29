@@ -23,6 +23,7 @@ class CreateRequisitionIssueItemsTable extends Migration
             $table->integer('request_quantity')->nullable();
             $table->integer('issue_quantity')->nullable();
             $table->boolean('has_stock')->nullable();
+            $table->boolean('is_pr_recommended')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

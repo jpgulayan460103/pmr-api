@@ -75,7 +75,7 @@ class RequisitionIssueController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items.unit_of_measure';
+        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items.unit_of_measure, items.item, items.procurement_plan_item';
         $this->requisitionIssueRepository->attach($attach);
         $requisition_issue = $this->requisitionIssueRepository->getById($id);
         // return $requisition_issue;

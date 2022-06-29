@@ -233,9 +233,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 return "The procurement plan is approved.";
                 break;
             case 'requisition_issue':
-                $form->status = "Received";
+                $form->status = "Issued";
                 $form->save();
-                return "The items on requisition and issue slip is received.";
+                return "The items on requisition and issue slip has been issued.";
                 break;
             
             default:
@@ -256,7 +256,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 }
                 break;
             case 'requisition_issue':
-                if($formRoute->route_code == "ris_issuance_from_property" && $form->from_ppmp == 1){
+                if($formRoute->route_code == "last_route" && $form->from_ppmp == 1){
                     $procurementManagement = new ProcurementManagementRepository();
                     return $procurementManagement->updateFromRequisitionIssue($form);
                 }
@@ -390,12 +390,12 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 ];
                 (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
                 break;
-            case 'ris_issuance_from_property':
+            case 'last_route':
                 $data = [
                     'issued_by_date' => Carbon::now(),
                     'issued_by_designation' => $user->user_information->position->name,
                     'issued_by_name' => $user->user_information->fullname,
-                    'issued_items' => request('issued_items')
+                    'issued_items' => request('issued_items'),
                 ];
                 if(request()->has('issued_items') && request('issued_items') != []){
                     $validated = $request->validate([
@@ -405,15 +405,6 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 }
                 $form = (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
                 (new ItemSupplyHistoryRepository())->createFromRequisitionIssue($form, $data);
-                break;
-            case 'last_route':
-                $data = [
-                    'received_by_date' => Carbon::now(),
-                    'received_by_designation' => $user->user_information->position->name,
-                    'received_by_name' => $user->user_information->fullname,
-                    'status' => 'Received'
-                ];
-                (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
                 break;
             default:
                 # code...

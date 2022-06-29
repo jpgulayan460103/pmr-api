@@ -160,7 +160,7 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
 
         $last_number = 0;
         $last_requisition_issue = $this->model
-        ->whereIn('status',['Approved','Received'])
+        ->whereIn('status',['Approved','Issued'])
         ->whereBetween('created_at', [$start_year, $end_year])
         ->limit(1)
         ->orderBy('id', 'desc')

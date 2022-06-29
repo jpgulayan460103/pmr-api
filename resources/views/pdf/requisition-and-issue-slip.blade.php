@@ -173,7 +173,7 @@
                     <b>{{ $issued_by_date ? $issued_by_name : "" }}</b>
                 </td>
                 <td style="text-align: center;"  nowrap="nowrap">
-                    <b>{{ $received_by_date ? $received_by_name : "" }}</b>
+                    <b>{{ $received_by_name }}</b>
                 </td>
             </tr>
             <tr>
@@ -188,7 +188,7 @@
                     <b>{{ $issued_by_date ? $issued_by_designation : "" }}</b>
                 </td>
                 <td style="text-align: center;">
-                    <b>{{ $received_by_date ? $received_by_designation : "" }}</b>
+                    <b>{{ $received_by_designation }}</b>
                 </td>
             </tr>
             <tr>

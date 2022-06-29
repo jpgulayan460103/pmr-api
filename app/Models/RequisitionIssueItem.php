@@ -21,6 +21,7 @@ class RequisitionIssueItem extends Model
         'request_quantity',
         'issue_quantity',
         'has_stock',
+        'is_pr_recommended',
     ];
 
 
@@ -30,6 +31,7 @@ class RequisitionIssueItem extends Model
         self::creating(function ($model){
             $model->issue_quantity = 0;
             $model->has_stock = 0;
+            $model->is_pr_recommended = 1;
         });
         self::updating(function($model) {
 
