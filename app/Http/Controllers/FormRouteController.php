@@ -161,6 +161,11 @@ class FormRouteController extends Controller
                 (new FormRouteRepository())->updateProcurementManagement($formRoute);
             }
             $step = 0;
+            //reinitialize for updated data
+            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
+            $formProcess = $formRoute->form_process;
+            $formRoutes = $formProcess->form_routes;
+            $form = $formRoute->form_routable;
             foreach ($formRoutes as $key => $route) {
                 if($formRoute->status == "pending" && $route['status'] == "pending" && $formRoute->to_office_id == $formRoutes[$key]['office_id']){
                     $formRoutes[$key]['status'] = "approved";
@@ -188,7 +193,7 @@ class FormRouteController extends Controller
                     $nextRoute = $currentRoute;
                 }
                 $createdNextRoute = $this->formRouteRepository->proceedNextRoute($formRoute, $nextRoute, request('remarks'));
-                if($nextRoute['description_code'] == 'pr_aprroval_from_twg'){
+                if($nextRoute['description_code'] == 'pr_approval_from_twg'){
                     $nextRoute['office_name'] .= " Techinical Working Group";
                 }
                 $action_taken = "Forwarded to ".$nextRoute['office_name'].".";

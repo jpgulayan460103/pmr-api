@@ -51,18 +51,18 @@
                     <th colspan="6" style="border: 0;height:25pt">PURCHASE REQUEST</th>
                 </tr>
                 <tr>
-                    <td colspan="4">Entity Name: DSWD FO XI</td>
-                    <td colspan="2">Fund Cluster: {{ $fund_cluster }}</td>
+                    <td colspan="4">Entity Name: <b>Department of Social Welfare and Development Field Office XI</b></td>
+                    <td colspan="2">Fund Cluster: <b>{{ $fund_cluster }}</b></td>
                 </tr>
                 <tr>
                     <td colspan="2">Office/Section:</td>
-                    <td colspan="2">{{ $end_user['name'] }}</td>
-                    <td colspan="2">PR No.: {{ $purchase_request_number }}</td>
+                    <td colspan="2"><b>{{ $end_user['name'] }}</b></td>
+                    <td colspan="2">PR No.: <b>{{ $purchase_request_number }}</b></td>
                 </tr>
                 <tr>
                     <td colspan="2"  style="text-align: center;"></td>
-                    <td colspan="2">Responsibility Center Code: {{ $center_code }}</td>
-                    <td colspan="2">Date: {{ $pr_date }}</td>
+                    <td colspan="2">Responsibility Center Code: <b>{{ $center_code }}</b></td>
+                    <td colspan="2">Date: <b>{{ $pr_date }}</b></td>
                 </tr>
                 <tr>
                     <td style="text-align: center">Stock/ Property No.</td>
@@ -86,13 +86,13 @@
             @endphp
             @foreach($form_process['form_routes'] as $key => $route)
                 @if($i != 0 && $route['status'] == "approved")
-                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['description_code'] == 'pr_aprroval_from_twg' ? "TWG: " : "" }}{{ $route['office_name'] }}</span><br>
+                    <span><span style='font-family:helvetica'>&#10004;</span>{{ $route['description_code'] == 'pr_approval_from_twg' ? "TWG: " : "" }}{{ $route['office_name'] }}</span><br>
                     @if($route['office_name'] == "Budget Section")
                     <div>
-                        <span>&emsp;<b style="font-size: 9pt;">Charge To:</b> {{ $charge_to }}</span><br>
-                        <span>&emsp;<b style="font-size: 9pt;">Amount:</b> {{ number_format($alloted_amount, 2) }}</span><br>
-                        <span>&emsp;<b style="font-size: 9pt;">UACS Code:</b> {{ $uacs_code['name'] }}</span><br>
-                        <span>&emsp;<b style="font-size: 9pt;">SA/OR:</b> {{ $sa_or }}</span><br> 
+                        <span>&emsp;&emsp;Charge To: <b style="font-size: 9pt;">{{ $charge_to }}</b> </span><br>
+                        <span>&emsp;&emsp;Amount:<b style="font-size: 9pt;">{{ number_format($alloted_amount, 2) }}</b></span><br>
+                        <span>&emsp;&emsp;UACS Code:<b style="font-size: 9pt;">{{ $uacs_code['name'] }}</b></span><br>
+                        <span>&emsp;&emsp;SA/OR:<b style="font-size: 9pt;">{{ $sa_or }}</b></span><br> 
                     </div>
                     @endif
                 @endif
@@ -125,13 +125,13 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0; border-bottom: 0">Printed Name:</td>
-                    <td style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by['name'] }}</td>
-                    <td colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by['name'] }}</td>
+                    <td nowrap="nowrap" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0">{{ $requested_by_name }}</td>
+                    <td nowrap="nowrap" colspan="3" style="font-weight: bold;text-align: center; border-top: 0; border-bottom: 0; width: 220pt;">{{ $approved_by_name }}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-top: 0">Designation:</td>
-                    <td style=" text-align: center; border-top: 0">{{ $requested_by['parent']['name'] }}</td>
-                    <td colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by['parent']['name'] }}</td>
+                    <td nowrap="nowrap" style=" text-align: center; border-top: 0">{{ $requested_by_designation }}</td>
+                    <td nowrap="nowrap" colspan="3" style=" text-align: center; border-top: 0">{{ $approved_by_designation }}</td>
                 </tr>
                 <!-- <tr>
                     <td colspan="6" style="border: 0;"></td>

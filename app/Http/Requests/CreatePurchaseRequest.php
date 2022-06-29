@@ -44,11 +44,11 @@ class CreatePurchaseRequest extends FormRequest
             'pr_date.date' => 'Not a valid date.',
             'items.*.unit_of_measure_id.required' => 'Required',
             'items.*.item_name.required' => 'Required',
-            'items.*.quantity.min' => ':min is the minimum',
+            'items.*.quantity.min' => 'Invalid quantity',
             'items.*.quantity.numeric' => 'Required',
-            'items.*.unit_cost.min' => ':min is the minimum',
+            'items.*.unit_cost.min' => 'Invalid amount',
             'items.*.unit_cost.numeric' => 'Required',
-            'items.*.unit_cost.regex' => '2 decimal places only',
+            'items.*.unit_cost.regex' => 'Invalid format',
         ];
     }
 

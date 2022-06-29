@@ -48,7 +48,7 @@ class CreateRequisitionIssueRequest extends FormRequest
         return [
             'items.*.request_quantity.required' => 'Required',
             'items.*.request_quantity.integer' => 'Invalid format',
-            'items.*.request_quantity.min' => ':min is the minimum',
+            'items.*.request_quantity.min' => 'Invalid quantity',
             'items.*.description.required' => 'Required',
             'items.*.description.string' => 'Must be a string',
             'items.*.unit_of_measure_id.required' => 'Required',

@@ -39,7 +39,11 @@ class PurchaseRequest extends Model
         'sa_or',
         'bac_task_id',    
         'requested_by_id',
+        'requested_by_name',
+        'requested_by_designation',
         'approved_by_id',
+        'approved_by_name',
+        'approved_by_designation',
         'created_by_id',
     ];
 

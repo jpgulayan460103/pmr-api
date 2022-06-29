@@ -30,9 +30,9 @@ class FormProcessRepository implements FormProcessRepositoryInterface
     {
         $origin_office = (new LibraryRepository)->getById($created_purchase_request->end_user_id);
         $requested_by = (new LibraryRepository)->getById($created_purchase_request->requested_by_id);
-        $requested_by_office = (new LibraryRepository)->getUserSectionBy('title',$requested_by->title);
+        $requested_office = (new LibraryRepository)->getById($requested_by->parent_id);
         $approved_by = (new LibraryRepository)->getById($created_purchase_request->approved_by_id);
-        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title',$approved_by->title);
+        $approved_office = (new LibraryRepository)->getById($approved_by->parent_id);
         $bacs_office = (new LibraryRepository)->getUserSectionBy('title','BACS');
         $budget_office = (new LibraryRepository)->getUserSectionBy('title','BS');
         $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
@@ -68,7 +68,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                 "label" => "DIVISION_CHIEF",
                 "status" => "pending",
                 "description" => "Approval from the division chief.",
-                "description_code" => "pr_aprroval_from_division",
+                "description_code" => "pr_approval_from_division",
             ];
         }
 
@@ -78,17 +78,17 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $bacs_office->name,
             "status" => "pending",
             "description" => "PPMP checking.",
-            "description_code" => "pr_aprroval_from_bac",
+            "description_code" => "pr_approval_from_bac",
         ];
 
         
         $routes[] = [
-            "office_id" => $requested_by_office->id,
+            "office_id" => $requested_office->id,
             "label" => "OARD",
-            "office_name" => $requested_by_office->name,
+            "office_name" => $requested_office->name,
             "status" => "pending",
-            "description" => "Approval from the ".$requested_by_office->title,
-            "description_code" => "pr_aprroval_from_oard",
+            "description" => "Approval from the ".$requested_office->title,
+            "description_code" => "pr_approval_from_oard",
         ];
 
         $routes[] = [
@@ -97,15 +97,15 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $budget_office->name,
             "status" => "pending",
             "description" => "Budget allocation.",
-            "description_code" => "pr_aprroval_from_budget",
+            "description_code" => "pr_approval_from_budget",
         ];
 
         $routes[] = [
-            "office_id" => $approved_by_office->id,
+            "office_id" => $approved_office->id,
             "label" => "ORD",
-            "office_name" => $approved_by_office->name,
+            "office_name" => $approved_office->name,
             "status" => "pending",
-            "description" => "Approval from the ".$approved_by_office->title,
+            "description" => "Approval from the ".$approved_office->title,
             "description_code" => "last_route",
         ];
         
@@ -159,7 +159,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                     "office_name" => $technical_working_group->name,
                     "status" => "pending",
                     "description" => "Approval from the Technical Working Group",
-                    "description_code" => "pr_aprroval_from_twg",
+                    "description_code" => "pr_approval_from_twg",
                 ];
 
                 $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
@@ -170,7 +170,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
                     "office_name" => $procurement_office->name,
                     "status" => "pending",
                     "description" => "Approval from the Procurement Section",
-                    "description_code" => "pr_aprroval_from_proc",
+                    "description_code" => "pr_approval_from_proc",
                 ];
             }else{
                 $new_routes[] = $form_route;
@@ -192,7 +192,7 @@ class FormProcessRepository implements FormProcessRepositoryInterface
             "office_name" => $requested_by_office->name,
             "status" => "pending",
             "description" => "Approval from the ".$requested_by_office->title,
-            "description_code" => "pr_aprroval_from_oard",
+            "description_code" => "pr_approval_from_oard",
         ];
         $old_oard_route = $form_routes[$key];
         $form_routes[$key] = $new_oard_route;
@@ -267,9 +267,9 @@ class FormProcessRepository implements FormProcessRepositoryInterface
     public function requisitionIssue($created_requisition_issue)
     {
         $origin_office = (new LibraryRepository)->getById($created_requisition_issue->end_user_id);
-        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
+        $requested_by = (new LibraryRepository)->getById($created_requisition_issue->requested_by_id);
         $requested_office = (new LibraryRepository)->getById($requested_by->parent_id);
-        $approved_by = (new LibraryRepository)->getById(request('approved_by_id'));
+        $approved_by = (new LibraryRepository)->getById($created_requisition_issue->approved_by_id);
         $approved_office = (new LibraryRepository)->getById($approved_by->parent_id);
         $property_office = (new LibraryRepository)->getUserSectionBy('title','PSAMS');
         $routes = [];

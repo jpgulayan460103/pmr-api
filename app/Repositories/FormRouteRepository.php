@@ -414,7 +414,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function modifyRoute($formRoute)
     {
-        if(request()->has("type") && request("type") == "twg" && request('updater') == "procurement"){
+        if(request()->has("type") && request("type") == "twg"){
             $formProcessId = $formRoute->form_process->id;
             (new FormProcessRepository())->updateRouting($formProcessId, request("type"));
         }

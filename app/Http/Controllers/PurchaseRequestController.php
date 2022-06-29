@@ -108,7 +108,7 @@ class PurchaseRequestController extends Controller
     public function show($id)
     {
         // DB::enableQueryLog();
-        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, account, mode_of_procurement, uacs_code, items.unit_of_measure, requested_by, approved_by, bac_task";
+        $attach = "form_uploads.uploader.user_information, form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, account, mode_of_procurement, uacs_code, items.unit_of_measure, bac_task";
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->getById($id);
         // return DB::getQueryLog();
@@ -161,6 +161,7 @@ class PurchaseRequestController extends Controller
     {
         $purchase_request = $this->purchaseRequestRepository->getByUuid($uuid);
         $purchase_request = $this->show($purchase_request->id);
+        // return $purchase_request;
         $count = 0;
         foreach ($purchase_request['items']['data'] as $key => $item) {
             $count++;

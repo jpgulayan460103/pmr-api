@@ -35,7 +35,11 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('status')->nullable();
             $table->string('remarks')->nullable();
             $table->unsignedBigInteger('requested_by_id')->nullable();
+            $table->string('requested_by_name')->nullable();
+            $table->string('requested_by_designation')->nullable();
             $table->unsignedBigInteger('approved_by_id')->nullable();
+            $table->string('approved_by_name')->nullable();
+            $table->string('approved_by_designation')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
