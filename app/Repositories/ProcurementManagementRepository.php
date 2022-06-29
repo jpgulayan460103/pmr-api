@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Library;
 use App\Models\ProcurementManagement;
 use App\Models\ProcurementManagementItem;
 use App\Models\RequisitionIssue;
@@ -27,19 +28,22 @@ class ProcurementManagementRepository implements ProcurementManagementRepository
 
     public function createOrUpdateFromProcurementPlan($form)
     {
-        $procurementPlanRepository = new ProcurementPlanRepository();
-        $procurementPlanRepository->attach('items');
-        $procurement_plan = $procurementPlanRepository->getById($form->id);
-        $procurement_plan_data = [
-            'end_user_id' => $procurement_plan->end_user_id,
-            'calendar_year' => $procurement_plan->calendar_year,
-        ];
-        $procurement_management = $this->procurementManagement($procurement_plan_data);
-        if($procurement_management == null){
-            $procurement_management = $this->create($procurement_plan_data);
+        $ppmp = Library::where('library_type', 'procurement_plan_type')->where('name', ppmpValue())->first();
+        if($form->procurement_plan_type_id == $ppmp->id){
+            $procurementPlanRepository = new ProcurementPlanRepository();
+            $procurementPlanRepository->attach('items');
+            $procurement_plan = $procurementPlanRepository->getById($form->id);
+            $procurement_plan_data = [
+                'end_user_id' => $procurement_plan->end_user_id,
+                'calendar_year' => $procurement_plan->calendar_year,
+            ];
+            $procurement_management = $this->procurementManagement($procurement_plan_data);
+            if($procurement_management == null){
+                $procurement_management = $this->create($procurement_plan_data);
+            }
+            $items = $this->extractItemsFromProcurementPlan($procurement_plan);
+            $procurement_management->items()->saveMany($items);
         }
-        $items = $this->extractItemsFromProcurementPlan($procurement_plan);
-        $procurement_management->items()->saveMany($items);
     }
 
     public function procurementManagement($data)
