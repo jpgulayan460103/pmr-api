@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\NoStockCertificateItem;
 use App\Models\RequisitionIssue;
 use App\Models\RequisitionIssueItem;
 use App\Repositories\Interfaces\RequisitionIssueRepositoryInterface;
@@ -9,6 +10,7 @@ use App\Repositories\HasCrud;
 use App\Rules\MaxInt;
 use App\Rules\RequisitionIssue\MaxIfHasStock;
 use App\Rules\RequisitionIssue\MinIfHasStock;
+use App\Transformers\NoStockCertificateTransformer;
 use Carbon\Carbon;
 
 class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
@@ -188,6 +190,46 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
         $requisition_issue = $this->getById($formId);
         $requested_by = (new LibraryRepository())->getById($requisition_issue->requested_by_id);
         return $requested_by->parent->id == $requisition_issue->end_user_id;
+    }
+
+    public function createNoStockCertificate($requisition_issue)
+    {
+        $items = $requisition_issue->items;
+        $last_number = (new NoStockCertificateRepository())->getLastNumber();
+        $cnas_number = "CNAS-".Carbon::now()->format('Y-m-').str_pad(++$last_number, 5, "0", STR_PAD_LEFT);
+        $no_stock_certificate = (new NoStockCertificateRepository())->create([
+            'cnas_number' => $cnas_number,
+            'cnas_date' => Carbon::now(),
+        ]);
+        $cnas_items = [];
+        foreach ($items as $key => $item) {
+            $data = [
+                'description' => $item['description'],
+                'unit_of_measure' => $item['unit_of_measure']['name'],
+                'quantity' => $item['request_quantity'],
+            ];
+            $cnas_items[] = new NoStockCertificateItem($data);
+        }
+        $no_stock_certificate->items()->saveMany($cnas_items);
+        return $no_stock_certificate;
+    }
+
+    public function attachNoStockCertificate($requisition_issue_id)
+    {
+        $requisition_issue = $this->attach('items.unit_of_measure')->getById($requisition_issue_id);
+        $no_stock_certificate = $this->createNoStockCertificate($requisition_issue);
+        $no_stock_certificate_transformed = fractal($no_stock_certificate, new NoStockCertificateTransformer)->toArray();
+        $created = $requisition_issue->form_uploads()->create([
+            'upload_type' => 'database',
+            'title' => $no_stock_certificate_transformed['form_number'],
+            'form_type' => 'no_stock_certificate',
+            'form_attached' => 'no_stock_certificate',
+            'form_attachable_id' => $no_stock_certificate->id,
+            'form_attachable_type' => get_class($no_stock_certificate),
+            'file_directory' => $no_stock_certificate_transformed['file'],
+            'is_removable' => 0,
+        ]);
+        return $requisition_issue;
     }
 
 }

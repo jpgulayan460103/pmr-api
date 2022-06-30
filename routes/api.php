@@ -17,6 +17,7 @@ use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
 use App\Http\Controllers\ItemSupplyController;
 use App\Http\Controllers\ItemSupplyHistoryController;
+use App\Http\Controllers\NoStockCertificateController;
 use App\Http\Controllers\ProcurementManagementController;
 use App\Http\Controllers\RequisitionIssueController;
 use App\Http\Controllers\ProcurementPlanController;
@@ -56,6 +57,7 @@ Route::resources([
     'requisition-issues' => RequisitionIssueController::class,
     'procurement-managements' => ProcurementManagementController::class,
     'item-supplies' => ItemSupplyController::class,
+    'nas-certificates' => NoStockCertificateController::class,
 ]);
 
 Route::group(['prefix' => '/libraries'], function () {
@@ -71,12 +73,13 @@ Route::group(['prefix' => '/pdf'], function () {
         Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview'])->name('api.purchase-requests.pdf.validate');
     });
     
-    Route::get('/purchase-requests/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
+    Route::get('/purchase-request/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
     Route::get('/procurement-plan/{id}', [ProcurementPlanController::class, 'pdf'])->name('api.procurement-plans.pdf');
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
     Route::get('/purchase-order/{id}', [PurchaseOrderController::class, 'pdf'])->name('api.purchase-order.pdf');
     Route::get('/stock-card/{id}', [ItemSupplyHistoryController::class, 'pdf'])->name('api.stock-card.pdf');
     Route::get('/requisition-and-issue-slip/{id}', [RequisitionIssueController::class, 'pdf'])->name('api.ris.pdf');
+    Route::get('/nas-certificate/{id}', [NoStockCertificateController::class, 'pdf'])->name('api.no-stock-certificate.pdf');
 });
 
 

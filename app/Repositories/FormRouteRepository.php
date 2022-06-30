@@ -406,6 +406,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 }
                 $form = (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
                 (new ItemSupplyHistoryRepository())->createFromRequisitionIssue($form, $data);
+                (new RequisitionIssueRepository())->attachNoStockCertificate($formId);
                 break;
             default:
                 # code...

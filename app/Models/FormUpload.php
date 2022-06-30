@@ -57,8 +57,8 @@ class FormUpload extends Model
         $user = Auth::user();
         parent::boot();
         self::creating(function ($model) use ($user) {
-            $model->user_id = (string) Str::uuid();
-            $model->created_by_id = $user->id;
+            $model->uuid = (string) Str::uuid();
+            $model->user_id = $user->id;
         });
         self::updating(function($model) {
 
@@ -74,7 +74,7 @@ class FormUpload extends Model
     {
         return $this->morphTo();
     }
-    
+
     public function form_attachable()
     {
         return $this->morphTo();

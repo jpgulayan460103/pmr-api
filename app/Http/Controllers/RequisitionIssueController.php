@@ -138,16 +138,9 @@ class RequisitionIssueController extends Controller
             'margin_left' => 6.35,
             'margin_right' => 6.35,
             'margin_top' => 6.35,
-            // 'margin_bottom' => 0,
-            // 'margin_header' => 50,
-            // 'margin_footer' => 0,
         ];
         $pdf = FacadesPdf::loadView('pdf.requisition-and-issue-slip', $requisition_issue, [], $config);
-/*         $pdf->shrink_tables_to_fit = 1.4;
-        $pdf->use_kwt = true; */
-        // $pdf->AddPage('P');
-        // $pdf->setFooter('Page {PAGENO} of {nbpg}');
-        return $pdf->stream('purchase-request-'.'1111'.'.pdf');
-        return $pdf->download('purchase-request-'.'1111'.'.pdf');
+        return $pdf->stream('requisition-issue-'.$requisition_issue['form_number'].'.pdf');
+        return $pdf->download('requisition-issue-'.$requisition_issue['form_number'].'.pdf');
     }
 }

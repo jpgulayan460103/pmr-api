@@ -41,7 +41,6 @@ class AddTableForeignKeys extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
-
         Schema::table('items', function (Blueprint $table) {
             $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('set null');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
@@ -56,6 +55,12 @@ class AddTableForeignKeys extends Migration
         Schema::table('item_supply_histories', function (Blueprint $table) {
             $table->foreign('item_supply_id')->references('id')->on('item_supplies')->onDelete('cascade');
             $table->index(['form_sourceable_id', 'form_sourceable_type'], 'item_supply_form_sourceable_id_form_sourceable_type_index');
+        });
+        Schema::table('no_stock_certificates', function (Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+        Schema::table('no_stock_certificate_items', function (Blueprint $table) {
+            $table->foreign('no_stock_certificate_id')->references('id')->on('no_stock_certificates')->onDelete('cascade');
         });
 
         Schema::table('procurement_management', function (Blueprint $table) {
@@ -214,6 +219,13 @@ class AddTableForeignKeys extends Migration
         Schema::table('item_supply_histories', function (Blueprint $table) {
             $table->dropForeign(['item_supply_id']);
             DB::statement('ALTER TABLE `item_supply_histories` DROP INDEX `item_supply_form_sourceable_id_form_sourceable_type_index`');
+        });
+
+        Schema::table('no_stock_certificates', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
+        Schema::table('no_stock_certificate_items', function (Blueprint $table) {
+            $table->dropForeign(['no_stock_certificate_id']);
         });
         
         Schema::table('procurement_management', function (Blueprint $table) {
