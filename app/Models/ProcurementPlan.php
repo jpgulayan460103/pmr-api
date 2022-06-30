@@ -42,8 +42,10 @@ class ProcurementPlan extends Model
         'end_user_id',
         'prepared_by_name',
         'prepared_by_designation',
+        'certified_by_id',
         'certified_by_name',
         'certified_by_designation',
+        'approved_by_id',
         'approved_by_name',
         'approved_by_designation',
     ];

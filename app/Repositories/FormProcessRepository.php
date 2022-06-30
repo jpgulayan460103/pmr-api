@@ -217,11 +217,13 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         }
     }
 
-    public function procurementPlan($created_procurement_plan, $certified_by_office, $approved_by_office)
+    public function procurementPlan($created_procurement_plan)
     {
         $origin_office = (new LibraryRepository)->getById($created_procurement_plan->end_user_id);
-        $certified_office = (new LibraryRepository)->getUserSectionBy('title', $certified_by_office);
-        $approved_by_office = (new LibraryRepository)->getUserSectionBy('title', $approved_by_office);
+        $certified_by = (new LibraryRepository)->getById($created_procurement_plan->certified_by_id);
+        $certified_office = (new LibraryRepository)->getById($certified_by->parent_id);
+        $approved_by = (new LibraryRepository)->getById($created_procurement_plan->approved_by_id);
+        $approved_office = (new LibraryRepository)->getById($approved_by->parent_id);
         $routes = [];
         $routes[] = [
             "office_id" => $origin_office->id,
@@ -242,11 +244,11 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         ];
 
         $routes[] = [
-            "office_id" => $approved_by_office->id,
-            "office_name" => $approved_by_office->name,
+            "office_id" => $approved_office->id,
+            "office_name" => $approved_office->name,
             "label" => "OARD",
             "status" => "pending",
-            "description" => "Approval from the ".$approved_by_office->name.".",
+            "description" => "Approval from the ".$approved_office->name.".",
             "description_code" => "last_route",
         ];
 

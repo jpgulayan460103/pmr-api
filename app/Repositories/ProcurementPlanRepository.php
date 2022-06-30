@@ -83,28 +83,56 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
     {
         $requisition_issue = $this->update($id, $data);
         if(request()->has('items') && request('items') != array()){
-            $itemsA = $this->updateItems($id, "A");
-            $itemsB = $this->updateItems($id, "B");
+            $itemsA = $this->updateItemsA($id);
+            $itemsB = $this->updateItemsB($id);
             $requisition_issue->items()->saveMany($itemsA['items']);
             $requisition_issue->items()->saveMany($itemsB['items']);
         }
     }
 
-    public function updateItems($id, $type)
+    public function updateItemsA($id)
     {
+        $itemTypeA = (new LibraryRepository)->getBy("name", ppmpCse())->first();
         $item_ids_form = array();
-        $item_ids = ProcurementPlanItem::where('requisition_issue_id',$id)->pluck('id')->toArray();
+        $item_ids = ProcurementPlanItem::where('procurement_plan_id',$id)->where('item_type_id', $itemTypeA->id)->pluck('id')->toArray();
         $new_items = array();
-        $items = ($type == "A" ? request('itemsA') : request('itemsB'));
-        foreach ($items as $key => $item) {
-            if(isset($item['id'])){
-                ProcurementPlanItem::find($item['id'])->update($item);
-                $item_ids_form[] = $item['id']; 
-            }else{
-                $new_items[$key] = new ProcurementPlanItem($item);
+        $items = request('itemsA');
+        if($items != array()){
+            foreach ($items as $key => $item) {
+                if(isset($item['id'])){
+                    ProcurementPlanItem::find($item['id'])->update($item);
+                    $item_ids_form[] = $item['id']; 
+                }else{
+                    $item['item_type_id'] = $itemTypeA->id;
+                    $new_items[$key] = new ProcurementPlanItem($item);
+                }
             }
+            $this->removeItems($item_ids,$item_ids_form);
         }
-        $this->removeItems($item_ids,$item_ids_form);
+        return [
+            'items' => $new_items,
+        ];
+    }
+
+    public function updateItemsB($id)
+    {
+        $itemTypeB = (new LibraryRepository)->getBy("name", ppmpNonCse())->first();
+        $item_ids_form = array();
+        $item_ids = ProcurementPlanItem::where('procurement_plan_id',$id)->where('item_type_id', $itemTypeB->id)->pluck('id')->toArray();
+        $new_items = array();
+        $items = request('itemsB');
+        if($items != array()){
+            foreach ($items as $key => $item) {
+                if(isset($item['id'])){
+                    ProcurementPlanItem::find($item['id'])->update($item);
+                    $item_ids_form[] = $item['id']; 
+                }else{
+                    $item['item_type_id'] = $itemTypeB->id;
+                    $new_items[$key] = new ProcurementPlanItem($item);
+                }
+            }
+            $this->removeItems($item_ids,$item_ids_form);
+        }
         return [
             'items' => $new_items,
         ];
@@ -214,5 +242,21 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
             $last_number = end($ppmp_number_exploded);
         }
         return (integer) $last_number;
+    }
+
+    public function calculateBudgets($data, $itemsA, $itemsB)
+    {
+        $data['total_price_a'] = $itemsA['total_cost'];
+        $data['inflation_a'] = $itemsA['total_cost'] * 0.1;
+        $data['contingency_a'] = $itemsA['total_cost'] * 0.1;
+        $data['total_estimated_budget_a'] = $itemsA['total_cost'] + $data['inflation_a'] + $data['contingency_a'];
+
+        $data['total_price_b'] = $itemsB['total_cost'];
+        $data['inflation_b'] = $itemsB['total_cost'] * 0.1;
+        $data['contingency_b'] = $itemsB['total_cost'] * 0.1;
+        $data['total_estimated_budget_b'] = $itemsB['total_cost'] + $data['inflation_b'] + $data['contingency_b'];
+        
+        $data['total_estimated_budget'] = $data['total_estimated_budget_a'] + $data['total_estimated_budget_b'];
+        return $data;
     }
 }

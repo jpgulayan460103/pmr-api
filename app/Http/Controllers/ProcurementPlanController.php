@@ -59,25 +59,11 @@ class ProcurementPlanController extends Controller
             $data = $request->all();
             $itemsA = $this->procurementPlanRepository->addItemsA();
             $itemsB = $this->procurementPlanRepository->addItemsB();
-            $data['total_price_a'] = $itemsA['total_cost'];
-            $data['inflation_a'] = $itemsA['total_cost'] * 0.1;
-            $data['contingency_a'] = $itemsA['total_cost'] * 0.1;
-            $data['total_estimated_budget_a'] = $itemsA['total_cost'] + $data['inflation_a'] + $data['contingency_a'];
-
-            $data['total_price_b'] = $itemsB['total_cost'];
-            $data['inflation_b'] = $itemsB['total_cost'] * 0.1;
-            $data['contingency_b'] = $itemsB['total_cost'] * 0.1;
-            $data['total_estimated_budget_b'] = $itemsB['total_cost'] + $data['inflation_b'] + $data['contingency_b'];
-            
-            $data['total_estimated_budget'] = $data['total_estimated_budget_a'] + $data['total_estimated_budget_b'];
-
-            $certified_by_office = $data['certified_by_office'];
-            $approved_by_office = $data['approved_by_office'];
-
+            $data = $this->procurementPlanRepository->calculateBudgets($data, $itemsA, $itemsB);
             $procurement_plan = $this->procurementPlanRepository->create($data);
             $procurement_plan->items()->saveMany($itemsA['items']);
             $procurement_plan->items()->saveMany($itemsB['items']);
-            $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan, $certified_by_office, $approved_by_office);
+            $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan);
             $form_route = (new FormRouteRepository())->procurementPlan($procurement_plan, $form_process);
             DB::commit();
             return $procurement_plan;
@@ -94,7 +80,7 @@ class ProcurementPlanController extends Controller
      */
     public function show($id)
     {
-        $attach = 'form_process, end_user, item_type, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads';
+        $attach = 'form_process, end_user, item_type, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items';
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->getById($id);
         return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
@@ -118,7 +104,7 @@ class ProcurementPlanController extends Controller
      * @param  \App\Models\ProcurementPlan  $procurementPlan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreateProcurementPlanRequest $request, $id)
     {
         DB::beginTransaction();
         try {
