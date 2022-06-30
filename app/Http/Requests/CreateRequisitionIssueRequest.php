@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Repositories\LibraryRepository;
 use App\Repositories\RequisitionIssueRepository;
 use App\Rules\LibraryExistRule;
+use App\Rules\MaxInt;
 use App\Rules\MaxQuantity;
 use App\Transformers\FormProcessTransformer;
 use Illuminate\Foundation\Http\FormRequest;
@@ -35,11 +36,14 @@ class CreateRequisitionIssueRequest extends FormRequest
                 'integer',
                 'min:1',
                 request('from_ppmp') == 1 ? new MaxQuantity("max_quantity") : "",
+                new MaxInt,
             ],
             'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'from_ppmp' => ['required'],
             'requested_by_name' => ['required', 'string'],
+            'requested_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
             'approved_by_name' => ['required', 'string'],
+            'approved_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
         ];
     }
 

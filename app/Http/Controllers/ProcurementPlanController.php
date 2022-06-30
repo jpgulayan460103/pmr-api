@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateProcurementPlanRequest;
+use App\Http\Requests\UpdateProcurementPlanRequest;
 use App\Models\ProcurementPlan;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
@@ -104,7 +105,7 @@ class ProcurementPlanController extends Controller
      * @param  \App\Models\ProcurementPlan  $procurementPlan
      * @return \Illuminate\Http\Response
      */
-    public function update(CreateProcurementPlanRequest $request, $id)
+    public function update(UpdateProcurementPlanRequest $request, $id)
     {
         DB::beginTransaction();
         try {

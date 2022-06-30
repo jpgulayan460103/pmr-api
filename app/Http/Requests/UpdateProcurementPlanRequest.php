@@ -9,7 +9,7 @@ use App\Rules\MaxFloat;
 use App\Rules\MaxInt;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateProcurementPlanRequest extends FormRequest
+class UpdateProcurementPlanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -181,7 +181,7 @@ class CreateProcurementPlanRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $this->validateItems($validator);
-            $this->validateProcurementType($validator);
+            // $this->validateProcurementType($validator);
         });
     }
 
