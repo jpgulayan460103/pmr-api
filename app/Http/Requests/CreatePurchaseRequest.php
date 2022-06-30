@@ -32,7 +32,6 @@ class CreatePurchaseRequest extends FormRequest
             'purpose' => 'required',
             'requisition_issue_id' => 'required',
             'requisition_issue_file' => 'required',
-            'req' => 'required',
             'requested_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
             'approved_by_name' => 'required',
             'approved_by_id' => ['required', new LibraryExistRule('user_section_signatory')],

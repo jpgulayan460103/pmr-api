@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\BacTask;
+use App\Models\FormUpload;
 use App\Models\PurchaseRequest;
 use App\Models\PurchaseRequestItem;
 use App\Repositories\Interfaces\PurchaseRequestRepositoryInterface;
@@ -182,6 +183,20 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             'file_directory' => $requisition_issue_transformed['file'],
             'is_removable' => 0,
         ]);
+        $purchase_request = $this->addRequistionIssueAttachments($purchase_request, $requisition_issue);
+        return $purchase_request;
+    }
+
+    public function addRequistionIssueAttachments($purchase_request, $requisition_issue)
+    {
+        // $attachments = $requisition_issue->form_uploads()->where('upload_type', 'database')->get()->toArray();
+        $attachments = $requisition_issue->form_uploads()->get()->toArray();
+        $new_attachments = [];
+        foreach ($attachments as $key => $attachment) {
+            $attachment['is_removable'] = 0;
+            $new_attachments[] = new FormUpload($attachment);
+        }
+        $purchase_request->form_uploads()->saveMany($new_attachments);
         return $purchase_request;
     }
 }
