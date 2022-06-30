@@ -53,12 +53,14 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         $path = Storage::putFile("public/uploads/$type/$yearMonth/$uuid", $file);
         $url = Storage::url($path);
         $createdFile = $this->create([
-            'upload_type' => $type,
+            'upload_type' => "file",
+            'form_type' => $type,
             'title' => request('meta.description'),
             'filename' => $file->getClientOriginalName(),
             'filesize' => $file->getSize(),
             'file_directory' => $url,
             'user_id' => $user->id,
+            'is_removable' => 1,
             'form_uploadable_id' => $id,
             'form_uploadable_type' => get_class($form),
         ]);

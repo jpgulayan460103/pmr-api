@@ -12,6 +12,7 @@ use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Repositories\LibraryRepository;
 use App\Transformers\FormProcessTransformer;
+use App\Transformers\RequisitionIssueTransformer;
 use Carbon\Carbon;
 
 class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
@@ -165,6 +166,23 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
     public function getLastNumber()
     {
         return $this->modelQuery()->whereNotNull('purchase_request_number')->orderBy('id','desc')->limit(1)->first();
+    }
+
+    public function attachRequistionIssue($purchase_request)
+    {
+        $requisition_issue = (new RequisitionIssueRepository())->getById(request('requisition_issue_id'));
+        $requisition_issue_transformed = fractal($requisition_issue, new RequisitionIssueTransformer)->toArray();
+        $created = $purchase_request->form_uploads()->create([
+            'upload_type' => 'database',
+            'title' => $requisition_issue_transformed['form_number'],
+            'form_type' => 'purchase_request',
+            'form_attached' => 'requisition_issue',
+            'form_attachable_id' => $requisition_issue->id,
+            'form_attachable_type' => get_class($requisition_issue),
+            'file_directory' => $requisition_issue_transformed['file'],
+            'is_removable' => 0,
+        ]);
+        return $purchase_request;
     }
 }
 

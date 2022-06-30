@@ -117,28 +117,28 @@ class ProcurementPlanTest extends TestCase
         $response->assertStatus(201);
     }
 
-    // public function test_ict()
-    // {
-    //     $user = User::with('user_offices.office')->where('username','ict')->first();
-    //     Passport::actingAs($user);
-    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-    //     $response->assertStatus(200);
-    // }
-    // public function test_budget()
-    // {
-    //     $user = User::with('user_offices.office')->where('username','ict')->first();
-    //     Passport::actingAs($user);
-    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-    //     $response->assertStatus(200);
-    // }
-    // public function test_oard()
-    // {
-    //     $user = User::with('user_offices.office')->where('username','ict')->first();
-    //     Passport::actingAs($user);
-    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-    //     $response->assertStatus(200);
-    // }
+    public function test_ict()
+    {
+        $user = User::with('user_offices.office')->where('username','ict')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response->assertStatus(200);
+    }
+    public function test_budget()
+    {
+        $user = User::with('user_offices.office')->where('username','ict')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response->assertStatus(200);
+    }
+    public function test_oard()
+    {
+        $user = User::with('user_offices.office')->where('username','ict')->first();
+        Passport::actingAs($user);
+        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+        $response->assertStatus(200);
+    }
 }

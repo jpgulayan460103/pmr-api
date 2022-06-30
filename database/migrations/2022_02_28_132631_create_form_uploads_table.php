@@ -15,15 +15,19 @@ class CreateFormUploadsTable extends Migration
     {
         Schema::create('form_uploads', function (Blueprint $table) {
             $table->id();
-            $table->string('upload_uuid')->nullable();
+            $table->string('uuid')->nullable();
             $table->string('upload_type')->nullable();
             $table->string('title')->nullable();
             $table->string('filename')->nullable();
             $table->string('filesize')->nullable();
             $table->string('file_directory')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('form_type')->nullable();
             $table->unsignedBigInteger('form_uploadable_id')->nullable();
             $table->string('form_uploadable_type')->nullable();
+            $table->string('form_attached')->nullable();
+            $table->unsignedBigInteger('form_attachable_id')->nullable();
+            $table->string('form_attachable_type')->nullable();
             $table->boolean('is_removable')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -90,7 +90,9 @@ class PurchaseRequestController extends Controller
             $purchase_request->items()->saveMany($items['items']);
             $formProcess = (new FormProcessRepository())->purchaseRequest($purchase_request);
             $formRoute = (new FormRouteRepository())->purchaseRequest($purchase_request, $formProcess);
+            $purchase_request = $this->purchaseRequestRepository->attachRequistionIssue($purchase_request);
             $purchase_request->save();
+            // ddh($purchase_request);
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {

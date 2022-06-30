@@ -165,7 +165,7 @@ class AuditTrailController extends Controller
 
     public function formUploads(Request $request, $type, $id)
     {
-        $form_uploads = FormUpload::where('upload_type', $type)->where('form_uploadable_id', $id)->withTrashed()->select('id')->pluck('id');
+        $form_uploads = FormUpload::where('form_type', $type)->where('form_uploadable_id', $id)->withTrashed()->select('id')->pluck('id');
         $log = ActivityLog::with(
             [
                 'user.user_information',

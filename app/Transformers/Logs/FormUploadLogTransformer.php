@@ -13,7 +13,7 @@ class FormUploadLogTransformer extends TransformerAbstract
 {
     protected $labels = [
         "title" => "Title",
-        "upload_uuid" => "Upload ID",
+        "uuid" => "Upload ID",
         "file_directory" => "File",
         "form_uploadable.uuid" => "Form ID",
     ];

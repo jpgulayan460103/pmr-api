@@ -37,6 +37,7 @@ class AddTableForeignKeys extends Migration
         
         Schema::table('form_uploads', function (Blueprint $table) {
             $table->index(['form_uploadable_id', 'form_uploadable_type']);
+            $table->index(['form_attachable_id', 'form_attachable_type']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
@@ -195,6 +196,7 @@ class AddTableForeignKeys extends Migration
         
         Schema::table('form_uploads', function (Blueprint $table) {
             $table->dropIndex(['form_uploadable_id', 'form_uploadable_type']);
+            $table->dropIndex(['form_attachable_id', 'form_attachable_type']);
             $table->dropForeign(['user_id']);
         });
 

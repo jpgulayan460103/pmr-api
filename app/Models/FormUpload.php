@@ -8,21 +8,26 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class FormUpload extends Model
 {
     use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'upload_uuid',
+        'uuid',
         'upload_type',
         'title',
         'filename',
         'filesize',
         'file_directory',
         'user_id',
+        'form_type',
         'form_uploadable_id',
         'form_uploadable_type',
+        'form_attached',
+        'form_attachable_id',
+        'form_attachable_type',
         'is_removable',
     ];
 
@@ -39,7 +44,7 @@ class FormUpload extends Model
         'user_id',
         'filename',
         'filesize',
-        'upload_type',
+        'form_type',
         'form_uploadable_id',
         'form_uploadable_type',
     ];
@@ -49,9 +54,11 @@ class FormUpload extends Model
 
     public static function boot()
     {
+        $user = Auth::user();
         parent::boot();
-        self::creating(function ($model) {
-            $model->upload_uuid = (string) Str::uuid();
+        self::creating(function ($model) use ($user) {
+            $model->user_id = (string) Str::uuid();
+            $model->created_by_id = $user->id;
         });
         self::updating(function($model) {
 
@@ -64,6 +71,11 @@ class FormUpload extends Model
     }
 
     public function form_uploadable()
+    {
+        return $this->morphTo();
+    }
+    
+    public function form_attachable()
     {
         return $this->morphTo();
     }
