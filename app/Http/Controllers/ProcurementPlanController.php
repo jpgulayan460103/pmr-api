@@ -30,7 +30,7 @@ class ProcurementPlanController extends Controller
      */
     public function index()
     {
-        $attach = 'form_process,form_routes, form_uploads, end_user, item_type, procurement_plan_type';
+        $attach = 'form_process,form_routes, form_uploads, end_user, procurement_plan_type';
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->search([]);
         // return $procurement_plans;
@@ -81,7 +81,7 @@ class ProcurementPlanController extends Controller
      */
     public function show($id)
     {
-        $attach = 'form_process, end_user, item_type, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items';
+        $attach = 'form_process, end_user, form_routes.to_office, form_routes.processed_by.user_information, form_routes.forwarded_by.user_information, form_routes.from_office, form_uploads, items';
         $this->procurementPlanRepository->attach($attach);
         $procurement_plans = $this->procurementPlanRepository->getById($id);
         return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);

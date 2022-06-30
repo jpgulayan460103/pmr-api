@@ -19,7 +19,6 @@ class CreateProcurementPlansTable extends Migration
             $table->string('title')->nullable();
             $table->string('purpose')->nullable();
             $table->unsignedBigInteger('procurement_plan_type_id')->nullable();
-            $table->unsignedBigInteger('item_type_id')->nullable();
             $table->date('ppmp_date')->nullable();
             $table->string('calendar_year')->nullable();
             $table->string('ppmp_number')->nullable();

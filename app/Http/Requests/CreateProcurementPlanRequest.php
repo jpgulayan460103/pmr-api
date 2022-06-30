@@ -40,7 +40,6 @@ class CreateProcurementPlanRequest extends FormRequest
             'approved_by_designation' => 'required|string',
             'title' => 'required',
             'procurement_plan_type_id' => ['required', new LibraryExistRule('procurement_plan_type')],
-            'item_type_id' => 'required',
             'calendar_year' => 'required|digits:4|integer|min:'.date('Y').'|max:'.(date('Y')+1),
             'ppmp_date' => 'required|date',
             'itemsA.*.item_id' => 'required',

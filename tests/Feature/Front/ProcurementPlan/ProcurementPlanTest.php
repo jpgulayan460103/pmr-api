@@ -63,7 +63,8 @@ class ProcurementPlanTest extends TestCase
                 'description' => $item->item_name,
                 'item_type_id' => $item->item_type_id,
                 'total_quantity' => $this->faker->numberBetween(0, 100),
-                'price' => $this->faker->randomFloat(2, 0, 10000),
+                'price' => $item->price,
+                'total_price' => $this->faker->randomFloat(2, 0, 10000),
             ];
         }
 
@@ -88,24 +89,25 @@ class ProcurementPlanTest extends TestCase
                 'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
                 'total_quantity' => $this->faker->numberBetween(0, 100),
                 'price' => $this->faker->randomFloat(2, 0, 10000),
+                'total_price' => $this->faker->randomFloat(2, 0, 10000),
             ];
         }
+        $budget_office = Library::where('library_type','user_section')->where('title','BS')->first();
+        $oarda_office = Library::where('library_type','user_section')->where('title','OARDA')->first();
         $request = [
             'end_user_id' => Library::find($office[0]['office_id'])->id,
-            'item_type_id' => $cse->id,
             'procurement_plan_type_id' => $procurement_plan_type->id,
             'prepared_by_name' => $this->faker->name,
             'prepared_by_designation' => $this->faker->jobTitle,
+            'certified_by_id' => Library::where('library_type','user_section_signatory')->where('parent_id', $budget_office->id)->first()->id,
             'certified_by_name' => $this->faker->name,
             'certified_by_designation' => $this->faker->jobTitle,
-            'certified_by_office' => "BS",
+            'approved_by_id' => Library::where('library_type','user_section_signatory')->where('parent_id', $oarda_office->id)->first()->id,
             'approved_by_name' => $this->faker->name,
             'approved_by_designation' => $this->faker->jobTitle,
-            'approved_by_office' => "OARDA",
             'ppmp_date' => Carbon::now(),
             'calendar_year' => Carbon::now()->format("Y"),
             'title' => $this->faker->text(200),
-            'approvedBy' => "OARDA",
             'itemsA' => $itemsA,
             'itemsB' => $itemsB,
         ];
@@ -115,28 +117,28 @@ class ProcurementPlanTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_ict()
-    {
-        $user = User::with('user_offices.office')->where('username','ict')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-        $response->assertStatus(200);
-    }
-    public function test_budget()
-    {
-        $user = User::with('user_offices.office')->where('username','ict')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-        $response->assertStatus(200);
-    }
-    public function test_oard()
-    {
-        $user = User::with('user_offices.office')->where('username','ict')->first();
-        Passport::actingAs($user);
-        $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
-        $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
-        $response->assertStatus(200);
-    }
+    // public function test_ict()
+    // {
+    //     $user = User::with('user_offices.office')->where('username','ict')->first();
+    //     Passport::actingAs($user);
+    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+    //     $response->assertStatus(200);
+    // }
+    // public function test_budget()
+    // {
+    //     $user = User::with('user_offices.office')->where('username','ict')->first();
+    //     Passport::actingAs($user);
+    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+    //     $response->assertStatus(200);
+    // }
+    // public function test_oard()
+    // {
+    //     $user = User::with('user_offices.office')->where('username','ict')->first();
+    //     Passport::actingAs($user);
+    //     $form_route = FormRoute::where('status','pending')->where('form_routable_id',ProcurementPlanTest::$procurement_plan_id)->first();
+    //     $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve');
+    //     $response->assertStatus(200);
+    // }
 }

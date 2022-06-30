@@ -30,7 +30,6 @@ class ProcurementPlanTransformer extends TransformerAbstract
         'form_process',
         'form_routes',
         'form_uploads',
-        'item_type',
         'procurement_plan_type',
     ];
     
@@ -50,7 +49,6 @@ class ProcurementPlanTransformer extends TransformerAbstract
             'display_log' => $table->ppmp_number ? $table->ppmp_number : $table->title,
             'purpose' => $table->purpose,
             'procurement_plan_type_id' => $table->procurement_plan_type_id,
-            'item_type_id' => $table->item_type_id,
             'ppmp_date' => $table->ppmp_date,
             'calendar_year' => $table->calendar_year,
             'ppmp_number' => $table->ppmp_number,
@@ -111,12 +109,6 @@ class ProcurementPlanTransformer extends TransformerAbstract
     {
         if ($table->end_user) {
             return $this->item($table->end_user, new LibraryTransformer);
-        }
-    }
-    public function includeItemType(ProcurementPlan $table)
-    {
-        if ($table->item_type) {
-            return $this->item($table->item_type, new LibraryTransformer);
         }
     }
     public function includeProcurementPlanType(ProcurementPlan $table)

@@ -70,8 +70,9 @@ class AddTableForeignKeys extends Migration
         Schema::table('procurement_plans', function (Blueprint $table) {
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
-            $table->foreign('item_type_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('procurement_plan_type_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('certified_by_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('approved_by_id')->references('id')->on('libraries')->onDelete('cascade');
         });
         Schema::table('procurement_plan_items', function (Blueprint $table) {
             $table->foreign('procurement_plan_id')->references('id')->on('procurement_plans')->onDelete('cascade');
@@ -109,6 +110,8 @@ class AddTableForeignKeys extends Migration
         Schema::table('requisition_issues', function (Blueprint $table) {
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('end_user_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('requested_by_id')->references('id')->on('libraries')->onDelete('cascade');
+            $table->foreign('approved_by_id')->references('id')->on('libraries')->onDelete('cascade');
         });
         Schema::table('requisition_issue_items', function (Blueprint $table) {
             $table->foreign('requisition_issue_id')->references('id')->on('requisition_issues')->onDelete('cascade');
@@ -223,8 +226,9 @@ class AddTableForeignKeys extends Migration
         Schema::table('procurement_plans', function (Blueprint $table) {
             $table->dropForeign(['created_by_id']);
             $table->dropForeign(['end_user_id']);
-            $table->dropForeign(['item_type_id']);
             $table->dropForeign(['procurement_plan_type_id']);
+            $table->dropForeign(['certified_by_id']);
+            $table->dropForeign(['approved_by_id']);
         });
         Schema::table('procurement_plan_items', function (Blueprint $table) {
             $table->dropForeign(['procurement_plan_id']);
@@ -261,6 +265,8 @@ class AddTableForeignKeys extends Migration
         Schema::table('requisition_issues', function (Blueprint $table) {
             $table->dropForeign(['created_by_id']);
             $table->dropForeign(['end_user_id']);
+            $table->dropForeign(['requested_by_id']);
+            $table->dropForeign(['approved_by_id']);
         });
         Schema::table('requisition_issue_items', function (Blueprint $table) {
             $table->dropForeign(['requisition_issue_id']);
