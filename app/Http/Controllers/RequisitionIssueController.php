@@ -106,14 +106,7 @@ class RequisitionIssueController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $old_requisition_issue = (new RequisitionIssueRepository())->getById($id);
             $requisition_issue = $this->requisitionIssueRepository->updateRequisitionIssue($id, $data);
-            if($old_requisition_issue->requested_by_name != request('requested_by_name')){
-                $form_process = $old_requisition_issue->form_process;
-                (new FormProcessRepository())->delete($form_process->id);
-                $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
-                $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
-            }
             DB::commit();
             return $requisition_issue;
         } catch (\Throwable $th) {

@@ -62,17 +62,22 @@ class UpdateRequisitionIssueRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if(request()->has('items')){
-                if(request('items') == array()){
-                    $validator->errors()->add("items", "No items added.");
-                }
-            }
+            $this->validateItems($validator);
             $requisition_issue = (new RequisitionIssueRepository())->attach('form_process')->getById(request('id'));
             if($requisition_issue->requested_by_id != request('requested_by_id')){
                 $this->validateRequestedBy($validator, $requisition_issue);
             }
             $this->validateUpdatability($validator, $requisition_issue);
         });
+    }
+
+    public function validateItems($validator)
+    {
+        if(request()->has('items')){
+            if(request('items') == array()){
+                $validator->errors()->add("items", "No items added.");
+            }
+        }
     }
 
     public function validateRequestedBy($validator, $requisition_issue)
@@ -82,12 +87,12 @@ class UpdateRequisitionIssueRequest extends FormRequest
         $key = array_search("ris_aprroval_from_division", array_column($form_routes, 'description_code'));
         if($key){
             if($form_routes[$key]['status'] == "approved"){
-                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+                $validator->errors()->add("requested_by_name", "The form is already approved by ".$form_routes[$key]['office_name']);
             }
         }else{
             $key = array_search("route_origin", array_column($form_routes, 'description_code'));
             if($form_routes[$key]['status'] == "approved"){
-                $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+                $validator->errors()->add("requested_by_name", "The form is already approved by ".$form_routes[$key]['office_name']);
             }
         }
     }

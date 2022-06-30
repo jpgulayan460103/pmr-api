@@ -4,9 +4,11 @@ namespace App\Http\Requests;
 
 use App\Models\Library;
 use App\Models\ProcurementPlan;
+use App\Repositories\ProcurementPlanRepository;
 use App\Rules\LibraryExistRule;
 use App\Rules\MaxFloat;
 use App\Rules\MaxInt;
+use App\Transformers\FormProcessTransformer;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProcurementPlanRequest extends FormRequest
@@ -181,7 +183,8 @@ class UpdateProcurementPlanRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $this->validateItems($validator);
-            // $this->validateProcurementType($validator);
+            $procurement_plan = (new ProcurementPlanRepository())->attach('form_process')->getById(request('id'));
+            $this->validateUpdatability($validator, $procurement_plan);
         });
     }
 
@@ -194,18 +197,13 @@ class UpdateProcurementPlanRequest extends FormRequest
         }
     }
 
-    public function validateProcurementType($validator)
+    public function validateUpdatability($validator, $procurement_plan)
     {
-        $ppmp = Library::where('library_type', 'procurement_plan_type')->where('name', ppmpValue())->first();
-        $supplementalPpmp = Library::where('library_type', 'procurement_plan_type')->where('name', supplementalPpmpValue())->first();
-        $existing_ppmp = ProcurementPlan::where('end_user_id', request('end_user_id'))
-        ->where('calendar_year', request('calendar_year'))
-        ->where('procurement_plan_type_id', $ppmp->id)
-        ->count();
-        if($ppmp->id == request('procurement_plan_type_id') && $existing_ppmp >= 1){
-            $validator->errors()->add("procurement_plan_type_id", "PPMP of CY ".request('calendar_year')." is already created.");
-        }elseif ($supplementalPpmp->id == request('procurement_plan_type_id') && $existing_ppmp == 0) {
-            $validator->errors()->add("procurement_plan_type_id", "No PPMP of CY ".request('calendar_year')." created.");
+        $process = fractal($procurement_plan->form_process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("last_route", array_column($form_routes, 'description_code'));
+        if($form_routes[$key]['status'] != "pending"){
+            $validator->errors()->add("update_error", "Update unavailable");
         }
     }
 }

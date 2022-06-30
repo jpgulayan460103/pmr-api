@@ -81,12 +81,21 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
 
     public function updateProcurementPlan($id, $data)
     {
-        $requisition_issue = $this->update($id, $data);
+        $old_procurement_plan = $this->attach('form_process')->getById($id);
+        $procurement_plan = $this->update($id, $data);
         if(request()->has('items') && request('items') != array()){
             $itemsA = $this->updateItemsA($id);
             $itemsB = $this->updateItemsB($id);
-            $requisition_issue->items()->saveMany($itemsA['items']);
-            $requisition_issue->items()->saveMany($itemsB['items']);
+            $procurement_plan->items()->saveMany($itemsA['items']);
+            $procurement_plan->items()->saveMany($itemsB['items']);
+        }
+
+        if(request()->has('approved_by_id')){
+            if($old_procurement_plan->approved_by_id != request('approved_by_id')){
+                $formProcessRepository = new FormProcessRepository();
+                $formProcess = $old_procurement_plan->form_process;
+                $formProcessRepository->updateRouting($formProcess->id, "approved_by");
+            }
         }
     }
 

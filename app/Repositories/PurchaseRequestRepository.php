@@ -98,7 +98,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
             if($old_purchase_request->requested_by_id != request('requested_by_id')){
                 $formProcessRepository = new FormProcessRepository();
                 $formProcess = $old_purchase_request->form_process;
-                $formProcessRepository->updateRouting($formProcess->id, "OARD");
+                $formProcessRepository->updateRouting($formProcess->id, "requested_by");
             }
         }
     }

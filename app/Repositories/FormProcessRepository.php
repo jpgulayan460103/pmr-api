@@ -122,101 +122,6 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         return $created_process;
     }
 
-    public function updatePurchaseRequestRouting($process, $type)
-    {
-        if($type == "twg"){
-            $new_routes = $this->purchaseRequestAddTwgRoute($process);
-            $process->form_routes = $new_routes;
-            $process->save();
-        }elseif($type == "OARD"){
-            $updated_oard_route = $this->purchaseRequestUpdateOardRoute($process);
-            $process->form_routes = $updated_oard_route['new_routes'];
-            $form_route_repository = new FormRouteRepository;
-            $current_route = $form_route_repository->getCurrentRoute($process->id);
-            if($updated_oard_route['old_oard_route']['office_id'] == $current_route->to_office_id){
-                $data = [];
-                $data['remarks'] = $updated_oard_route['new_oard_route']['description'];
-                $data['to_office_id'] = $updated_oard_route['new_oard_route']['office_id'];
-                $form_route_repository->update($current_route->id, $data);
-            }
-            $process->save();
-        }
-        return $process;
-    }
-
-    public function purchaseRequestAddTwgRoute($process)
-    {
-        $process = fractal($process, new FormProcessTransformer)->toArray();
-        $form_routes = $process['form_routes'];
-        $new_routes = [];
-        foreach ($form_routes as $key => $form_route) {
-            if($form_route['description_code'] == "pr_select_action"){
-                $new_routes[] = $form_route;
-                $technical_working_group = (new LibraryRepository)->getById(request('technical_working_group_id'));
-                $new_routes[] = [
-                    "office_id" => $technical_working_group->id,
-                    "label" => "TWG",
-                    "office_name" => $technical_working_group->name,
-                    "status" => "pending",
-                    "description" => "Approval from the Technical Working Group",
-                    "description_code" => "pr_approval_from_twg",
-                ];
-
-                $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
-
-                $new_routes[] = [
-                    "office_id" => $procurement_office->id,
-                    "label" => "PROCUREMENT_2",
-                    "office_name" => $procurement_office->name,
-                    "status" => "pending",
-                    "description" => "Approval from the Procurement Section",
-                    "description_code" => "pr_approval_from_proc",
-                ];
-            }else{
-                $new_routes[] = $form_route;
-            }
-        }
-        return $new_routes;
-    }
-
-    public function purchaseRequestUpdateOardRoute($process)
-    {
-        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
-        $requested_by_office = (new LibraryRepository)->getById($requested_by->parent_id);
-        $process = fractal($process, new FormProcessTransformer)->toArray();
-        $form_routes = $process['form_routes'];
-        $key = array_search("OARD", array_column($form_routes, 'label'));
-        $new_oard_route = [
-            "office_id" => $requested_by_office->id,
-            "label" => "OARD",
-            "office_name" => $requested_by_office->name,
-            "status" => "pending",
-            "description" => "Approval from the ".$requested_by_office->title,
-            "description_code" => "pr_approval_from_oard",
-        ];
-        $old_oard_route = $form_routes[$key];
-        $form_routes[$key] = $new_oard_route;
-        return [
-            'new_routes' => $form_routes,
-            'new_oard_route' => $new_oard_route,
-            'old_oard_route' => $old_oard_route,
-        ];
-    }
-
-    public function updateRouting($id, $type)
-    {
-        $process = $this->getById($id);
-        switch ($process['form_type']) {
-            case 'purchase_request':
-                return $this->updatePurchaseRequestRouting($process, $type);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-    }
-
     public function procurementPlan($created_procurement_plan)
     {
         $origin_office = (new LibraryRepository)->getById($created_procurement_plan->end_user_id);
@@ -334,5 +239,200 @@ class FormProcessRepository implements FormProcessRepositoryInterface
         $created_process->form_routes = $routes;
         $created_process->save();
         return $created_process;
+    }
+
+    public function updateRouting($id, $type, $form = null)
+    {
+        $process = $this->getById($id);
+        switch ($process['form_type']) {
+            case 'purchase_request':
+                return $this->updatePurchaseRequestRouting($process, $type);
+                break;
+            case 'requisition_issue':
+                return $this->updateRequisitionIssueRouting($process, $type, $form);
+                break;
+            case 'procurement_plan':
+                return $this->updateProcurementPlanRouting($process, $type, $form);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function updatePurchaseRequestRouting($process, $type)
+    {
+        switch ($type) {
+            case 'twg':
+                $new_routes = $this->purchaseRequestAddTwgRoute($process);
+                $process->form_routes = $new_routes;
+                $process->save();
+                break;
+            case 'requested_by':
+                $updated_requested_by = $this->purchaseRequestUpdateRequestedByRoute($process);
+                $process->form_routes = $updated_requested_by['new_routes'];
+                $form_route_repository = new FormRouteRepository;
+                $current_route = $form_route_repository->getCurrentRoute($process->id);
+                if($updated_requested_by['old_requested_by_route']['office_id'] == $current_route->to_office_id){
+                    $data = [];
+                    $data['remarks'] = $updated_requested_by['new_requested_by_route']['description'];
+                    $data['to_office_id'] = $updated_requested_by['new_requested_by_route']['office_id'];
+                    $form_route_repository->update($current_route->id, $data);
+                }
+                $process->save();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        return $process;
+    }
+    public function updateRequisitionIssueRouting($process, $type, $requisition_issue)
+    {
+        switch ($type) {
+            case 'requested_by':
+                (new FormProcessRepository())->delete($process->id);
+                $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
+                $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        return $process;
+    }
+    public function updateProcurementPlanRouting($process, $type)
+    {
+        switch ($type) {
+            case 'approved_by':
+                $updated_approved_by = $this->procurementPlanUpdateApprovedByRoute($process);
+                $process->form_routes = $updated_approved_by['new_routes'];
+                $form_route_repository = new FormRouteRepository;
+                $current_route = $form_route_repository->getCurrentRoute($process->id);
+                if($updated_approved_by['old_approved_by_route']['office_id'] == $current_route->to_office_id){
+                    $data = [];
+                    $data['remarks'] = $updated_approved_by['new_approved_by_route']['description'];
+                    $data['to_office_id'] = $updated_approved_by['new_approved_by_route']['office_id'];
+                    $form_route_repository->update($current_route->id, $data);
+                }
+                $process->save();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        return $process;
+    }
+
+    public function purchaseRequestAddTwgRoute($process)
+    {
+        $process = fractal($process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $new_routes = [];
+        foreach ($form_routes as $key => $form_route) {
+            if($form_route['description_code'] == "pr_select_action"){
+                $new_routes[] = $form_route;
+                $technical_working_group = (new LibraryRepository)->getById(request('technical_working_group_id'));
+                $new_routes[] = [
+                    "office_id" => $technical_working_group->id,
+                    "label" => "TWG",
+                    "office_name" => $technical_working_group->name,
+                    "status" => "pending",
+                    "description" => "Approval from the Technical Working Group",
+                    "description_code" => "pr_approval_from_twg",
+                ];
+
+                $procurement_office = (new LibraryRepository)->getUserSectionBy('title','PS');
+
+                $new_routes[] = [
+                    "office_id" => $procurement_office->id,
+                    "label" => "PROCUREMENT_2",
+                    "office_name" => $procurement_office->name,
+                    "status" => "pending",
+                    "description" => "Approval from the Procurement Section",
+                    "description_code" => "pr_approval_from_proc",
+                ];
+            }else{
+                $new_routes[] = $form_route;
+            }
+        }
+        return $new_routes;
+    }
+
+    public function purchaseRequestUpdateRequestedByRoute($process)
+    {
+        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
+        $requested_by_office = (new LibraryRepository)->getById($requested_by->parent_id);
+        $process = fractal($process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("OARD", array_column($form_routes, 'label'));
+        $new_requested_by_route = [
+            "office_id" => $requested_by_office->id,
+            "label" => "OARD",
+            "office_name" => $requested_by_office->name,
+            "status" => "pending",
+            "description" => "Approval from the ".$requested_by_office->title,
+            "description_code" => "pr_approval_from_oard",
+        ];
+        $old_requested_by_route = $form_routes[$key];
+        $form_routes[$key] = $new_requested_by_route;
+        return [
+            'new_routes' => $form_routes,
+            'new_requested_by_route' => $new_requested_by_route,
+            'old_requested_by_route' => $old_requested_by_route,
+        ];
+    }
+
+    public function requisitionIssueUpdateRequestedByRoute($process)
+    {
+        $requested_by = (new LibraryRepository)->getById(request('requested_by_id'));
+        $requested_by_office = (new LibraryRepository)->getById($requested_by->parent_id);
+        $process = fractal($process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("OARD", array_column($form_routes, 'label'));
+        $new_requested_by_route = [
+            "office_id" => $requested_by_office->id,
+            "label" => "OARD",
+            "office_name" => $requested_by_office->name,
+            "status" => "pending",
+            "description" => "Approval from the ".$requested_by_office->title,
+            "description_code" => "ris_aprroval_from_division",
+        ];
+        $old_requested_by_route = $form_routes[$key];
+        $form_routes[$key] = $new_requested_by_route;
+        return [
+            'new_routes' => $form_routes,
+            'new_requested_by_route' => $new_requested_by_route,
+            'old_requested_by_route' => $old_requested_by_route,
+        ];
+    }
+
+    public function procurementPlanUpdateApprovedByRoute($process)
+    {
+        $approved_by = (new LibraryRepository)->getById(request('approved_by_id'));
+        $approved_by_office = (new LibraryRepository)->getById($approved_by->parent_id);
+        $process = fractal($process, new FormProcessTransformer)->toArray();
+        $form_routes = $process['form_routes'];
+        $key = array_search("last_route", array_column($form_routes, 'description_code'));
+        $new_approved_by_route = [
+            "office_id" => $approved_by_office->id,
+            "label" => "OARD",
+            "office_name" => $approved_by_office->name,
+            "status" => "pending",
+            "description" => "Approval from the ".$approved_by_office->title,
+            "description_code" => "last_route",
+        ];
+
+        $old_approved_by_route = $form_routes[$key];
+        $form_routes[$key] = $new_approved_by_route;
+        return [
+            'new_routes' => $form_routes,
+            'new_approved_by_route' => $new_approved_by_route,
+            'old_approved_by_route' => $old_approved_by_route,
+        ];
     }
 }

@@ -6,6 +6,7 @@ use App\Models\RequisitionIssue;
 use App\Models\RequisitionIssueItem;
 use App\Repositories\Interfaces\RequisitionIssueRepositoryInterface;
 use App\Repositories\HasCrud;
+use App\Rules\MaxInt;
 use App\Rules\RequisitionIssue\MaxIfHasStock;
 use App\Rules\RequisitionIssue\MinIfHasStock;
 use Carbon\Carbon;
@@ -80,10 +81,19 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
 
     public function updateRequisitionIssue($id, $data)
     {
+        $old_requisition_issue = $this->attach('form_process')->getById($id);
         $requisition_issue = $this->update($id, $data);
         if(request()->has('items') && request('items') != array()){
             $items = $this->updateItems($id);
             $requisition_issue->items()->saveMany($items['items']);
+        }
+
+        if(request()->has('requested_by_id')){
+            if($old_requisition_issue->requested_by_id != request('requested_by_id')){
+                $formProcessRepository = new FormProcessRepository();
+                $formProcess = $old_requisition_issue->form_process;
+                $formProcessRepository->updateRouting($formProcess->id, "requested_by", $requisition_issue);
+            }
         }
         return $requisition_issue;
     }
@@ -97,6 +107,7 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
                 'required',
                 'integer',
                 new MinIfHasStock(),
+                new MaxInt,
                 new MaxIfHasStock("request"),
                 $request->from_ppmp == 1 ? new MaxIfHasStock("ppmp") : "",
             ],

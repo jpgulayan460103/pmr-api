@@ -86,7 +86,7 @@ class UpdatePurchaseRequest extends FormRequest
         $form_routes = $process['form_routes'];
         $key = array_search("pr_approval_from_oard", array_column($form_routes, 'description_code'));
         if($form_routes[$key]['status'] == "approved"){
-            $validator->errors()->add("requested_by_name", "The ris is already approved by ".$form_routes[$key]['office_name']);
+            $validator->errors()->add("requested_by_name", "The form is already approved by ".$form_routes[$key]['office_name']);
         }
     }
 

@@ -6,6 +6,7 @@ use App\Models\FormRoute;
 use App\Repositories\Interfaces\FormRouteRepositoryInterface;
 use App\Repositories\HasCrud;
 use App\Rules\LibraryExistRule;
+use App\Rules\MaxInt;
 use App\Rules\RequisitionIssue\MaxIfHasStock;
 use App\Rules\RequisitionIssue\MaxInventoryQuantity;
 use App\Rules\RequisitionIssue\MinIfHasStock;
@@ -399,7 +400,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                 ];
                 if(request()->has('issued_items') && request('issued_items') != []){
                     $validated = $request->validate([
-                        'issued_items.*.quantity' => ['required', new MaxInventoryQuantity],
+                        'issued_items.*.quantity' => ['required', new MaxInventoryQuantity, new MaxInt],
                         'issued_items.*.item_supply_id' => ['required'],
                     ]);
                 }
