@@ -35,20 +35,6 @@ class FormUpload extends Model
 
     protected static $logAttributes = [
         '*',
-        'form_uploadable.uuid'
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'user_id',
-        'filename',
-        'filesize',
-        'form_type',
-        'form_uploadable_id',
-        'form_uploadable_type',
     ];
 
     protected static $logOnlyDirty = true;

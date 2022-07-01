@@ -49,30 +49,6 @@ class PurchaseRequest extends Model
 
     protected static $logAttributes = [
         '*',
-        'approved_by.name',
-        'requested_by.name',
-        'end_user.name',
-        'account.parent.name',
-        'account.name',
-        'mode_of_procurement.name',
-        'uacs_code.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'uuid',
-        'account_id',
-        'bac_task_id',
-        'end_user_id',
-        'requested_by_id',
-        'approved_by_id',
-        'mode_of_procurement_id',
-        'uacs_code_id',
-        'created_by_id',
-        'id',
-        'status',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

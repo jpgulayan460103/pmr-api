@@ -33,29 +33,6 @@ class FormRoute extends Model
 
     protected static $logAttributes = [
         '*',
-        'form_routable.uuid',
-        'end_user.name',
-        'to_office.name',
-        'from_office.name',
-        'user.name',
-        'forwarded_by.name',
-        'owner.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'form_routable_type',
-        'form_routable_id',
-        'forwarded_by_id',
-        'owner_id',
-        'processed_by_id',
-        'origin_office_id',
-        'from_office_id',
-        'to_office_id',
-        'form_process_id',
     ];
 
     protected static $logOnlyDirty = true;

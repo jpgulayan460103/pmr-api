@@ -51,20 +51,6 @@ class ProcurementPlan extends Model
 
     protected static $logAttributes = [
         '*',
-        'end_user.name',
-        'procurement_plan_type.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'uuid',
-        'procurement_plan_type_id',
-        'end_user_id',
-        'created_by_id',
-        'id',
-        'status',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

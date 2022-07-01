@@ -45,21 +45,8 @@ class RequisitionIssue extends Model
 
     protected static $logAttributes = [
         '*',
-        'end_user.name',
     ];
-
-    protected static $logAttributesToIgnore = [
-        'uuid',
-        'end_user_id',
-        'id',
-        'status',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'approved_by_id',
-        'requested_by_id',
-    ];
-
+    
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
 

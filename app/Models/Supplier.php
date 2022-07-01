@@ -22,12 +22,8 @@ class Supplier extends Model
         '*',
     ];
 
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     public function contacts()
     {

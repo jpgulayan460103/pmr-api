@@ -29,19 +29,6 @@ class RequisitionIssueItem extends Model
 
     protected static $logAttributes = [
         '*',
-        'unit_of_measure.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'unit_of_measure_id',
-        'requisition_issue_id',
-        'procurement_plan_item_id',
-        'item_id',
-        'uuid',
     ];
 
     protected static $logOnlyDirty = true;

@@ -23,14 +23,6 @@ class Library extends Model
 
     protected static $logAttributes = [
         '*',
-        'parent.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

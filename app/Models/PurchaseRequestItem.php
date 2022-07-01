@@ -46,20 +46,8 @@ class PurchaseRequestItem extends Model
 
     protected static $logAttributes = [
         '*',
-        'unit_of_measure.name',
     ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'unit_of_measure_id',
-        'purchase_request_id',
-        'item_id',
-        'purchase_request_item_uuid',
-    ];
-
+    
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
 

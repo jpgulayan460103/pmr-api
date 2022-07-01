@@ -39,17 +39,6 @@ class ProcurementPlanItem extends Model
 
     protected static $logAttributes = [
         '*',
-        'item.item_name'
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'uuid',
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'procurement_plan_id',
-        'item_id',
     ];
 
     protected static $logOnlyDirty = true;

@@ -31,16 +31,6 @@ class BacTask extends Model
 
     protected static $logAttributes = [
         '*',
-        'purchase_request.uuid',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'purchase_request_id',
-        'id',
-        'created_at',
-        'bac_task_uuid',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

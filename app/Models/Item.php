@@ -30,16 +30,6 @@ class Item extends Model
 
     protected static $logAttributes = [
         '*',
-        'unit_of_measure.name',
-        'item_category.name',
-        'item_type.name',
-    ];
-
-    protected static $logAttributesToIgnore = [
-        'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
     ];
 
     protected static $logOnlyDirty = true;

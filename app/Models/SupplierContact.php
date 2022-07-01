@@ -20,8 +20,10 @@ class SupplierContact extends Model
 
     protected static $logAttributes = [
         '*',
-        'supplier.name'
     ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     protected static $logAttributesToIgnore = [
         'id',
