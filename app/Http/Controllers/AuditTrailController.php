@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\FormUpload;
 use App\Repositories\ProcurementPlanRepository;
 use App\Repositories\PurchaseRequestRepository;
+use App\Repositories\RequisitionIssueRepository;
 use App\Transformers\AuditTrailTransformer;
 use App\Transformers\Logs\BacTaskLogTransformer;
 use App\Transformers\Logs\FormUploadLogTransformer;
@@ -14,6 +15,8 @@ use App\Transformers\Logs\ProcurementPlanItemLogTransformer;
 use App\Transformers\Logs\ProcurementPlanLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
+use App\Transformers\Logs\RequisitionIssueItemLogTransformer;
+use App\Transformers\Logs\RequisitionIssueLogTransformer;
 use Illuminate\Support\Facades\DB;
 
 class AuditTrailController extends Controller
@@ -231,5 +234,56 @@ class AuditTrailController extends Controller
             ->where('subject_type','App\Models\ProcurementPlanItem')
             ->get();
         return fractal($log, new ProcurementPlanItemLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+    }
+
+    public function requisitionIssue(Request $request, $id)
+    {
+        $requisition_issue = (new RequisitionIssueRepository())->getById($id);
+        $model = (get_class($requisition_issue));
+        $requisition_issue_log = ActivityLog::with(
+                [
+                    'user.user_information',
+                    'subject' => function($query) {
+                        $query->withTrashed();
+                    },
+                ]
+            )
+            ->where('subject_type','App\\Models\\RequisitionIssue')
+            ->where('subject_id',$id)
+            ->get();
+        $requisition_issue_log = fractal($requisition_issue_log, new RequisitionIssueLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
+
+        //items
+        $items_logs = $this->requisitionIssueItem($request, $id);
+
+        $merged = array_merge($items_logs['data'], $requisition_issue_log['data']);
+        usort($merged, function($a, $b) {
+            return ($b['id'] - $a['id']);
+        });
+
+        $requisition_issue_log = [
+            'data' => $merged
+        ];
+        //end items
+
+        return $requisition_issue_log;
+    }
+
+    public function requisitionIssueItem(Request $request, $id)
+    {
+        $requisitionIssue = new RequisitionIssueRepository();
+        $items = $requisitionIssue->getById($id)->items()->withTrashed()->pluck('id');
+        $log = ActivityLog::with(
+                [
+                    'user.user_information',
+                    'subject' => function($query) {
+                        $query->withTrashed();
+                    },
+                ]
+            )
+            ->whereIn('subject_id',$items)
+            ->where('subject_type','App\Models\RequisitionIssueItem')
+            ->get();
+        return fractal($log, new RequisitionIssueItemLogTransformer)->parseIncludes('user.user_information,subject')->toArray();
     }
 }

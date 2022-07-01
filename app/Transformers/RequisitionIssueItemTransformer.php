@@ -39,6 +39,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
     {
         return [
             'requisition_issue_id' => $table->requisition_issue_id,
+            'display_log' => $table->description,
             'id' => $table->id,
             'key' => $table->id,
             'procurement_plan_item_id' => $table->procurement_plan_item_id,

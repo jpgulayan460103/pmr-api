@@ -48,6 +48,7 @@ class RequisitionIssueTransformer extends TransformerAbstract
             'title' => $table->title,
             'fund_cluster' => $table->fund_cluster,
             'center_code' => $table->center_code,
+            'display_log' => $table->ris_number ? $table->ris_number : $table->purpose,
             'purpose' => $table->purpose,
             'recommendation' => $table->recommendation,
             'ris_date' => $table->ris_date,

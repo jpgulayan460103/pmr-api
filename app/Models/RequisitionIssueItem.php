@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\RequisitionIssue;
 use App\Models\Item;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RequisitionIssueItem extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'requisition_issue_id',
@@ -26,6 +27,25 @@ class RequisitionIssueItem extends Model
         'is_pr_recommended',
     ];
 
+    protected static $logAttributes = [
+        '*',
+        'unit_of_measure.name',
+    ];
+
+    protected static $logAttributesToIgnore = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'unit_of_measure_id',
+        'requisition_issue_id',
+        'procurement_plan_item_id',
+        'item_id',
+        'uuid',
+    ];
+
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     public static function boot()
     {

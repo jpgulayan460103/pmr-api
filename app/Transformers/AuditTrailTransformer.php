@@ -15,6 +15,8 @@ use App\Transformers\Logs\ItemLogTransformer;
 use App\Transformers\Logs\LibraryLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
+use App\Transformers\Logs\RequisitionIssueItemLogTransformer;
+use App\Transformers\Logs\RequisitionIssueLogTransformer;
 use App\Transformers\Logs\SupplierContactLogTransformer;
 use App\Transformers\Logs\SupplierLogTransformer;
 use App\Transformers\UserTransformer;
@@ -74,6 +76,21 @@ class AuditTrailTransformer extends TransformerAbstract
                     $description_str = "Added an item of the purchase request.";
                 }else{
                     $description_str = ucfirst($activityLog->description)." an item of the purchase request.";
+                }
+                // $description_str = ucfirst($activityLog->description)." an item of the purchase request.";
+                break;
+            case 'App\Models\RequisitionIssue':
+                $log_type = "requisition_issue";
+                $properties = (new RequisitionIssueLogTransformer)->addLabels($activityLog->properties);
+                $description_str = ucfirst($activityLog->description)." the requisition and issue slip.";
+                break;
+            case 'App\Models\RequisitionIssueItem':
+                $log_type = "requisition_issue_item";
+                $properties = (new RequisitionIssueItemLogTransformer)->addLabels($activityLog);
+                if($activityLog->description == "created"){
+                    $description_str = "Added an item of the requisition and issue slip.";
+                }else{
+                    $description_str = ucfirst($activityLog->description)." an item of the requisition and issue slip.";
                 }
                 // $description_str = ucfirst($activityLog->description)." an item of the purchase request.";
                 break;
