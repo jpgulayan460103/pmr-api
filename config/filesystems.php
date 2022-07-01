@@ -35,6 +35,11 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'network' => [
+            'driver' => 'local',
+            'root' => env('STORAGE_NETWORK'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

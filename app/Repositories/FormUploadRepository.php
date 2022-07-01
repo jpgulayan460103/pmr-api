@@ -27,30 +27,35 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         $user = Auth::user();
         $file = request('file');
         $form = "";
-        $yearMonth = date("Y-m");
+        $year = date("Y");
+        $month = date("m");
         $uuid = "";
         switch ($type) {
             case 'purchase_request':
                 $form = (new PurchaseRequestRepository)->getById($id);
                 $uuid = $form->uuid;
-                $yearMonth = $form->created_at->format('Y-m');
+                $year = $form->created_at->format('Y');
+                $month = $form->created_at->format('m');
                 break;
             case 'procurement_plan':
                 $form = (new ProcurementPlanRepository)->getById($id);
                 $uuid = $form->uuid;
-                $yearMonth = $form->created_at->format('Y-m');
+                $year = $form->created_at->format('Y');
+                $month = $form->created_at->format('m');
                 break;
             case 'requisition_issue':
                 $form = (new RequisitionIssueRepository())->getById($id);
                 $uuid = $form->uuid;
-                $yearMonth = $form->created_at->format('Y-m');
+                $year = $form->created_at->format('Y');
+                $month = $form->created_at->format('m');
                 break;
             
             default:
                 # code...
                 break;
         }
-        $path = Storage::putFile("public/uploads/$type/$yearMonth/$uuid", $file);
+        $disk = env('APP_ENV') == "local" ? "local" : "network";
+        $path = Storage::disk($disk)->put("public/uploads/$type/$year/$month/$uuid", $file);
         $url = Storage::url($path);
         $createdFile = $this->create([
             'upload_type' => "file",
