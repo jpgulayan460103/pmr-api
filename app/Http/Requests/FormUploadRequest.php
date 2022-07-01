@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\AllowedFileName;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FormUploadRequest extends FormRequest
@@ -24,7 +25,7 @@ class FormUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'meta.description' => 'required',
+            'meta.description' => ['required', new AllowedFileName("The description contains invalid characters.")],
             'file' => 'file|max:256000|mimetypes:application/pdf,image/jpeg,image/png'
         ];
     }

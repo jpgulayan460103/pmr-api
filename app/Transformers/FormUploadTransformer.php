@@ -6,6 +6,7 @@ use App\Models\FormUpload;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\PurchaseRequestTransformer;
 use App\Transformers\UserTransformer;
+use Illuminate\Support\Facades\Storage;
 
 class FormUploadTransformer extends TransformerAbstract
 {
@@ -39,12 +40,14 @@ class FormUploadTransformer extends TransformerAbstract
             'id' => $table->id,
             'key' => $table->id,
             'uuid' => $table->uuid,
+            // 'disk' => $table->disk,
             'upload_type' => $table->upload_type,
             'title' => $table->title,
             'display_log' => $table->title,
             'filename' => $table->filename,
             'filesize' => $table->filesize,
-            'file_directory' => url($table->file_directory),
+            // 'file_directory' => url($table->file_directory),
+            'file_directory' => route('api.downloads.form-uploads', ['id' => $table->uuid]),
             'user_id' => $table->user_id,
             'is_removable' => $table->is_removable == 1,
             'form_type' => $table->form_type,
@@ -54,6 +57,7 @@ class FormUploadTransformer extends TransformerAbstract
             'form_attachable_id' => $table->form_attachable_id,
             'form_attachable_type' => $table->form_attachable_type,
             'created_at' => $table->created_at->toDayDateTimeString(),
+            'parent_id' => $table->parent_id,
         ];
     }
 

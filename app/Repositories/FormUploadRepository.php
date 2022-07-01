@@ -9,6 +9,7 @@ use App\Repositories\HasCrud;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FormUploadRepository implements FormUploadRepositoryInterface
 {
@@ -54,26 +55,41 @@ class FormUploadRepository implements FormUploadRepositoryInterface
                 # code...
                 break;
         }
-        $disk = env('APP_ENV') == "local" ? "local" : "network";
-        $path = Storage::disk($disk)->put("public/uploads/$type/$year/$month/$uuid", $file);
+        $disk = env('APP_ENV') == "local" ? "local" : "sftp";
+        $file_uuid_array = explode("-", Str::uuid());
+        $filename = Str::slug($file->getClientOriginalName(), '-')."-".last($file_uuid_array).".".$file->getClientOriginalExtension();
+        $path = Storage::disk($disk)->putFileAs("public/uploads/$type/$year/$month/$uuid", $file, $filename);
         $url = Storage::url($path);
         $createdFile = $this->create([
             'upload_type' => "file",
             'form_type' => $type,
+            'disk' => $disk,
             'title' => request('meta.description'),
-            'filename' => $file->getClientOriginalName(),
+            'filename' => $filename,
             'filesize' => $file->getSize(),
-            'file_directory' => $url,
+            'file_directory' => $path,
             'user_id' => $user->id,
             'is_removable' => 1,
             'form_uploadable_id' => $id,
             'form_uploadable_type' => get_class($form),
         ]);
+        return $path;
         return $url;
     }
 
     public function deleteFile()
     {
         // PurchaseRequestItem::where('id', $removed_item_id)->first()->delete();
+    }
+
+    public function download($uuid)
+    {
+        $uploads = $this->getByUuid($uuid);
+        if(Storage::disk($uploads->disk)->exists($uploads->file_directory)){
+            return Storage::disk($uploads->disk)->download($uploads->file_directory);
+            return $uploads;
+        }
+        abort(404);
+        
     }
 }

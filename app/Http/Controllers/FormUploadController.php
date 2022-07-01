@@ -18,7 +18,11 @@ class FormUploadController extends Controller
     public function __construct(FormUploadRepository $formUploadRepository)
     {
         $this->formUploadRepository = $formUploadRepository;
-        $this->middleware('auth:api');
+        $this->middleware('auth:api', [
+            'except' => [
+                'download',
+            ]
+        ]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.create|purchase.requests.all',   ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.view|purchase.requests.all',   ['only' => ['show', 'index']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.delete',   ['only' => ['destroy']]);
@@ -98,5 +102,10 @@ class FormUploadController extends Controller
     public function destroy($type,$id)
     {
         $this->formUploadRepository->delete($id);
+    }
+
+    public function download($uuid)
+    {
+        return $this->formUploadRepository->download($uuid);
     }
 }

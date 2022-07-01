@@ -16,6 +16,7 @@ class FormUpload extends Model
 
     protected $fillable = [
         'uuid',
+        'disk',
         'upload_type',
         'title',
         'filename',
@@ -29,6 +30,7 @@ class FormUpload extends Model
         'form_attachable_id',
         'form_attachable_type',
         'is_removable',
+        'parent_id',
     ];
 
     protected static $logAttributes = [
