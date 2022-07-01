@@ -56,9 +56,10 @@ class FormUploadRepository implements FormUploadRepositoryInterface
                 break;
         }
         $disk = env('APP_ENV') == "local" ? "local" : "sftp";
+        $disk = "google";
         $file_uuid_array = explode("-", Str::uuid());
         $filename = Str::slug($file->getClientOriginalName(), '-')."-".last($file_uuid_array).".".$file->getClientOriginalExtension();
-        $path = Storage::disk($disk)->putFileAs("public/uploads/$type/$year/$month/$uuid", $file, $filename);
+        $path = Storage::disk($disk)->putFileAs("", $file, $filename);
         $url = Storage::url($path);
         $createdFile = $this->create([
             'upload_type' => "file",

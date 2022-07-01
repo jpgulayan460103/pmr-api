@@ -23,6 +23,7 @@ use App\Http\Controllers\RequisitionIssueController;
 use App\Http\Controllers\ProcurementPlanController;
 use App\Http\Controllers\ReportController;
 use App\Models\PurchaseOrder;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,5 +133,9 @@ Route::group(['prefix' => '/summaries'], function () {
 });
 Route::group(['prefix' => '/downloads'], function () { 
     Route::get('/form-uploads/{id}', [FormUploadController::class, 'download'])->name('api.downloads.form-uploads');;
+});
+
+Route::get('test', function() {
+    Storage::disk('google')->put('test.txt', 'Hello World');
 });
 
