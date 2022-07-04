@@ -9,6 +9,7 @@ use App\Models\User;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
 
 class FormUpload extends Model
 {
@@ -33,12 +34,15 @@ class FormUpload extends Model
         'parent_id',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public static function boot()
     {

@@ -8,6 +8,7 @@ use App\Models\SupplierContact;
 use App\Models\SupplierCategory;
 use App\Models\Quotation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Supplier extends Model
@@ -18,12 +19,15 @@ class Supplier extends Model
         'address',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public function contacts()
     {

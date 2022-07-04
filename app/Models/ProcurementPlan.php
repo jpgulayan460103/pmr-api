@@ -13,6 +13,7 @@ use App\Models\ProcurementPlanItem;
 use App\Models\ProcurementManagementItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
 
 class ProcurementPlan extends Model
 {
@@ -49,12 +50,19 @@ class ProcurementPlan extends Model
         'approved_by_designation',
     ];
 
-    protected static $logAttributes = [
-        '*',
+    public $logAttributesToIgnore = [
+        'ppmp_number',
+        'status',
     ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs()
+        ->logExcept($this->logAttributesToIgnore);
+    }
 
     public static function boot()
     {

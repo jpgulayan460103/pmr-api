@@ -19,6 +19,7 @@ class CreateUserOfficesTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('designation')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

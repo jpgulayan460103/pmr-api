@@ -12,6 +12,7 @@ use App\Transformers\RequisitionIssueTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class RequisitionIssueController extends Controller
 {
@@ -55,15 +56,21 @@ class RequisitionIssueController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $items = $this->requisitionIssueRepository->addItems();
             $requisition_issue = $this->requisitionIssueRepository->create($data);
             $requisition_issue->items()->saveMany($items['items']);
             $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
             $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
+            LogBatch::endBatch();
             DB::commit();
             return $requisition_issue;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
     }
@@ -105,11 +112,17 @@ class RequisitionIssueController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $requisition_issue = $this->requisitionIssueRepository->updateRequisitionIssue($id, $data);
             DB::commit();
+            LogBatch::endBatch();
             return $requisition_issue;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
     }

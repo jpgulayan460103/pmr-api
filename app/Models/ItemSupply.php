@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
 
 class ItemSupply extends Model
 {
@@ -30,6 +31,16 @@ class ItemSupply extends Model
         self::updating(function($model) {
 
         });
+    }
+
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 
     public function item_supply_histories()

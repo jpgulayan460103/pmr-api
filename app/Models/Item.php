@@ -9,6 +9,7 @@ use App\Models\ItemSupplyHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
 
 class Item extends Model
 {
@@ -26,14 +27,17 @@ class Item extends Model
         'uuid',
     ];
 
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
+
     protected $casts = [];
-
-    protected static $logAttributes = [
-        '*',
-    ];
-
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
 
     public static function boot()
     {

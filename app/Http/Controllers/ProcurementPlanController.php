@@ -14,6 +14,7 @@ use App\Transformers\ProcurementPlanTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class ProcurementPlanController extends Controller
 {
@@ -57,6 +58,10 @@ class ProcurementPlanController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $itemsA = $this->procurementPlanRepository->addItemsA();
             $itemsB = $this->procurementPlanRepository->addItemsB();
@@ -66,9 +71,11 @@ class ProcurementPlanController extends Controller
             $procurement_plan->items()->saveMany($itemsB['items']);
             $form_process = (new FormProcessRepository())->procurementPlan($procurement_plan);
             $form_route = (new FormRouteRepository())->procurementPlan($procurement_plan, $form_process);
+            LogBatch::endBatch();
             DB::commit();
             return $procurement_plan;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
     }
@@ -109,11 +116,17 @@ class ProcurementPlanController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $procurement_plan = $this->procurementPlanRepository->updateProcurementPlan($id, $data);
             DB::commit();
+            LogBatch::endBatch();
             return $procurement_plan;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
     }

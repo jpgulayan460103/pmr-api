@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class RequisitionIssue extends Model
 {
@@ -43,12 +44,22 @@ class RequisitionIssue extends Model
         'received_by_date',
     ];
 
-    protected static $logAttributes = [
-        '*',
+    public $logAttributesToIgnore = [
+        'ris_number',
+        'requested_by_date',
+        'approved_by_date',
+        'received_by_date',
+        'status',
     ];
-    
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs()
+        ->logExcept($this->logAttributesToIgnore);
+    }
 
     public static function boot()
     {

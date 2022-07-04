@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class PurchaseRequest extends Model
 {
@@ -47,12 +48,18 @@ class PurchaseRequest extends Model
         'created_by_id',
     ];
 
-    protected static $logAttributes = [
-        '*',
+    public $logAttributesToIgnore = [
+        'status',
     ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs()
+        ->logExcept($this->logAttributesToIgnore);
+    }
 
     public static function boot()
     {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Supplier;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class SupplierContact extends Model
@@ -18,12 +19,15 @@ class SupplierContact extends Model
         'supplier_id',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     protected static $logAttributesToIgnore = [
         'id',

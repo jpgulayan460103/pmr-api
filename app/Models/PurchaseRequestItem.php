@@ -9,6 +9,7 @@ use App\Models\PurchaseRequest;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
 
 class PurchaseRequestItem extends Model
 {
@@ -44,12 +45,15 @@ class PurchaseRequestItem extends Model
         'is_ppmp',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
-    
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public function unit_of_measure()
     {

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class PurchaseRequestController extends Controller
 {
@@ -83,6 +84,10 @@ class PurchaseRequestController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $items = $this->purchaseRequestRepository->addItems();
             $data['total_cost'] = $items['total_cost'];
@@ -93,9 +98,11 @@ class PurchaseRequestController extends Controller
             $purchase_request = $this->purchaseRequestRepository->attachRequistionIssue($purchase_request);
             $purchase_request->save();
             // ddh($purchase_request);
+            LogBatch::endBatch();
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
         
@@ -139,11 +146,17 @@ class PurchaseRequestController extends Controller
     {
         DB::beginTransaction();
         try {
+            if(LogBatch::isOpen()) {
+                LogBatch::endBatch();
+            }
+            LogBatch::startBatch();
             $data = $request->all();
             $purchase_request = $this->purchaseRequestRepository->updatePurchaseRequest($id, $data);
             DB::commit();
+            LogBatch::endBatch();
             return $purchase_request;
         } catch (\Throwable $th) {
+            LogBatch::endBatch();
             throw $th;
         }
     }

@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\RequisitionIssue;
 use App\Models\Item;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class RequisitionIssueItem extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
+
+    public bool $logOnlyDirty = true;
+    public bool $submitEmptyLogs = false;
 
     protected $fillable = [
         'requisition_issue_id',
@@ -27,12 +31,13 @@ class RequisitionIssueItem extends Model
         'is_pr_recommended',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
-
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public static function boot()
     {

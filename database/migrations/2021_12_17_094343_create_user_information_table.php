@@ -25,6 +25,7 @@ class CreateUserInformationTable extends Migration
             $table->string('email_address')->nullable();
             $table->string('cellphone_number')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         
     }

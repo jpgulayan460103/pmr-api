@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Models\PurchaseRequest;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class BacTask extends Model
 {
@@ -29,12 +30,15 @@ class BacTask extends Model
         'abstract_of_qoutations',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public static function boot()
     {

@@ -9,6 +9,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use App\Models\ProcurementPlan;
 use App\Models\Item;
 use App\Models\Library;
+use Spatie\Activitylog\LogOptions;
 
 class ProcurementPlanItem extends Model
 {
@@ -37,12 +38,15 @@ class ProcurementPlanItem extends Model
         'total_price',
     ];
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     public function procurement_plan()
     {

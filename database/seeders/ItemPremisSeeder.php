@@ -58,7 +58,8 @@ class ItemPremisSeeder extends Seeder
     public function json()
     {
         $reader = Reader::createFromPath(public_path('/files/item-premis.csv'), 'r');
-        $results = $reader->fetchAll();
+        // $results = $reader->fetchAll();
+        $results = $reader->getRecords();
         $data = array();
        
         foreach ($results as $key => $row) {

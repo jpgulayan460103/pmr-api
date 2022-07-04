@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\UserOffice;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Library extends Model
 {
@@ -21,13 +22,14 @@ class Library extends Model
     ];
 
 
-    protected static $logAttributes = [
-        '*',
-    ];
 
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logFillable()
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 
     protected $casts = [
         // 'is_active' => 'boolean',
