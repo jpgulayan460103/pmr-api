@@ -18,6 +18,7 @@ class CreateActivityLogBatchesTable extends Migration
             $table->uuid('batch_uuid')->nullable();
             $table->string('form_type')->nullable();
             $table->nullableMorphs('subject', 'subject');
+            $table->nullableMorphs('causer', 'causer');
             $table->timestamps();
             $table->index('batch_uuid');
         });

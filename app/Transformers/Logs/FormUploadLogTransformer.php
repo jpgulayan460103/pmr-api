@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 
 class FormUploadLogTransformer extends TransformerAbstract
 {
-    protected $labels = [
+    public $labels = [
         'disk' => 'disk',
         'upload_type' => 'upload_type',
         'title' => 'title',

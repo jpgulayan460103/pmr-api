@@ -24,7 +24,7 @@ class ActivityLogController extends Controller
     public function purchaseRequest(Request $request, $id)
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'purchase_request');
-        return fractal($logs, new ActivityLogBatchTransformer);
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 
     public function purchaseRequestItem(Request $request, $id)
@@ -45,7 +45,8 @@ class ActivityLogController extends Controller
     public function procurementPlan(Request $request, $id)
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'procurement_plan');
-        return fractal($logs, new ActivityLogBatchTransformer);
+        // return $logs;
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 
     public function procurementPlanItem(Request $request, $id)
@@ -56,7 +57,8 @@ class ActivityLogController extends Controller
     public function requisitionIssue(Request $request, $id)
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'requisition_issue');
-        return fractal($logs, new ActivityLogBatchTransformer);
+        // return $logs;
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 
     public function requisitionIssueItem(Request $request, $id)

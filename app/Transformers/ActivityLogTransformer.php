@@ -11,6 +11,7 @@ use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use App\Transformers\Logs\RequisitionIssueItemLogTransformer;
 use App\Transformers\Logs\RequisitionIssueLogTransformer;
 use League\Fractal\TransformerAbstract;
+use Illuminate\Support\Str;
 
 class ActivityLogTransformer extends TransformerAbstract
 {
@@ -52,6 +53,7 @@ class ActivityLogTransformer extends TransformerAbstract
                 break;
             case 'requisition_issue_item':
                 $logger = new RequisitionIssueItemLogTransformer;
+                break;
             case 'purchase_request':
                 $logger = new PurchaseRequestLogTransformer;
                 break;
@@ -68,16 +70,44 @@ class ActivityLogTransformer extends TransformerAbstract
         }
         return [
             'log_name' => $table->log_name,
-            'description' => $table->description,
+            'key' => $table->id,
+            'logger_id' => str_pad($table->id, 6, "0", STR_PAD_LEFT),
+            'description' => ucwords($table->description),
             'form_type' => $form_type,
+            'form_type_header' => Str::headline($form_type),
             'event' => $table->event,
             'subject_type' => $table->subject_type,
             'subject_id' => $table->subject_id,
             'causer_type' => $table->causer_type,
-            'properties' => $logger->addLabels($table->properties),
+            'properties' => $this->addLabels($table->properties, $logger->labels),
             'causer_id' => $table->causer_id,
             'batch_uuid' => $table->batch_uuid,
             'created_at' => $table->created_at,
         ];
+    }
+
+    public function addLabels($properties, $labels)
+    {
+        // return json_decode($properties, true);
+        $properties = json_decode($properties, true);
+        $properties['changes'] = [];
+        foreach ($properties['attributes'] as $key => $property) {
+            if(isset($labels[$key])){
+                $data = [
+                    'label' => $labels[$key],
+                    'key' => "logger_$key",
+                    'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
+                    'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
+                ];
+                if($data['old'] == "" && $data['new'] == ""){
+
+                }else{
+                    $properties['changes'][] = $data;
+                }
+            }
+        }
+        unset($properties['old']);
+        unset($properties['attributes']);
+        return $properties['changes'];
     }
 }

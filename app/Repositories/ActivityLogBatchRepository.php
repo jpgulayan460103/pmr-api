@@ -21,7 +21,7 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
         }
         $this->model($supplier);
         $this->perPage(200);
-        $this->attach('subject, logs');
+        $this->attach('subject, logs, causer.user_information');
     }
 
     public function endBatch($form)
@@ -56,7 +56,7 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
 
     public function getLogs($id, $type)
     {
-        return $this->modelQuery()->where('subject_id', $id)->where('form_type', $type)->get();
+        return $this->modelQuery()->where('subject_id', $id)->where('form_type', $type)->orderBy('id','desc')->get();
     }
 
 }

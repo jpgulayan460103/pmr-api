@@ -14,9 +14,6 @@ class RequisitionIssueItem extends Model
 {
     use HasFactory, SoftDeletes, LogsActivity;
 
-    public bool $logOnlyDirty = true;
-    public bool $submitEmptyLogs = false;
-
     protected $fillable = [
         'requisition_issue_id',
         'procurement_plan_item_id',
@@ -47,6 +44,7 @@ class RequisitionIssueItem extends Model
             $model->has_stock = 0;
             $model->is_pr_recommended = 1;
             $model->has_issued_item = 0;
+            $model->remarks = "";
         });
         self::updating(function($model) {
 

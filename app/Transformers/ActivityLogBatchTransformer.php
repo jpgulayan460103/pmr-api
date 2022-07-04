@@ -5,6 +5,7 @@ namespace App\Transformers;
 use App\Models\ActivityLogBatch;
 use App\Transformers\Logs\RequisitionIssueLogTransformer;
 use League\Fractal\TransformerAbstract;
+use Illuminate\Support\Str;
 
 class ActivityLogBatchTransformer extends TransformerAbstract
 {
@@ -24,7 +25,7 @@ class ActivityLogBatchTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-
+        'causer'
     ];
     
     /**
@@ -39,9 +40,10 @@ class ActivityLogBatchTransformer extends TransformerAbstract
             'key' => $table->id,
             'batch_uuid' => $table->batch_uuid,
             'form_type' => $table->form_type,
+            'form_type_header' => Str::headline($table->form_type),
             'subject_type' => $table->subject_type,
             'subject_id' => $table->subject_id,
-            'created_at' => $table->created_at,
+            'created_at' => $table->created_at->toDayDateTimeString(),
         ];
     }
 
@@ -69,6 +71,12 @@ class ActivityLogBatchTransformer extends TransformerAbstract
     {
         if ($table->logs) {
             return $this->collection($table->logs, new ActivityLogTransformer);
+        }
+    }
+    public function includeCauser(ActivityLogBatch $table)
+    {
+        if ($table->causer) {
+            return $this->item($table->causer, new UserTransformer);
         }
     }
 }

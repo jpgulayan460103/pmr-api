@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 
 class ProcurementPlanLogTransformer extends TransformerAbstract
 {
-    protected $labels = [
+    public $labels = [
         'title' => 'title',
         'purpose' => 'purpose',
         'procurement_plan_type_id' => 'procurement_plan_type_id',

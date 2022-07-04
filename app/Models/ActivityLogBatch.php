@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityLogBatch extends Model
 {
@@ -15,10 +16,29 @@ class ActivityLogBatch extends Model
         'batch_uuid',
         'form_type',
         'subject_type',
-        'subject_id'
+        'subject_id',
+        'user_id',
     ];
 
+    public static function boot()
+    {
+        $user = Auth::user();
+        parent::boot();
+        self::creating(function ($model) use ($user) {
+            $model->causer_id = $user->id;
+            $model->causer_type = get_class($user);
+        });
+        self::updating(function($model) {
+
+        });
+    }
+
     public function subject()
+    {
+        return $this->setConnection('mysql')->morphTo();
+    }
+    
+    public function causer()
     {
         return $this->setConnection('mysql')->morphTo();
     }

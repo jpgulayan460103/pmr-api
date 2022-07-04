@@ -20,7 +20,6 @@ class PurchaseRequest extends Model
 {
     use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
-        'uuid',
         'purchase_request_number', //BUDRP-PR-2022-02-00001
         'purpose',
         'title',
