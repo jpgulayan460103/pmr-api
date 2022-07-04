@@ -4,20 +4,21 @@ namespace App\Transformers\Logs;
 
 use App\Models\ActivityLog;
 use League\Fractal\TransformerAbstract;
-use App\Transformers\RequisitionIssueItemTransformer;
-use App\Transformers\UserTransformer;
 
 class RequisitionIssueItemLogTransformer extends TransformerAbstract
 {
     protected $labels = [
-        "remarks" => "remarks",
-        "has_stock" => "has_stock",
-        "description" => "description",
-        "issue_quantity" => "issue_quantity",
-        "has_issued_item" => "has_issued_item",
-        "request_quantity" => "request_quantity",
-        "is_pr_recommended" => "is_pr_recommended",
-        "unit_of_measure.name" => "unit_of_measure.name",
+        'requisition_issue_id' => 'requisition_issue_id',
+        'procurement_plan_item_id' => 'procurement_plan_item_id',
+        'unit_of_measure_id' => 'unit_of_measure_id',
+        'description' => 'description',
+        'remarks' => 'remarks',
+        'item_id' => 'item_id',
+        'request_quantity' => 'request_quantity',
+        'issue_quantity' => 'issue_quantity',
+        'has_stock' => 'has_stock',
+        'has_issued_item' => 'has_issued_item',
+        'is_pr_recommended' => 'is_pr_recommended',
     ];
     /**
      * List of resources to automatically include
@@ -34,8 +35,7 @@ class RequisitionIssueItemLogTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-        'user',
-        'subject'
+    
     ];
     
     /**
@@ -45,35 +45,15 @@ class RequisitionIssueItemLogTransformer extends TransformerAbstract
      */
     public function transform(ActivityLog $activityLog)
     {
-        return [
-            'key' => $activityLog->id,
-            'id' => $activityLog->id,
-            'log_name' => $activityLog->log_name,
-            'description' => ucfirst($activityLog->description),
-            'subject_type' => $activityLog->subject_type,
-            'subject_id' => $activityLog->subject_id,
-            'causer_type' => $activityLog->causer_type,
-            'causer_id' => $activityLog->causer_id,
-            'properties' => $this->addLabels($activityLog),
-            'created_at' => $activityLog->created_at->toDateString(),
-            'created_at_time' => $activityLog->created_at->toDayDateTimeString(),
-        ];
+        return [];
     }
 
-    public function addLabels($activityLog)
+    public function addLabels($properties)
     {
         // return json_decode($properties, true);
-        $properties = json_decode($activityLog->properties, true);
+        $properties = json_decode($properties, true);
         $properties['changes'] = [];
-        $logger = [];
-        if($activityLog->description == "deleted"){
-            $properties['old'] = $properties['attributes'];
-            $logger = $properties['attributes'];
-            unset($properties['attributes']);
-        }else{
-            $logger = $properties['attributes'];
-        }
-        foreach ($logger as $key => $property) {
+        foreach ($properties['attributes'] as $key => $property) {
             if(isset($this->labels[$key])){
                 $properties['changes'][] = [
                     'label' => $this->labels[$key],
@@ -86,18 +66,5 @@ class RequisitionIssueItemLogTransformer extends TransformerAbstract
         unset($properties['old']);
         unset($properties['attributes']);
         return $properties['changes'];
-    }
-
-    public function includeUser(ActivityLog $table)
-    {
-        if ($table->user) {
-            return $this->item($table->user, new UserTransformer);
-        }
-    }
-    public function includeSubject(ActivityLog $table)
-    {
-        if ($table->subject) {
-            return $this->item($table->subject, new RequisitionIssueItemTransformer);
-        }
     }
 }

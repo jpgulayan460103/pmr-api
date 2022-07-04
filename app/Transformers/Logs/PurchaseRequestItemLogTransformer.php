@@ -2,32 +2,29 @@
 
 namespace App\Transformers\Logs;
 
-use App\Models\ActivityLog;
 use League\Fractal\TransformerAbstract;
-use App\Transformers\PurchaseRequestItemTransformer;
-use App\Transformers\UserTransformer;
+use App\Models\ActivityLog;
 
 class PurchaseRequestItemLogTransformer extends TransformerAbstract
 {
-    protected $labels = [
-        "item_id" => "Item ID",
-        "quantity" => "Quantity",
-        "item_code" => "Item Code",
-        "description" => "Item Description",
-        "item_name" => "Item Name",
-        "unit_cost" => "Unit Cost",
-        "total_unit_cost" => "Total Unit Cost",
-        "unit_of_measure.name" => "Unit of Measure",
-        "purchase_request_id" => "pr_id",
-        "unit_of_measure_id" => "Unit of Measure",
-        "deleted_at" => "Deleted At",
-        "is_ppmp" => "Is in PPMP",
-    ];
     /**
      * List of resources to automatically include
      *
      * @var array
      */
+    public $labels = [
+        'item_name' => 'item_name',
+        'description' => 'description',
+        'item_code' => 'item_code',
+        'item_id' => 'item_id',
+        'quantity' => 'quantity',
+        'unit_cost' => 'unit_cost',
+        'unit_of_measure_id' => 'unit_of_measure_id',
+        'total_unit_cost' => 'total_unit_cost',
+        'purchase_request_id' => 'purchase_request_id',
+        'purchase_request_item_uuid' => 'purchase_request_item_uuid',
+        'is_ppmp' => 'is_ppmp',
+    ];
     protected array $defaultIncludes = [
         //
     ];
@@ -38,8 +35,7 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-        'user',
-        'subject'
+        
     ];
     
     /**
@@ -49,68 +45,26 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
      */
     public function transform(ActivityLog $activityLog)
     {
-        return [
-            'key' => $activityLog->id,
-            'id' => $activityLog->id,
-            'log_name' => $activityLog->log_name,
-            'description' => ucfirst($activityLog->description),
-            'subject_type' => $activityLog->subject_type,
-            'subject_id' => $activityLog->subject_id,
-            'causer_type' => $activityLog->causer_type,
-            'causer_id' => $activityLog->causer_id,
-            'properties' => $this->addLabels($activityLog),
-            'created_at' => $activityLog->created_at->toDateString(),
-            'created_at_time' => $activityLog->created_at->toDayDateTimeString(),
-        ];
+        return [];
     }
 
-    public function addLabels($activityLog)
+    public function addLabels($properties)
     {
         // return json_decode($properties, true);
-        $properties = json_decode($activityLog->properties, true);
+        $properties = json_decode($properties, true);
         $properties['changes'] = [];
-        $logger = [];
-        if($activityLog->description == "deleted"){
-            $properties['old'] = $properties['attributes'];
-            $logger = $properties['attributes'];
-            unset($properties['attributes']);
-        }else{
-            $logger = $properties['attributes'];
-        }
-        foreach ($logger as $key => $property) {
+        foreach ($properties['attributes'] as $key => $property) {
             if(isset($this->labels[$key])){
-                if($key == 'is_ppmp'){
-                    $properties['changes'][] = [
-                        'label' => $this->labels[$key],
-                        'key' => "logger_$key",
-                        'old' => isset($properties['old'][$key]) ? ($properties['old'][$key] == true ? "Yes" : "No") : "",
-                        'new' => isset($properties['attributes'][$key]) ? ($properties['attributes'][$key] == true ? "Yes" : "No") : "",
-                    ];
-                }else{
-                    $properties['changes'][] = [
-                        'label' => $this->labels[$key],
-                        'key' => "logger_$key",
-                        'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
-                        'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
-                    ];
-                }
+                $properties['changes'][] = [
+                    'label' => $this->labels[$key],
+                    'key' => "logger_$key",
+                    'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
+                    'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
+                ];
             }
         }
         unset($properties['old']);
         unset($properties['attributes']);
         return $properties['changes'];
-    }
-
-    public function includeUser(ActivityLog $table)
-    {
-        if ($table->user) {
-            return $this->item($table->user, new UserTransformer);
-        }
-    }
-    public function includeSubject(ActivityLog $table)
-    {
-        if ($table->subject) {
-            return $this->item($table->subject, new PurchaseRequestItemTransformer);
-        }
     }
 }

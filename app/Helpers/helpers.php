@@ -46,3 +46,9 @@ if (!function_exists('ppmpNonCse')) {
         return "OTHER ITEMS NOT AVALABLE AT PS BUT REGULARLY PURCHASED FROM OTHER SOURCES";
     }
 }
+if (!function_exists('getModelType')) {
+    function getModelType($form){
+        $model_name_exploded =  explode("\\", $form);
+        return Illuminate\Support\Str::snake(last($model_name_exploded));
+    }
+}

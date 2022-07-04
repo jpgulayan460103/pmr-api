@@ -21,13 +21,13 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
         }
         $this->model($supplier);
         $this->perPage(200);
+        $this->attach('subject, logs');
     }
 
     public function endBatch($form)
     {
         $uuid = LogBatch::getUuid();
-        $class_name =  explode("\\", get_class($form));
-        $form_type = Str::snake(last($class_name));
+        $form_type = getModelType(get_class($form));
         $this->create([
             'batch_uuid' => $uuid,
             'form_type' => $form_type,
@@ -54,15 +54,9 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
         }
     }
 
-    public function getLogs($id)
+    public function getLogs($id, $type)
     {
-        return $this->getRequisitionIssueLogs($id);
-    }
-
-    public function getRequisitionIssueLogs($id)
-    {
-        $requisitionIssue = new RequisitionIssue();
-        return $this->modelQuery()->where('subject_id', $id)->where('subject_type', get_class($requisitionIssue))->get();
+        return $this->modelQuery()->where('subject_id', $id)->where('form_type', $type)->get();
     }
 
 }

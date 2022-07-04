@@ -15,7 +15,6 @@ class RequisitionIssue extends Model
     use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
-        'uuid',
         'title',
         'fund_cluster',
         'center_code',

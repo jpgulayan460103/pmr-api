@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ActivityLogBatchRepository;
+use App\Transformers\ActivityLogBatchTransformer;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -42,7 +43,8 @@ class ActivityLogController extends Controller
 
     public function procurementPlan(Request $request, $id)
     {
-
+        $logs = (new ActivityLogBatchRepository())->getLogs($id, 'procurement_plan');
+        return fractal($logs, new ActivityLogBatchTransformer);
     }
 
     public function procurementPlanItem(Request $request, $id)
@@ -52,7 +54,8 @@ class ActivityLogController extends Controller
 
     public function requisitionIssue(Request $request, $id)
     {
-        return (new ActivityLogBatchRepository())->attach('subject, logs')->getLogs($id);
+        $logs = (new ActivityLogBatchRepository())->getLogs($id, 'requisition_issue');
+        return fractal($logs, new ActivityLogBatchTransformer);
     }
 
     public function requisitionIssueItem(Request $request, $id)

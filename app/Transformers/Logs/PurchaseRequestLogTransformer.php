@@ -4,8 +4,6 @@ namespace App\Transformers\Logs;
 
 use League\Fractal\TransformerAbstract;
 use App\Models\ActivityLog;
-use App\Transformers\UserTransformer;
-use App\Transformers\PurchaseRequestTransformer;
 
 class PurchaseRequestLogTransformer extends TransformerAbstract
 {
@@ -14,34 +12,33 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      *
      * @var array
      */
-    protected $labels = [
-        "sa_or" => "SA/OR",
-        "pr_dir" => "pr_dir",
-        "status" => "Status",
-        "pr_date" => "PR Date",
-        "purpose" => "Particulars",
-        "charge_to" => "Charge To",
-        "uacs_code.name" => "UACS Code",
-        "total_cost" => "Total Cost",
-        "center_code" => "Responsibility Center Code",
-        "fund_cluster" => "Fund Cluster",
-        "end_user.name" => "End User",
-        "alloted_amount" => "ABC (PHP)",
-        "uuid" => "UUID",
-        "remarks" => "Remarks",
-        "approved_by.name" => "Approved By",
-        "purchase_request_number" => "PR Number",
-        "requested_by.name" => "Requested By",
-        "account.parent.name" => "Account Classification",
-        "account.name" => "Account",
-        "mode_of_procurement.name" => "Mode of Procurement",
-        "account_id" => "account_id",
-        "bac_task_id" => "bac_task_id",
-        "end_user_id" => "end_user_id",
-        "requested_by_id" => "requested_by_id",
-        "approved_by_id" => "approved_by_id",
-        "mode_of_procurement_id" => "mode_of_procurement_id",
-        "id" => "id",
+    public $labels = [
+        'uuid' => 'uuid',
+        'purchase_request_number' => 'purchase_request_number',
+        'purpose' => 'purpose',
+        'title' => 'title',
+        'fund_cluster' => 'fund_cluster',
+        'center_code' => 'center_code',
+        'total_cost' => 'total_cost',
+        'pr_dir' => 'pr_dir',
+        'end_user_id' => 'end_user_id',
+        'account_id' => 'account_id',
+        'status' => 'status',
+        'remarks' => 'remarks',
+        'pr_date' => 'pr_date',
+        'mode_of_procurement_id' => 'mode_of_procurement_id',
+        'uacs_code_id' => 'uacs_code_id',
+        'charge_to' => 'charge_to',
+        'alloted_amount' => 'alloted_amount',
+        'sa_or' => 'sa_or',
+        'bac_task_id' => 'bac_task_id',    
+        'requested_by_id' => 'requested_by_id',
+        'requested_by_name' => 'requested_by_name',
+        'requested_by_designation' => 'requested_by_designation',
+        'approved_by_id' => 'approved_by_id',
+        'approved_by_name' => 'approved_by_name',
+        'approved_by_designation' => 'approved_by_designation',
+        'created_by_id' => 'created_by_id',
     ];
     protected array $defaultIncludes = [
         //
@@ -53,8 +50,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-        'user',
-        'subject'
+        
     ];
     
     /**
@@ -64,19 +60,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      */
     public function transform(ActivityLog $activityLog)
     {
-        return [
-            'key' => $activityLog->id,
-            'id' => $activityLog->id,
-            'log_name' => $activityLog->log_name,
-            'description' => ucfirst($activityLog->description),
-            'subject_type' => $activityLog->subject_type,
-            'subject_id' => $activityLog->subject_id,
-            'causer_type' => $activityLog->causer_type,
-            'causer_id' => $activityLog->causer_id,
-            'properties' => $this->addLabels($activityLog->properties),
-            'created_at' => $activityLog->created_at->toDateString(),
-            'created_at_time' => $activityLog->created_at->toDayDateTimeString(),
-        ];
+        return [];
     }
 
     public function addLabels($properties)
@@ -97,18 +81,5 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         unset($properties['old']);
         unset($properties['attributes']);
         return $properties['changes'];
-    }
-
-    public function includeUser(ActivityLog $table)
-    {
-        if ($table->user) {
-            return $this->item($table->user, new UserTransformer);
-        }
-    }
-    public function includeSubject(ActivityLog $table)
-    {
-        if ($table->subject) {
-            return $this->item($table->subject, new PurchaseRequestTransformer);
-        }
     }
 }
