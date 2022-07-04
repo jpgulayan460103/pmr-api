@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreatePurchaseRequest;
 use App\Http\Requests\UpdatePurchaseRequest;
 use App\Models\PurchaseRequest;
+use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Transformers\PurchaseRequestTransformer;
@@ -84,11 +85,7 @@ class PurchaseRequestController extends Controller
     {
         DB::beginTransaction();
         try {
-            if(LogBatch::isOpen()) {
-                LogBatch::endBatch();
-            }
-            LogBatch::startBatch();
-            $data = $request->all();
+            (new ActivityLogBatchRepository())->startBatch();
             $items = $this->purchaseRequestRepository->addItems();
             $data['total_cost'] = $items['total_cost'];
             $purchase_request = $this->purchaseRequestRepository->create($data);
@@ -97,12 +94,11 @@ class PurchaseRequestController extends Controller
             $formRoute = (new FormRouteRepository())->purchaseRequest($purchase_request, $formProcess);
             $purchase_request = $this->purchaseRequestRepository->attachRequistionIssue($purchase_request);
             $purchase_request->save();
-            // ddh($purchase_request);
-            LogBatch::endBatch();
+            (new ActivityLogBatchRepository())->endBatch($purchase_request);
             DB::commit();
             return $purchase_request;
         } catch (\Throwable $th) {
-            LogBatch::endBatch();
+            (new ActivityLogBatchRepository())->deleteBatch();
             throw $th;
         }
         
@@ -146,17 +142,14 @@ class PurchaseRequestController extends Controller
     {
         DB::beginTransaction();
         try {
-            if(LogBatch::isOpen()) {
-                LogBatch::endBatch();
-            }
-            LogBatch::startBatch();
+            (new ActivityLogBatchRepository())->startBatch();
             $data = $request->all();
             $purchase_request = $this->purchaseRequestRepository->updatePurchaseRequest($id, $data);
+            (new ActivityLogBatchRepository())->endBatch($purchase_request);
             DB::commit();
-            LogBatch::endBatch();
             return $purchase_request;
         } catch (\Throwable $th) {
-            LogBatch::endBatch();
+            (new ActivityLogBatchRepository())->deleteBatch();
             throw $th;
         }
     }

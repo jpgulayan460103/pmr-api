@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateRequisitionIssueRequest;
 use App\Http\Requests\UpdateRequisitionIssueRequest;
 use App\Models\RequisitionIssue;
+use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\FormRouteRepository;
 use App\Repositories\RequisitionIssueRepository;
@@ -56,20 +57,18 @@ class RequisitionIssueController extends Controller
     {
         DB::beginTransaction();
         try {
-            if(LogBatch::isOpen()) {
-                LogBatch::endBatch();
-            }
-            LogBatch::startBatch();
+            (new ActivityLogBatchRepository())->startBatch();
             $data = $request->all();
             $items = $this->requisitionIssueRepository->addItems();
             $requisition_issue = $this->requisitionIssueRepository->create($data);
             $requisition_issue->items()->saveMany($items['items']);
             $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
             $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
-            LogBatch::endBatch();
+            (new ActivityLogBatchRepository())->endBatch($requisition_issue);
             DB::commit();
             return $requisition_issue;
         } catch (\Throwable $th) {
+            (new ActivityLogBatchRepository())->deleteBatch();
             LogBatch::endBatch();
             throw $th;
         }
@@ -112,17 +111,14 @@ class RequisitionIssueController extends Controller
     {
         DB::beginTransaction();
         try {
-            if(LogBatch::isOpen()) {
-                LogBatch::endBatch();
-            }
-            LogBatch::startBatch();
+            (new ActivityLogBatchRepository())->startBatch();
             $data = $request->all();
             $requisition_issue = $this->requisitionIssueRepository->updateRequisitionIssue($id, $data);
+            (new ActivityLogBatchRepository())->endBatch($requisition_issue);
             DB::commit();
-            LogBatch::endBatch();
             return $requisition_issue;
         } catch (\Throwable $th) {
-            LogBatch::endBatch();
+            (new ActivityLogBatchRepository())->deleteBatch();
             throw $th;
         }
     }

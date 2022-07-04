@@ -404,7 +404,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                         'issued_items.*.item_supply_id' => ['required'],
                     ]);
                 }
+                (new ActivityLogBatchRepository())->startBatch();
                 $form = (new RequisitionIssueRepository())->updateRequisitionIssue($formId, $data);
+                (new ActivityLogBatchRepository())->endBatch($form);
                 (new ItemSupplyHistoryRepository())->createFromRequisitionIssue($form, $data);
                 (new RequisitionIssueRepository())->attachNoStockCertificate($formId);
                 break;

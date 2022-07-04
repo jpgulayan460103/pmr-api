@@ -16,7 +16,6 @@ class FormUpload extends Model
     use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'uuid',
         'disk',
         'upload_type',
         'title',
