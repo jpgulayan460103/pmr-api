@@ -34,26 +34,22 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         switch ($type) {
             case 'purchase_request':
                 $form = (new PurchaseRequestRepository)->getById($id);
-                $uuid = $form->uuid;
-                $year = $form->created_at->format('Y');
-                $month = $form->created_at->format('m');
                 break;
             case 'procurement_plan':
                 $form = (new ProcurementPlanRepository)->getById($id);
-                $uuid = $form->uuid;
-                $year = $form->created_at->format('Y');
-                $month = $form->created_at->format('m');
                 break;
             case 'requisition_issue':
                 $form = (new RequisitionIssueRepository())->getById($id);
-                $uuid = $form->uuid;
-                $year = $form->created_at->format('Y');
-                $month = $form->created_at->format('m');
                 break;
             
             default:
                 # code...
                 break;
+        }
+        if($form){
+            $uuid = $form->uuid;
+            $year = $form->created_at->format('Y');
+            $month = $form->created_at->format('m');
         }
         $disk = env('APP_ENV') == "local" ? "local" : "sftp";
         $file_uuid_array = explode("-", Str::uuid());
@@ -73,8 +69,10 @@ class FormUploadRepository implements FormUploadRepositoryInterface
             'form_uploadable_id' => $id,
             'form_uploadable_type' => get_class($form),
         ]);
-        return $path;
-        return $url;
+        return [
+            'path' => $path,
+            'form' => $form,
+        ];
     }
 
     public function deleteFile()

@@ -29,7 +29,7 @@ class PurchaseRequestItem extends Model
     }
 
     protected $casts = [
-        'is_ppmp' => 'boolean',
+    
     ];
     protected $fillable = [
         'item_name',

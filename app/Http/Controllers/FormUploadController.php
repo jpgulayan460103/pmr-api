@@ -8,6 +8,7 @@ use App\Transformers\FormUploadTransformer;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FormUploadRequest;
 use App\Models\PurchaseRequest;
+use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\FormUploadRepository;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,8 +56,10 @@ class FormUploadController extends Controller
      */
     public function store(FormUploadRequest $request, $type, $id)
     {
-        $url = $this->formUploadRepository->upload($type, $id);
-        return $url;
+        (new ActivityLogBatchRepository())->startBatch();
+        $upload = $this->formUploadRepository->upload($type, $id);
+        (new ActivityLogBatchRepository())->endBatch($upload['form']);
+        return $upload;
     }
 
     /**

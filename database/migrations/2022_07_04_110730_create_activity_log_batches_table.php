@@ -16,6 +16,7 @@ class CreateActivityLogBatchesTable extends Migration
         Schema::connection(config('activitylog.database_connection'))->create('activity_log_batches', function (Blueprint $table) {
             $table->id();
             $table->uuid('batch_uuid')->nullable();
+            $table->string('form_type')->nullable();
             $table->nullableMorphs('subject', 'subject');
             $table->timestamps();
             $table->index('batch_uuid');

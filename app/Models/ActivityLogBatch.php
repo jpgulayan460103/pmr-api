@@ -13,12 +13,18 @@ class ActivityLogBatch extends Model
 
     protected $fillable = [
         'batch_uuid',
+        'form_type',
         'subject_type',
         'subject_id'
     ];
 
     public function subject()
     {
-        return $this->setConnection($this->connection)->morphTo();
+        return $this->setConnection('mysql')->morphTo();
+    }
+
+    public function logs()
+    {
+        return $this->setConnection($this->connection)->hasMany(ActivityLog::class, 'batch_uuid', 'batch_uuid');
     }
 }
