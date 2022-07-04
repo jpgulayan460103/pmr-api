@@ -87,6 +87,7 @@ class PurchaseRequestController extends Controller
         try {
             (new ActivityLogBatchRepository())->startBatch();
             $items = $this->purchaseRequestRepository->addItems();
+            $data = $request->all();
             $data['total_cost'] = $items['total_cost'];
             $purchase_request = $this->purchaseRequestRepository->create($data);
             $purchase_request->items()->saveMany($items['items']);

@@ -23,7 +23,8 @@ class ActivityLogController extends Controller
 
     public function purchaseRequest(Request $request, $id)
     {
-
+        $logs = (new ActivityLogBatchRepository())->getLogs($id, 'purchase_request');
+        return fractal($logs, new ActivityLogBatchTransformer);
     }
 
     public function purchaseRequestItem(Request $request, $id)
