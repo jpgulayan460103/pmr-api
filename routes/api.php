@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -114,12 +115,12 @@ Route::group(['prefix' => '/users'], function () {
 });
 
 Route::group(['prefix' => '/logger'], function () {
-    Route::get('/purchase-request/{id}', [AuditTrailController::class, 'purchaseRequest']);
-    Route::get('/purchase-request/{id}/items', [AuditTrailController::class, 'purchaseRequestItem']);
-    Route::get('/all', [AuditTrailController::class, 'index']);
-    Route::get('/form-uploads/{type}/{id}', [AuditTrailController::class, 'formUploads']);
-    Route::get('/procurement-plan/{id}', [AuditTrailController::class, 'procurementPlan']);
-    Route::get('/requisition-issue/{id}', [AuditTrailController::class, 'requisitionIssue']);
+    Route::get('/purchase-request/{id}', [ActivityLogController::class, 'purchaseRequest']);
+    Route::get('/purchase-request/{id}/items', [ActivityLogController::class, 'purchaseRequestItem']);
+    Route::get('/all', [ActivityLogController::class, 'index']);
+    Route::get('/form-uploads/{type}/{id}', [ActivityLogController::class, 'formUploads']);
+    Route::get('/procurement-plan/{id}', [ActivityLogController::class, 'procurementPlan']);
+    Route::get('/requisition-issue/{id}', [ActivityLogController::class, 'requisitionIssue']);
 });
 
 Route::group(['prefix' => '/reports'], function () {

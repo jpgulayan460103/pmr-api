@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
 use App\Models\User;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormRoute extends Model
 {
-    use HasFactory, LogsActivity, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'route_type',
@@ -30,14 +29,6 @@ class FormRoute extends Model
         'action_taken',
         'route_code',
     ];
-
-    protected static $logAttributes = [
-        '*',
-    ];
-
-    protected static $logOnlyDirty = true;
-    protected static $submitEmptyLogs = false;
-
     
     public function form_routable()
     {
