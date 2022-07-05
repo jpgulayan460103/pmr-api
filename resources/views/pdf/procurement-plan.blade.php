@@ -279,18 +279,18 @@
             <tr>
                 <td style="text-align: center;">
                     <br>    
-                    <b>{{ $prepared_by_name }}</b><br>
-                    {{ $prepared_by_designation }}
+                    <b>{{ $is_prepared_signed ? strtoupper($prepared_by_name) : ""}}</b><br>
+                    {{ $is_prepared_signed ? $prepared_by_designation : "" }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
-                    <b>{{ $certified_by_name }}</b><br>
-                    {{ $certified_by_designation }}
+                    <b>{{ $is_certified_signed ? strtoupper($certified_by_name) : "" }}</b><br>
+                    {{ $is_certified_signed ? $certified_by_designation : "" }}
                 </td>
                 <td style="text-align: center;">
                     <br>    
-                    <b>{{ $approved_by_name }}</b><br>
-                    {{ $approved_by_designation }}
+                    <b>{{ $is_approved_signed ? strtoupper($approved_by_name) : "" }}</b><br>
+                    {{ $is_approved_signed ? $approved_by_designation : ""}}
                 </td>
             </tr>
         </table>

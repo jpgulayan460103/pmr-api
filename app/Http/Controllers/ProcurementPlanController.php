@@ -152,9 +152,12 @@ class ProcurementPlanController extends Controller
 
     public function pdf(Request $request, $uuid)
     {
-        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item, procurement_plan_type')->getByUuid($uuid);
-        // return $procurement_plan;
-        $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item, procurement_plan_type')->toArray();
+        $procurement_plan = $this->procurementPlanRepository->attach('end_user,items.item, procurement_plan_type, form_process')->getByUuid($uuid);
+        $procurement_plan = fractal($procurement_plan, new ProcurementPlanTransformer)->parseIncludes('end_user,items.item, procurement_plan_type, form_process')->toArray();
+        $form_routes = $procurement_plan['form_process']['form_routes'];
+        $prepp_key = array_search("route_origin", array_column($form_routes, 'description_code'));
+        $cert_key = array_search("ppmp_aprroval_from_certified_by", array_column($form_routes, 'description_code'));
+        $appr_key = array_search("last_route", array_column($form_routes, 'description_code'));
         $count_a = 0;
         $count_b = 0;
         $itemTypeA = (new LibraryRepository)->getBy("name", ppmpCse())->first();
@@ -177,6 +180,9 @@ class ProcurementPlanController extends Controller
         $procurement_plan['itemsB'] = $itemsB;
         $procurement_plan['count_items_a'] = $count_a;
         $procurement_plan['count_items_b'] = $count_b;
+        $procurement_plan['is_prepared_signed'] = $procurement_plan['form_process']['form_routes'][$prepp_key]['status'] == "approved";
+        $procurement_plan['is_certified_signed'] = $procurement_plan['form_process']['form_routes'][$cert_key]['status'] == "approved";
+        $procurement_plan['is_approved_signed'] = $procurement_plan['form_process']['form_routes'][$appr_key]['status'] == "approved";
         $config = [
             'instanceConfigurator' => function($mpdf) {
                 $mpdf->AddPage('L');
