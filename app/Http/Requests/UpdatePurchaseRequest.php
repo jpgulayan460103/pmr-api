@@ -76,6 +76,11 @@ class UpdatePurchaseRequest extends FormRequest
             if($purchase_request->requested_by_id != request('requested_by_id')){
                 $this->validateRequestedBy($validator, $purchase_request);
             }
+            if(request()->has('purpose')){
+                if(trim(request('purpose')) == "For the implementation of"){
+                    $validator->errors()->add("purpose", "The purpose field is required.");
+                }
+            } 
             $this->validateUpdatability($validator, $purchase_request);
         });
     }

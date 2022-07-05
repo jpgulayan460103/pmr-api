@@ -11,6 +11,7 @@ use App\Repositories\FormRouteRepository;
 use App\Repositories\RequisitionIssueRepository;
 use App\Transformers\RequisitionIssueTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 use Spatie\Activitylog\Facades\LogBatch;
@@ -22,6 +23,16 @@ class RequisitionIssueController extends Controller
     public function __construct(RequisitionIssueRepository $requisitionIssueRepository)
     {
         $this->requisitionIssueRepository = $requisitionIssueRepository;
+        $this->middleware('auth:api', [
+            'except' => [
+                'pdf',
+                'validatePdfPreview',
+                'generatePdfPreview',
+            ]
+        ]);
+        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.create|requisition.issue.all', ['only' => ['store']]);
+        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.update|requisition.issue.all',   ['only' => ['update']]);
+        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.view|requisition.issue.all',   ['only' => ['show', 'index']]);
     }
     /**
      * Display a listing of the resource.
@@ -30,9 +41,15 @@ class RequisitionIssueController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $offices_ids = $user->user_offices->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
+        if($user->hasRole('super-admin')){
+            unset($filters['offices_ids']);
+        }
         $attach = 'form_process,form_routes, form_uploads, end_user, items';
         $this->requisitionIssueRepository->attach($attach);
-        $procurement_plans = $this->requisitionIssueRepository->search([]);
+        $procurement_plans = $this->requisitionIssueRepository->search($filters);
         // return $procurement_plans;
         return fractal($procurement_plans, new RequisitionIssueTransformer)->parseIncludes($attach);
     }
@@ -64,12 +81,14 @@ class RequisitionIssueController extends Controller
             $requisition_issue->items()->saveMany($items['items']);
             $form_process = (new FormProcessRepository())->requisitionIssue($requisition_issue);
             $form_route = (new FormRouteRepository())->requisitionIssue($requisition_issue, $form_process);
+            if($requisition_issue->from_ppmp == 1){
+                $requisition_issue = $this->requisitionIssueRepository->attachProcurementPlan($requisition_issue);
+            }
             (new ActivityLogBatchRepository())->endBatch($requisition_issue);
             DB::commit();
             return $requisition_issue;
         } catch (\Throwable $th) {
             (new ActivityLogBatchRepository())->deleteBatch();
-            LogBatch::endBatch();
             throw $th;
         }
     }
@@ -149,7 +168,9 @@ class RequisitionIssueController extends Controller
             'margin_top' => 6.35,
         ];
         $pdf = FacadesPdf::loadView('pdf.requisition-and-issue-slip', $requisition_issue, [], $config);
-        return $pdf->stream('requisition-issue-'.$requisition_issue['form_number'].'.pdf');
-        return $pdf->download('requisition-issue-'.$requisition_issue['form_number'].'.pdf');
+        if($request['view']){
+            return $pdf->stream('PMS-requisition-and-issue-slip-'.$requisition_issue['form_number'].'.pdf');
+        }
+        return $pdf->download('PMS-requisition-and-issue-slip-'.$requisition_issue['form_number'].'.pdf');
     }
 }

@@ -11,6 +11,7 @@ use App\Rules\MaxInt;
 use App\Rules\RequisitionIssue\MaxIfHasStock;
 use App\Rules\RequisitionIssue\MinIfHasStock;
 use App\Transformers\NoStockCertificateTransformer;
+use App\Transformers\ProcurementPlanTransformer;
 use Carbon\Carbon;
 
 class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
@@ -95,6 +96,13 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
                 $formProcessRepository = new FormProcessRepository();
                 $formProcess = $old_requisition_issue->form_process;
                 $formProcessRepository->updateRouting($formProcess->id, "requested_by", $requisition_issue);
+            }
+        }
+        if($old_requisition_issue->from_ppmp != $requisition_issue->from_ppmp){
+            if($requisition_issue->from_ppmp == 1){
+                $requisition_issue = $this->attachProcurementPlan($requisition_issue);
+            }else{
+                $this->removeProcurementPlanAttachment($requisition_issue);
             }
         }
         return $requisition_issue;
@@ -231,5 +239,40 @@ class RequisitionIssueRepository implements RequisitionIssueRepositoryInterface
         ]);
         return $requisition_issue;
     }
+
+    public function attachProcurementPlan($requisition_issue)
+    {
+        $items = $requisition_issue->items;
+        $procurement_plan_ids = [];
+        foreach ($items as $item) {
+            $procurement_plan_id = (new ProcurementPlanRepository())->getItemParent($item->procurement_plan_item_id);
+            if($procurement_plan_id != null){
+                $procurement_plan_ids[] = $procurement_plan_id;
+            }
+        }
+        $procurement_plan_ids = array_unique($procurement_plan_ids);
+        foreach ($procurement_plan_ids as $procurement_plan_id) {
+            $procurement_plan = (new ProcurementPlanRepository())->getById($procurement_plan_id);
+            $procurement_plan_transformed = fractal($procurement_plan, new ProcurementPlanTransformer)->toArray();
+            $created = $requisition_issue->form_uploads()->create([
+                'upload_type' => 'database',
+                'title' => $procurement_plan_transformed['form_number'],
+                'form_type' => 'requisition_issue',
+                'form_attached' => 'procurement_plan',
+                'form_attachable_id' => $procurement_plan->id,
+                'form_attachable_type' => get_class($procurement_plan),
+                'file_directory' => $procurement_plan_transformed['file'],
+                'is_removable' => 0,
+            ]);
+        }
+        $requisition_issue->save();
+        return $requisition_issue;
+    }
+
+    public function removeProcurementPlanAttachment($requisition_issue)
+    {
+        $requisition_issue->form_uploads()->where('form_uploadable_type', get_class($requisition_issue))->where('form_uploadable_id', $requisition_issue->id)->delete();
+    }
+    
 
 }

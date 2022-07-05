@@ -79,30 +79,39 @@ class ActivityLogTransformer extends TransformerAbstract
             'subject_type' => $table->subject_type,
             'subject_id' => $table->subject_id,
             'causer_type' => $table->causer_type,
-            'properties' => $this->addLabels($table->properties, $logger->labels),
+            'properties' => $this->addLabels($table, $logger->labels),
             'causer_id' => $table->causer_id,
             'batch_uuid' => $table->batch_uuid,
             'created_at' => $table->created_at,
         ];
     }
 
-    public function addLabels($properties, $labels)
+    public function addLabels($table, $labels)
     {
         // return json_decode($properties, true);
+        $properties = $table->properties;
         $properties = json_decode($properties, true);
         $properties['changes'] = [];
-        foreach ($properties['attributes'] as $key => $property) {
-            if(isset($labels[$key])){
-                $data = [
-                    'label' => $labels[$key],
-                    'key' => "logger_$key",
-                    'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
-                    'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
-                ];
-                if($data['old'] == "" && $data['new'] == ""){
-
-                }else{
-                    $properties['changes'][] = $data;
+        if($table->description == "deleted"){
+            $properties['attributes'] = $properties['old'];   
+        }
+        if(isset($properties['attributes']) && $properties['attributes'] != array()){
+            foreach ($properties['attributes'] as $key => $property) {
+                if(isset($labels[$key])){
+                    $data = [
+                        'label' => $labels[$key],
+                        'key' => "logger_$key",
+                        'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
+                        'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
+                    ];
+                    if($data['old'] == "" && $data['new'] == ""){
+    
+                    }else{
+                        if($table->description == "deleted"){
+                            $data['new'] = "";
+                        }
+                        $properties['changes'][] = $data;
+                    }
                 }
             }
         }

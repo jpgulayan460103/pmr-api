@@ -13,6 +13,7 @@ use App\Repositories\ProcurementPlanRepository;
 use App\Transformers\ApprovedProcurementPlanItemTransformer;
 use App\Transformers\ProcurementPlanTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use niklasravnsborg\LaravelPdf\Facades\Pdf as FacadesPdf;
 use Spatie\Activitylog\Facades\LogBatch;
@@ -32,9 +33,15 @@ class ProcurementPlanController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $offices_ids = $user->user_offices->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
+        if($user->hasRole('super-admin')){
+            unset($filters['offices_ids']);
+        }
         $attach = 'form_process,form_routes, form_uploads, end_user, procurement_plan_type';
         $this->procurementPlanRepository->attach($attach);
-        $procurement_plans = $this->procurementPlanRepository->search([]);
+        $procurement_plans = $this->procurementPlanRepository->search($filters);
         // return $procurement_plans;
         return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
@@ -181,9 +188,9 @@ class ProcurementPlanController extends Controller
         $pdf->shrink_tables_to_fit = 1.4;
         $pdf->use_kwt = true;
         if($request['view']){
-            return $pdf->stream('purchase-request-'.'1111'.'.pdf');
+            return $pdf->stream('PMS-procurement-plan-'.$procurement_plan['form_number'].'.pdf');
         }
-        return $pdf->stream('purchase-request-'.'1111'.'.pdf');
-        return $pdf->download('purchase-request-'.'1111'.'.pdf');
+        // return $pdf->stream('PMS-procurement-plan-'.$procurement_plan['form_number'].'.pdf');
+        return $pdf->download('PMS-procurement-plan-'.$procurement_plan['form_number'].'.pdf');
     }
 }

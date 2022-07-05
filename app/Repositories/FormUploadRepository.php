@@ -83,11 +83,16 @@ class FormUploadRepository implements FormUploadRepositoryInterface
     public function download($uuid)
     {
         $uploads = $this->getByUuid($uuid);
-        if(Storage::disk($uploads->disk)->exists($uploads->file_directory)){
-            return Storage::disk($uploads->disk)->download($uploads->file_directory);
-            return $uploads;
+        if($uploads->upload_type == "database"){
+            return redirect($uploads->file_directory."?view=1");
+            
+        }else{
+            if(Storage::disk($uploads->disk)->exists($uploads->file_directory)){
+                return Storage::disk($uploads->disk)->download($uploads->file_directory);
+            }else{
+                abort(404);
+            }
         }
-        abort(404);
         
     }
 }

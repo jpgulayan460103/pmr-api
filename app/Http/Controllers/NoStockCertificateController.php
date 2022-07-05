@@ -109,7 +109,9 @@ class NoStockCertificateController extends Controller
             'margin_top' => 6.35,
         ];
         $pdf = FacadesPdf::loadView('pdf.no-stock-certificate', $no_stock_certificate, [], $config);
-        return $pdf->stream('certificate-of-non-availability-'.$no_stock_certificate['form_number'].'.pdf');
+        if($request['view']){
+            return $pdf->stream('certificate-of-non-availability-'.$no_stock_certificate['form_number'].'.pdf');
+        }
         return $pdf->download('certificate-of-non-availability-'.$no_stock_certificate['form_number'].'.pdf');
     }
 }

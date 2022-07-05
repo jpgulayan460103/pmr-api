@@ -177,9 +177,16 @@ class PurchaseRequestController extends Controller
             $count += substr_count($item['item_name'],"\n");
         }
         $purchase_request['count_items'] = $count;
-        $pdf = FacadesPdf::loadView('pdf.purchase-request',$purchase_request);
-        $pdf->shrink_tables_to_fit = 1.4;
-        $pdf->use_kwt = true;
+        $config = [
+            'instanceConfigurator' => function($mpdf) {
+                $mpdf->AddPage('P');
+                $mpdf->setFooter('Page {PAGENO} of {nbpg}');
+            },
+            'margin_left' => 6.35,
+            'margin_right' => 6.35,
+            'margin_top' => 6.35,
+        ];
+        $pdf = FacadesPdf::loadView('pdf.purchase-request', $purchase_request, [], $config);
         // return $purchase_request;
         // return view('pdf.purchase-request', $purchase_request);
         if($request['view']){

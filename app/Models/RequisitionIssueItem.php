@@ -44,7 +44,7 @@ class RequisitionIssueItem extends Model
             $model->has_stock = 0;
             $model->is_pr_recommended = 1;
             $model->has_issued_item = 0;
-            $model->remarks = "";
+            $model->remarks = " ";
         });
         self::updating(function($model) {
 

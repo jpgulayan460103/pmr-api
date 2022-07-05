@@ -109,9 +109,9 @@ class ItemSupplyHistoryController extends Controller
         // return $procurement_plan;
         // return view('pdf.purchase-request', $procurement_plan);
         if($request['view']){
-            return $pdf->stream('stock-card-'.$item['uuid'].'.pdf');
+            return $pdf->stream('PMS-stock-card-'.$item['uuid'].'.pdf');
         }
         // return $pdf->stream('stock-card-'.$item['uuid'].'.pdf');
-        return $pdf->download('stock-card-'.$item['uuid'].'.pdf');
+        return $pdf->download('PMS-stock-card-'.$item['uuid'].'.pdf');
     }
 }

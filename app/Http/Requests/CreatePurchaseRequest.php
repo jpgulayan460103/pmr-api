@@ -32,6 +32,7 @@ class CreatePurchaseRequest extends FormRequest
             'purpose' => 'required',
             'requisition_issue_id' => 'required',
             'requisition_issue_file' => 'required',
+            'requested_by_name' => 'required',
             'requested_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
             'approved_by_name' => 'required',
             'approved_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
@@ -69,7 +70,7 @@ class CreatePurchaseRequest extends FormRequest
                 }
             }
             if(request()->has('purpose')){
-                if(trim(request('purpose')) == "For the implementation of undefined" || trim(request('purpose')) == "For the implementation of"){
+                if(trim(request('purpose')) == "For the implementation of"){
                     $validator->errors()->add("purpose", "The purpose field is required.");
                 }
             }            

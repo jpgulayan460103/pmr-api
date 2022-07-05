@@ -268,4 +268,13 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         $data['total_estimated_budget'] = $data['total_estimated_budget_a'] + $data['total_estimated_budget_b'];
         return $data;
     }
+
+    public function getItemParent($procurement_plan_item_id)
+    {
+        $procurement_plan_item = ProcurementPlanItem::find($procurement_plan_item_id);
+        if($procurement_plan_item){
+            return $procurement_plan_item->procurement_plan_id;
+        }
+        return null;
+    }
 }

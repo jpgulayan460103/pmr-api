@@ -67,6 +67,11 @@ class CreateRequisitionIssueRequest extends FormRequest
                     $validator->errors()->add("items", "No items added.");
                 }
             }
+            if(request()->has('purpose')){
+                if(trim(request('purpose')) == "For the implementation of"){
+                    $validator->errors()->add("purpose", "The purpose field is required.");
+                }
+            } 
         });
     }
 }
