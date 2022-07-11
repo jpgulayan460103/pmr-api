@@ -104,12 +104,70 @@ class FormRouteRepository implements FormRouteRepositoryInterface
 
     public function getPending($filters)
     {
+        $user = Auth::user();
         $results = $this->modelQuery();
         $results->where(function($query) {
             $query->where('form_routes.status','pending')
                   ->orWhere('form_routes.status','with_issues');
             }
         );
+
+        $procurement_plan_sql = "(";
+        if($user->hasPermissionTo('form.routing.pending.review.procurement.plan') && $user->hasPermissionTo('form.routing.pending.approve.procurement.plan')){
+            $procurement_plan_sql .= "route_type = 'procurement_plan'";
+        }elseif(!$user->hasPermissionTo('form.routing.pending.review.procurement.plan') && $user->hasPermissionTo('form.routing.pending.approve.procurement.plan')){
+            $procurement_plan_sql .= "route_type = 'procurement_plan' and route_code != 'route_origin'";
+        }elseif($user->hasPermissionTo('form.routing.pending.review.procurement.plan') && !$user->hasPermissionTo('form.routing.pending.approve.procurement.plan')){
+            $procurement_plan_sql .= "route_type = 'procurement_plan' and route_code = 'route_origin'";
+        }
+        $procurement_plan_sql .= ")";
+
+        $requisition_issue_sql = "(";
+        if($user->hasPermissionTo('form.routing.pending.review.requisition.issue') && $user->hasPermissionTo('form.routing.pending.approve.requisition.issue')){
+            $requisition_issue_sql .= "route_type = 'requisition_issue'";
+        }elseif(!$user->hasPermissionTo('form.routing.pending.review.requisition.issue') && $user->hasPermissionTo('form.routing.pending.approve.requisition.issue')){
+            $requisition_issue_sql .= "route_type = 'requisition_issue' and route_code != 'route_origin' and route_code != 'last_route'";
+        }elseif($user->hasPermissionTo('form.routing.pending.review.requisition.issue') && !$user->hasPermissionTo('form.routing.pending.approve.requisition.issue')){
+            $requisition_issue_sql .= "route_type = 'requisition_issue' and route_code = 'route_origin'";
+        }
+        $requisition_issue_sql .= ")";
+
+        $requisition_issue_item_sql = "(";
+        if($user->hasPermissionTo('form.routing.pending.issue.requisition.issue')){
+            $requisition_issue_item_sql .= "route_type = 'requisition_issue' and route_code = 'last_route'";
+        }
+        $requisition_issue_item_sql .= ")";
+        
+        $purchase_request_sql = "(";
+        if($user->hasPermissionTo('form.routing.pending.review.purchase.request') && $user->hasPermissionTo('form.routing.pending.approve.purchase.request')){
+            $purchase_request_sql .= "route_type = 'purchase_request'";
+        }elseif(!$user->hasPermissionTo('form.routing.pending.review.purchase.request') && $user->hasPermissionTo('form.routing.pending.approve.purchase.request')){
+            $purchase_request_sql .= "route_type = 'purchase_request' and route_code != 'route_origin'";
+        }elseif($user->hasPermissionTo('form.routing.pending.review.purchase.request') && !$user->hasPermissionTo('form.routing.pending.approve.purchase.request')){
+            $purchase_request_sql .= "route_type = 'purchase_request' and route_code = 'route_origin'";
+        }
+        $purchase_request_sql .= ")";
+
+        $statements = [];
+        if($procurement_plan_sql != "()"){
+            $statements[] = $procurement_plan_sql;
+        }
+        if($requisition_issue_sql != "()"){
+            $statements[] = $requisition_issue_sql;
+        }
+        if($requisition_issue_item_sql != "()"){
+            $statements[] = $requisition_issue_item_sql;
+        }
+        if($purchase_request_sql != "()"){
+            $statements[] = $purchase_request_sql;
+        }
+
+        $statements = implode(" or ", $statements);
+
+        $results->whereRaw("($statements)");
+        // ddh("($statements)");
+        
+
         $results = $this->filters($results, $filters);
         $results = $results->paginate(20);
         return $results;
@@ -287,22 +345,31 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         return $data;
     }
 
-    public function isFormProcessed($id)
+    public function isFormProcessed($formRoute)
     {
-        $form = $this->getById($id);
-        return $form->status != "pending" && $form->status != "with_issues";
+        return $formRoute->status != "pending" && $formRoute->status != "with_issues";
     }
 
-    public function verifyRoute($id)
+    public function isUserOfficeSameAsRouteOffice($formRoute, $user)
     {
-        if($this->isFormProcessed($id)){
+        if($formRoute->route_code == "pr_approval_from_twg"){
+            return true;
+        }
+        return $user->user_offices[0]->office_id == $formRoute->to_office_id;
+    }
+
+    public function verifyRoute($formRoute, $user)
+    {
+        if($this->isFormProcessed($formRoute)){
             abort(404);
+        }
+        if(!$this->isUserOfficeSameAsRouteOffice($formRoute, $user)){
+            abort(403);
         }
     }
 
-    public function updateFormRoutable($request, $id)
+    public function updateFormRoutable($request, $formRoute)
     {
-        $formRoute = $this->attach('form_process, form_routable.end_user')->getById($id);
         switch ($formRoute->route_type) {
             case 'purchase_request':
                 $this->updatePurchaseRequestForm($formRoute, $request);
@@ -320,53 +387,52 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     public function updatePurchaseRequestForm($formRoute, $request)
     {
         if(request()->input() != array()){
-            if(request()->has("updater") && (request('updater') == "procurement" || request('updater') == "budget")){
-                switch (request('updater')) {
-                    case 'procurement':
-                        if(request()->has('type') && request('type') == "twg"){
-                            $validated = $request->validate([
-                                'type' => 'required',
-                                'technical_working_group_id' => ['required', new LibraryExistRule('technical_working_group')],
-                            ]);
-                        }else{
-                            $validated = $request->validate([
-                                'type' => 'required',
-                                'account_id' => ['required', new LibraryExistRule('account')],
-                                'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
-                                'account_classification' => ['required', new LibraryExistRule('account_classification')],
-                            ]);
-                        }
-                        break;
-                    case 'budget':
+            switch ($formRoute->route_code) {
+                case 'pr_select_action':
+                case 'pr_approval_from_twg':
+                    if(request()->has('type') && request('type') == "twg"){
                         $validated = $request->validate([
-                            'purchase_request_number_last' => 'required|numeric|digits:5',
-                            'fund_cluster' => 'required|string',
-                            'charge_to' => 'required|string',
-                            'alloted_amount' => 'required|numeric',
-                            'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
-                            'sa_or' => 'required|string',
-                            'purchase_request_number' => 'required|string|unique:purchase_requests,purchase_request_number',
-                        ], [
-                            'purchase_request_number.unique' => "The purchase request number has already been in the database."
+                            'type' => 'required',
+                            'technical_working_group_id' => ['required', new LibraryExistRule('technical_working_group')],
                         ]);
-                        break;
+                    }else{
+                        $validated = $request->validate([
+                            'type' => 'required',
+                            'account_id' => ['required', new LibraryExistRule('account')],
+                            'mode_of_procurement_id' => ['required', new LibraryExistRule('mode_of_procurement')],
+                            'account_classification' => ['required', new LibraryExistRule('account_classification')],
+                        ]);
+                    }
+                    break;
+                case 'pr_approval_from_budget':
+                    $validated = $request->validate([
+                        'purchase_request_number_last' => 'required|numeric|digits:5',
+                        'fund_cluster' => 'required|string',
+                        'charge_to' => 'required|string',
+                        'alloted_amount' => 'required|numeric',
+                        'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
+                        'sa_or' => 'required|string',
+                        'purchase_request_number' => 'required|string|unique:purchase_requests,purchase_request_number',
+                    ], [
+                        'purchase_request_number.unique' => "The purchase request number has already been in the database."
+                    ]);
+                    break;
+                
+                default:
                     
-                    default:
-                        
-                        break;
-                }
-                $formId = $formRoute->form_process->form_processable_id;
-                (new PurchaseRequestRepository())->update($formId, $request->all());
-    
-                $this->modifyRoute($formRoute);
+                    break;
             }
+            $formId = $formRoute->form_routable_id;
+            (new PurchaseRequestRepository())->update($formId, $request->all());
+
+            $this->modifyRoute($formRoute);
         }
     }
 
     public function updateRequisitionIssueForm($formRoute, $request)
     {
         $user = Auth::user();
-        $formId = $formRoute->form_process->form_processable_id;
+        $formId = $formRoute->form_routable_id;
         switch ($formRoute->route_code) {
             case 'route_origin':
                 $data = [
@@ -424,8 +490,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
     }
 
-    public function addFormNumber($formRoute, $form_id)
+    public function addFormNumber($formRoute)
     {
+        $form_id = $formRoute->form_routable_id;
         switch ($formRoute->route_type) {
             case 'requisition_issue':
                 if($formRoute->route_code == "ris_aprroval_from_property"){

@@ -29,9 +29,9 @@ class FormRouteController extends Controller
         $this->formRouteRepository = $formRouteRepository;
         $this->attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
         $this->middleware('auth:api');
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.pending.view|form.routing.pending.all|purchase.requests.approve',   ['only' => ['getPending']]);
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.approved.view|form.routing.approved.all',   ['only' => ['approved']]);
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.disapproved.view|form.routing.disapproved.all',   ['only' => ['rejected']]);
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.pending.view',   ['only' => ['getPending']]);
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.disapproved.view',   ['only' => ['getRejected']]);
+        $this->middleware('role_or_permission:super-admin|admin|form.routing.approved.view',   ['only' => ['getApproved']]);
     }
     /**
      * Display a listing of the resource.
@@ -115,13 +115,13 @@ class FormRouteController extends Controller
         //
     }
 
-    public function rejected(Request $request)
+    public function getRejected(Request $request)
     {
         $filters = $request->all();
         $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('rejected', $filters);
         return fractal($routes, new FormRouteTransformer)->parseIncludes($this->attach);
     }
-    public function approved(Request $request)
+    public function getApproved(Request $request)
     {
         $filters = $request->all();
         $routes = $this->formRouteRepository->attach($this->attach)->getProcessed('approved', $filters);
@@ -138,6 +138,7 @@ class FormRouteController extends Controller
         if($user->hasRole('super-admin')){
             unset($filters['offices_ids']);
         }
+        
         $filters['total_cost'] = request('total_cost');
         $filters['total_cost_op'] = $filters['total_cost_op'] = ( request('total_cost_op') == "<=" ? request('total_cost_op') : ">=" );
         $routes = $this->formRouteRepository->attach($this->attach)->getPending($filters);
@@ -146,18 +147,15 @@ class FormRouteController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $this->formRouteRepository->verifyRoute($id);
+        $user = Auth::user();
+        $formRoute = $this->formRouteRepository->getById($id);
+        $current_route_code = $formRoute->route_code;
+        $this->formRouteRepository->verifyRoute($formRoute, $user);
         DB::beginTransaction();
-        try {
-            
-            $formRoute = $this->formRouteRepository->attach('form_process, form_routable.end_user')->getById($id);
-            $formProcess = $formRoute->form_process;
-            $formRoutes = $formProcess->form_routes;
-            $form = $formRoute->form_routable;
-            $current_route_code = $formRoute->route_code;
+        try {            
             if($formRoute->status == "pending"){
-                (new FormRouteRepository())->addFormNumber($formRoute, $form->id);
-                (new FormRouteRepository())->updateFormRoutable($request, $id);
+                (new FormRouteRepository())->addFormNumber($formRoute);
+                (new FormRouteRepository())->updateFormRoutable($request, $formRoute);
                 (new FormRouteRepository())->updateProcurementManagement($formRoute);
             }
             $step = 0;
@@ -201,8 +199,6 @@ class FormRouteController extends Controller
             }
             $formRoute->form_process->form_routes = $formRoutes;
             $formRoute->form_process->save();
-
-            $user = Auth::user();
             
             $return = [
                 'form_route' => $formRoute,

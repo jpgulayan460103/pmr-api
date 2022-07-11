@@ -26,13 +26,11 @@ class RequisitionIssueController extends Controller
         $this->middleware('auth:api', [
             'except' => [
                 'pdf',
-                'validatePdfPreview',
-                'generatePdfPreview',
             ]
         ]);
-        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.create|requisition.issue.all', ['only' => ['store']]);
-        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.update|requisition.issue.all',   ['only' => ['update']]);
-        // $this->middleware('role_or_permission:super-admin|admin|requisition.issue.view|requisition.issue.all',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|requisition.issue.create', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|requisition.issue.update',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|requisition.issue.view',   ['only' => ['show', 'index']]);
     }
     /**
      * Display a listing of the resource.

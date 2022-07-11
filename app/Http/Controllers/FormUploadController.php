@@ -24,8 +24,8 @@ class FormUploadController extends Controller
                 'download',
             ]
         ]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.create|purchase.requests.all',   ['only' => ['store']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.view|purchase.requests.all',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.create',   ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.view',   ['only' => ['show', 'index']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.delete',   ['only' => ['destroy']]);
     }
     /**

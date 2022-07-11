@@ -39,13 +39,11 @@ class UserRepository implements UserRepositoryInterface
             $user->givePermissionTo([
                 'purchase.requests.create',
                 'purchase.requests.view',
-                'libraries.items.categories.view',
-                'libraries.items.view',
-                'libraries.office.divisions.view',
-                'libraries.office.sections.view',
-                'libraries.signatories.administrators.view',
+                'procurement.plan.view',
+                'procurement.plan.create',
+                'requisition.issue.view',
+                'requisition.issue.create',
                 'libraries.uom.view',
-                'libraries.uacs.view',
             ]);
             $user->assignRole('user');
             DB::commit();

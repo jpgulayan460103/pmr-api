@@ -11,10 +11,7 @@ class ActivityLogController extends Controller
 
     public function __construct()
     {
-        // $this->middleware('auth:api');
-        // $this->middleware('role_or_permission:super-admin|admin|purchase.requests.create|purchase.requests.all', ['only' => ['store']]);
-        // $this->middleware('role_or_permission:super-admin|admin|purchase.requests.update|purchase.requests.all',   ['only' => ['update']]);
-        // $this->middleware('role_or_permission:super-admin|admin|activitylogs.view|activitylogs.all',   ['only' => ['show', 'index']]);
+        $this->middleware('auth:api');
     }
     public function index(Request $request)
     {

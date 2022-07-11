@@ -16,6 +16,12 @@ class ItemSupplyController extends Controller
     public function __construct(ItemSupplyRepository $itemSupplyRepository)
     {
         $this->itemSupplyRepository = $itemSupplyRepository;
+        $this->middleware('auth:api', [
+            'except' => [
+                'pdf',
+            ]
+        ]);
+        $this->middleware('role_or_permission:super-admin|admin|inventories.items.view',   ['only' => ['show', 'index']]);
     }
 
     /**

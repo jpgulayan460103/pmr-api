@@ -25,6 +25,14 @@ class ProcurementPlanController extends Controller
     public function __construct(ProcurementPlanRepository $procurementPlanRepository)
     {
         $this->procurementPlanRepository = $procurementPlanRepository;
+        $this->middleware('auth:api', [
+            'except' => [
+                'pdf',
+            ]
+        ]);
+        $this->middleware('role_or_permission:super-admin|admin|procurement.plan.create', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|procurement.plan.update',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|procurement.plan.view',   ['only' => ['show', 'index']]);
     }
     /**
      * Display a listing of the resource.

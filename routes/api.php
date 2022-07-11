@@ -96,8 +96,8 @@ Route::group(['prefix' => '/forms'], function () {
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
         Route::post('/requests/pending/{id}/reject', [FormRouteController::class, 'reject']);
     }); 
-    Route::get('/rejected', [FormRouteController::class, 'rejected']);
-    Route::get('/approved', [FormRouteController::class, 'approved']);
+    Route::get('/rejected', [FormRouteController::class, 'getRejected']);
+    Route::get('/approved', [FormRouteController::class, 'getApproved']);
 
     Route::group(['prefix' => '/uploads'], function () {
         Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
