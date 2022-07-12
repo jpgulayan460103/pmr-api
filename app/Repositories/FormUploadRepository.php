@@ -6,6 +6,7 @@ use App\Models\FormUpload;
 use App\Models\PurchaseRequest;
 use App\Repositories\Interfaces\FormUploadRepositoryInterface;
 use App\Repositories\HasCrud;
+use App\Transformers\FormUploadTransformer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -31,21 +32,7 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         $year = date("Y");
         $month = date("m");
         $uuid = "";
-        switch ($type) {
-            case 'purchase_request':
-                $form = (new PurchaseRequestRepository)->getById($id);
-                break;
-            case 'procurement_plan':
-                $form = (new ProcurementPlanRepository)->getById($id);
-                break;
-            case 'requisition_issue':
-                $form = (new RequisitionIssueRepository())->getById($id);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
+        $form = $this->getForm($type, $id);
         if($form){
             $uuid = $form->uuid;
             $year = $form->created_at->format('Y');
@@ -72,6 +59,7 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         return [
             'path' => $path,
             'form' => $form,
+            'uploaded_file' => fractal($createdFile, new FormUploadTransformer)->parseIncludes('uploader.user_information'),
         ];
     }
 
@@ -94,5 +82,45 @@ class FormUploadRepository implements FormUploadRepositoryInterface
             }
         }
         
+    }
+
+    public function getForm($type, $id)
+    {
+        switch ($type) {
+            case 'purchase_request':
+                $form = (new PurchaseRequestRepository)->getById($id);
+                break;
+            case 'procurement_plan':
+                $form = (new ProcurementPlanRepository)->getById($id);
+                break;
+            case 'requisition_issue':
+                $form = (new RequisitionIssueRepository())->getById($id);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        return $form;
+    }
+
+    public function permissions($form_type)
+    {
+        // list cases from PermissionSeeder.php
+        switch ($form_type) {
+            case 'purchase_request':
+                return "purchase.requests.attachments";
+                break;
+            case 'requisition_issue':
+                return "requisition.issue.attachments";
+                break;
+            case 'procurement_plan':
+                return "procurement.plan.attachments";
+                break;
+            
+            default:
+                # code...
+                break;
+        }
     }
 }

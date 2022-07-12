@@ -49,12 +49,9 @@ class UserRepository implements UserRepositoryInterface
             $user_information = $user->user_information()->create($data);
             $user_sigatories = $user->user_offices()->create($data);
             $user->givePermissionTo([
-                'purchase.requests.create',
                 'purchase.requests.view',
                 'procurement.plan.view',
-                'procurement.plan.create',
                 'requisition.issue.view',
-                'requisition.issue.create',
                 'libraries.uom.view',
                 'libraries.user.signatories.view',
             ]);

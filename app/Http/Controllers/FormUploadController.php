@@ -24,9 +24,6 @@ class FormUploadController extends Controller
                 'download',
             ]
         ]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.create',   ['only' => ['store']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.view',   ['only' => ['show', 'index']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.attachments.delete',   ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -56,6 +53,10 @@ class FormUploadController extends Controller
      */
     public function store(FormUploadRequest $request, $type, $id)
     {
+        $user = Auth::user();
+        if(!$user->hasPermissionTo($this->formUploadRepository->permissions($type))){
+            abort(403);
+        }
         (new ActivityLogBatchRepository())->startBatch();
         $upload = $this->formUploadRepository->upload($type, $id);
         (new ActivityLogBatchRepository())->endBatch($upload['form']);
@@ -102,9 +103,17 @@ class FormUploadController extends Controller
      * @param  \App\Models\FormUpload  $formUpload
      * @return \Illuminate\Http\Response
      */
-    public function destroy($type,$id)
+    public function destroy($type, $id)
     {
+        $user = Auth::user();
+        if(!$user->hasPermissionTo($this->formUploadRepository->permissions($type))){
+            abort(403);
+        }
+        $form_upload = $this->formUploadRepository->getById($id);
+        (new ActivityLogBatchRepository())->startBatch();
+        $form = $this->formUploadRepository->getForm($type, $form_upload->form_uploadable_id);
         $this->formUploadRepository->delete($id);
+        (new ActivityLogBatchRepository())->endBatch($form);
     }
 
     public function download($uuid)
