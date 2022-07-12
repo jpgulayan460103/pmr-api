@@ -57,7 +57,7 @@
                 <tr>
                     <td colspan="2">Office/Section:</td>
                     <td colspan="2"><b>{{ $end_user['name'] }}</b></td>
-                    <td colspan="2">PR No.: <b>{{ $purchase_request_number }}</b></td>
+                    <td colspan="2">PR No.: <b>{{ $pr_number }}</b></td>
                 </tr>
                 <tr>
                     <td colspan="2"  style="text-align: center;"></td>

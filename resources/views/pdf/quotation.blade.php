@@ -110,7 +110,7 @@
             </table>
             <br />
             <p class="font-normal"><b>Purpose:</b> { props.selectedPurchaseRequest.purpose }</p>
-            <p class="font-normal"><b>PR No.:</b> { props.selectedPurchaseRequest.purchase_request_number }</p>
+            <p class="font-normal"><b>PR No.:</b> { props.selectedPurchaseRequest.pr_number }</p>
             <br />
             <p class="font-normal">
                 IMPORTANT: The winning supplier/Service Provider MUST SIGN the original copy of the Purchase Order (P.O.) or Letter Order (L.O.) within three (3) days from the date of receipt. FAILURE to sign the original P.O./L.O. means that the bidder is not interested and will be a ground for suspension or blacklisting in DSWD's future biddings.

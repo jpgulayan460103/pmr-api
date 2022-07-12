@@ -63,7 +63,7 @@ class UpdatePurchaseRequest extends FormRequest
             'account_id.required' => 'Please select procurement type.',
             'account_classification.required' => 'Please select Account Classification.',
             'mode_of_procurement_id.required' => 'Please select mode of procurement.',
-            'purchase_request_number.unique' => 'The purchase request number is already in the database.',
+            'pr_number.unique' => 'The purchase request number is already in the database.',
             'uacs_code_id.required' => 'The office/section is required.',
         ];
     }

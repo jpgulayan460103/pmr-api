@@ -243,7 +243,7 @@ class PurchaseRequestController extends Controller
                 'next_number' => "00001"
             ];
         }
-        $pr_number_exploded = explode("-", $purchase_request->purchase_request_number);
+        $pr_number_exploded = explode("-", $purchase_request->pr_number);
         $last_number = (integer)last($pr_number_exploded);
         return $last_number;
         return [

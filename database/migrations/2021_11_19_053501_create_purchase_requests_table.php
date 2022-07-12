@@ -16,7 +16,7 @@ class CreatePurchaseRequestsTable extends Migration
         Schema::create('purchase_requests', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->nullable();
-            $table->string('purchase_request_number')->nullable();
+            $table->string('pr_number')->nullable();
             $table->text('purpose')->nullable();
             $table->string('pr_dir')->nullable();
             $table->text('title')->nullable();

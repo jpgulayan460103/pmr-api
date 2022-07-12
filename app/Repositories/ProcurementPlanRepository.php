@@ -47,8 +47,8 @@ class ProcurementPlanRepository implements ProcurementPlanRepositoryInterface
         if(request()->has('sa_or') && request('sa_or') != ""){
             $this->modelQuery()->where('sa_or', 'like', "%".request('sa_or')."%");
         }
-        if(request()->has('purchase_request_number') && request('purchase_request_number') != ""){
-            $this->modelQuery()->where('purchase_request_number', 'like', "%".request('purchase_request_number')."%");
+        if(request()->has('pr_number') && request('pr_number') != ""){
+            $this->modelQuery()->where('pr_number', 'like', "%".request('pr_number')."%");
         }
         if(request()->has('end_user_id') && request('end_user_id') != ""){
             $this->modelQuery()->whereIn('end_user_id', request('end_user_id'));

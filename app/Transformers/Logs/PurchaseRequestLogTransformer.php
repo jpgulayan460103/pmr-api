@@ -14,7 +14,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
      */
     public $labels = [
         'uuid' => 'uuid',
-        'purchase_request_number' => 'purchase_request_number',
+        'pr_number' => 'pr_number',
         'purpose' => 'purpose',
         'title' => 'title',
         'fund_cluster' => 'fund_cluster',

@@ -406,15 +406,15 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                     break;
                 case 'pr_approval_from_budget':
                     $validated = $request->validate([
-                        'purchase_request_number_last' => 'required|numeric|digits:5',
+                        'pr_number_last' => 'required|numeric|digits:5',
                         'fund_cluster' => 'required|string',
                         'charge_to' => 'required|string',
                         'alloted_amount' => 'required|numeric',
                         'uacs_code_id' => ['required', new LibraryExistRule('uacs_code')],
                         'sa_or' => 'required|string',
-                        'purchase_request_number' => 'required|string|unique:purchase_requests,purchase_request_number',
+                        'pr_number' => 'required|string|unique:purchase_requests,pr_number',
                     ], [
-                        'purchase_request_number.unique' => "The purchase request number has already been in the database."
+                        'pr_number.unique' => "The purchase request number has already been in the database."
                     ]);
                     break;
                 

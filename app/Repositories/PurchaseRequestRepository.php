@@ -53,8 +53,8 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         if(request()->has('sa_or') && request('sa_or') != ""){
             $this->modelQuery()->where('sa_or', 'like', "%".request('sa_or')."%");
         }
-        if(request()->has('purchase_request_number') && request('purchase_request_number') != ""){
-            $this->modelQuery()->where('purchase_request_number', 'like', "%".request('purchase_request_number')."%");
+        if(request()->has('pr_number') && request('pr_number') != ""){
+            $this->modelQuery()->where('pr_number', 'like', "%".request('pr_number')."%");
         }
         if(request()->has('end_user_id') && request('end_user_id') != ""){
             $this->modelQuery()->whereIn('end_user_id', request('end_user_id'));
@@ -169,7 +169,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $year = date("Y");
         $start_year = Carbon::parse("$year-01-01");
         $end_year = Carbon::parse("$year-01-01")->addYear()->subSecond();
-        return $this->modelQuery()->whereBetween('created_at', [$start_year, $end_year])->whereNotNull('purchase_request_number')->orderBy('id','desc')->limit(1)->first();
+        return $this->modelQuery()->whereBetween('created_at', [$start_year, $end_year])->whereNotNull('pr_number')->orderBy('id','desc')->limit(1)->first();
     }
 
     public function attachRequistionIssue($purchase_request)

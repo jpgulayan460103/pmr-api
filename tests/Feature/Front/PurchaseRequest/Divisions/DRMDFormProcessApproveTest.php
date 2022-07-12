@@ -122,7 +122,7 @@ class DrmdFormProcessApproveTest extends TestCase
         Passport::actingAs($user);
         $form_route = FormRoute::where('status','pending')->where('form_routable_id',DrmdFormProcessApproveTest::$purchase_request_id)->first();
         $response = $this->post('api/forms/routes/requests/pending/'.$form_route->id.'/approve', [
-            'purchase_request_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
+            'pr_number' => "BUDRP-PR-".Carbon::now()->format('Y-m-').$this->faker->numberBetween(1,99999),
             'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
             'charge_to' => $this->faker->name,
             'alloted_amount' => $this->faker->randomFloat(2, 0, 10000),
@@ -130,7 +130,7 @@ class DrmdFormProcessApproveTest extends TestCase
             'updater' => 'budget',
             'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
             'center_code' => $this->faker->numerify('rcc-####-####-###'),
-            'purchase_request_number_last' => str_pad($this->faker->numberBetween(1,99999),5,"0",STR_PAD_LEFT),
+            'pr_number_last' => str_pad($this->faker->numberBetween(1,99999),5,"0",STR_PAD_LEFT),
         ]);
         $response->assertStatus(200);
     }
