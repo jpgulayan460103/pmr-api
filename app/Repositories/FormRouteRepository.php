@@ -387,6 +387,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
     public function updatePurchaseRequestForm($formRoute, $request)
     {
         if(request()->input() != array()){
+            $data = $request->all();
             switch ($formRoute->route_code) {
                 case 'pr_select_action':
                 case 'pr_approval_from_twg':
@@ -416,6 +417,9 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                     ], [
                         'pr_number.unique' => "The purchase request number has already been in the database."
                     ]);
+                    $pr_number_exploded = explode("-", $data['pr_number']);
+                    $gen_number = (integer)last($pr_number_exploded);
+                    $data['gen_number'] = $gen_number;
                     break;
                 
                 default:
@@ -423,7 +427,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
                     break;
             }
             $formId = $formRoute->form_routable_id;
-            (new PurchaseRequestRepository())->update($formId, $request->all());
+            (new PurchaseRequestRepository())->update($formId, $data);
 
             $this->modifyRoute($formRoute);
         }

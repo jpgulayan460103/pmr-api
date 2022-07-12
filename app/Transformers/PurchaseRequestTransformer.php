@@ -56,6 +56,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'display_log' => $table->pr_number ? $table->pr_number : $table->purpose,
             'pr_number' => $table->pr_number,
             'form_number' => $table->pr_number,
+            'gen_number' => $table->gen_number,
             'purpose' => $table->purpose,
             'title' => $table->title,
             'fund_cluster' => $table->fund_cluster,

@@ -21,6 +21,7 @@ class PurchaseRequest extends Model
     use HasFactory, LogsActivity, SoftDeletes;
     protected $fillable = [
         'pr_number', //BUDRP-PR-2022-02-00001
+        'gen_number',
         'purpose',
         'title',
         'fund_cluster',

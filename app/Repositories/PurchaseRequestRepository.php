@@ -169,7 +169,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
         $year = date("Y");
         $start_year = Carbon::parse("$year-01-01");
         $end_year = Carbon::parse("$year-01-01")->addYear()->subSecond();
-        return $this->modelQuery()->whereBetween('created_at', [$start_year, $end_year])->whereNotNull('pr_number')->orderBy('id','desc')->limit(1)->first();
+        return $this->modelQuery()->whereBetween('created_at', [$start_year, $end_year])->whereNotNull('pr_number')->orderBy('gen_number','desc')->limit(1)->first();
     }
 
     public function attachRequistionIssue($purchase_request)
