@@ -100,7 +100,7 @@ class LibraryController extends Controller
                 break;
             
             default:
-                return (new LibraryRepository())->showLibrary($type);
+                return (new LibraryRepository())->showLibrary($type, true);
                 break;
         }
     }
@@ -131,7 +131,7 @@ class LibraryController extends Controller
                 abort(403);
             }
         }else{
-            if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."update")){
+            if(!$user->hasRole('super-admin') && !$user->hasPermissionTo($this->libraryRepository->permissions($type)."update")){
                 abort(403);
             }
         }
@@ -147,6 +147,7 @@ class LibraryController extends Controller
             
             default:
                 $this->libraryRepository->update($id, $request->all());
+                return (new LibraryRepository)->all();
                 return (new LibraryRepository())->showLibrary($type, true);
                 break;
         }

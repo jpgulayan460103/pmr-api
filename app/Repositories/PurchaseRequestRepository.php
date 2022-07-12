@@ -166,7 +166,10 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
 
     public function getLastNumber()
     {
-        return $this->modelQuery()->whereNotNull('purchase_request_number')->orderBy('id','desc')->limit(1)->first();
+        $year = date("Y");
+        $start_year = Carbon::parse("$year-01-01");
+        $end_year = Carbon::parse("$year-01-01")->addYear()->subSecond();
+        return $this->modelQuery()->whereBetween('created_at', [$start_year, $end_year])->whereNotNull('purchase_request_number')->orderBy('id','desc')->limit(1)->first();
     }
 
     public function attachRequistionIssue($purchase_request)

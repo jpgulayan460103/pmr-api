@@ -56,6 +56,7 @@ class UserRepository implements UserRepositoryInterface
                 'requisition.issue.view',
                 'requisition.issue.create',
                 'libraries.uom.view',
+                'libraries.user.signatories.view',
             ]);
             $user->assignRole('user');
             DB::commit();

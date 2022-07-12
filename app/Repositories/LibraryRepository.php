@@ -47,7 +47,8 @@ class LibraryRepository implements LibraryRepositoryInterface
 
     public function showLibrary($type, $refresh = false)
     {
-        if (($library = Redis::get("libraries.$type")) && !$refresh) {
+        if (($library = Redis::get("libraries.$type")) && !$refresh) 
+        {
             return json_decode($library);
         }
         $library = $this->getBy('library_type', $type);
@@ -102,6 +103,8 @@ class LibraryRepository implements LibraryRepositoryInterface
                 return "libraries.uom.";
             case 'uacs_code':
                 return "libraries.uacs.";
+            case 'user_section_signatory':
+                return "libraries.user.signatories.";
             case 'items':
                 return "libraries.items.";
                 # code...

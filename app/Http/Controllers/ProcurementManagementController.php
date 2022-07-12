@@ -64,10 +64,13 @@ class ProcurementManagementController extends Controller
     public function summary()
     {
         $user = Auth::user();
-        $end_user_id = $user->user_offices[0]->office_id;
-        $this->procurementManagementRepository->attach('items.procurement_plan_item.unit_of_measure, end_user');
-        $procurement_management = $this->procurementManagementRepository->currentPpmp($end_user_id);
-        return fractal($procurement_management, new ProcurementManagementTransformer)->parseIncludes('items.procurement_plan_item.unit_of_measure, end_user');
+        if(!$user->hasRole('super-admin')){
+            $end_user_id = $user->user_offices[0]->office_id;
+            $this->procurementManagementRepository->attach('items.procurement_plan_item.unit_of_measure, end_user');
+            $procurement_management = $this->procurementManagementRepository->currentPpmp($end_user_id);
+            return fractal($procurement_management, new ProcurementManagementTransformer)->parseIncludes('items.procurement_plan_item.unit_of_measure, end_user');
+        }
+        return [];
     }
 
     /**

@@ -25,13 +25,7 @@ class PurchaseRequestController extends Controller
     public function __construct(PurchaseRequestRepository $purchaseRequestRepository)
     {
         $this->purchaseRequestRepository = $purchaseRequestRepository;
-        $this->middleware('auth:api', [
-            'except' => [
-                'pdf',
-                'validatePdfPreview',
-                'generatePdfPreview',
-            ]
-        ]);
+
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.requests.view|procurement.view',   ['only' => ['show', 'index']]);
@@ -249,9 +243,11 @@ class PurchaseRequestController extends Controller
                 'next_number' => "00001"
             ];
         }
-        $last_number = (integer)substr($purchase_request->purchase_request_number, 17);
+        $pr_number_exploded = explode("-", $purchase_request->purchase_request_number);
+        $last_number = (integer)last($pr_number_exploded);
+        return $last_number;
         return [
-            'next_number' => str_pad($last_number+1,5,"0",STR_PAD_LEFT)
+            'next_number' => str_pad(++$last_number,5,"0",STR_PAD_LEFT)
         ];
     }
 }
