@@ -32,8 +32,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+        $filters = [];
+        if($user->hasRole('admin')){
+            $offices_ids = $user->user_offices->pluck('office_id');
+            $filters['offices_ids'] = $offices_ids;
+        }
         $attach = "user_information.section,user_offices.office,user_information.position,user_groups.group,permissions,roles";
-        $users = $this->userRepository->attach($attach)->getAll();
+        $users = $this->userRepository->attach($attach)->search($filters);
         return fractal($users, new UserTransformer)->parseIncludes($attach);
     }
 

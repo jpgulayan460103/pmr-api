@@ -26,6 +26,18 @@ class UserRepository implements UserRepositoryInterface
         $this->perPage(2);
     }
 
+    public function search($filters)
+    {
+        if(isset($filters['offices_ids'])){
+            $this->modelQuery()->leftJoin('user_offices', 'users.id', '=', 'user_offices.user_id');
+            $this->modelQuery()->whereIn('user_offices.office_id', $filters['offices_ids']);
+            $this->modelQuery()->select('users.*');
+        }
+        $this->modelQuery()->orderBy('users.id','desc');
+        $result = $this->modelQuery()->get();
+        return $result;
+    }
+
     public function create($data)
     {
         try {
