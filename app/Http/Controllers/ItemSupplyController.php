@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ItemSupply;
+use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\ItemSupplyRepository;
 use App\Transformers\ItemSupplyTransformer;
 use Illuminate\Http\Request;
@@ -89,9 +90,20 @@ class ItemSupplyController extends Controller
      * @param  \App\Models\ItemSupply  $itemSupply
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ItemSupply $itemSupply)
+    public function update(Request $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            (new ActivityLogBatchRepository())->startBatch();
+            $form = $this->itemSupplyRepository->updateItem($id, $data);
+            (new ActivityLogBatchRepository())->endBatch($form);
+            DB::commit();
+            return $form;
+        } catch (\Throwable $th) {
+            (new ActivityLogBatchRepository())->deleteBatch();
+            throw $th;
+        }
     }
 
     /**

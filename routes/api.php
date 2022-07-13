@@ -121,6 +121,7 @@ Route::group(['prefix' => '/logger'], function () {
     Route::get('/form-uploads/{type}/{id}', [ActivityLogController::class, 'formUploads']);
     Route::get('/procurement-plan/{id}', [ActivityLogController::class, 'procurementPlan']);
     Route::get('/requisition-issue/{id}', [ActivityLogController::class, 'requisitionIssue']);
+    Route::get('/item-supply/{id}', [ActivityLogController::class, 'itemSupply']);
 });
 
 Route::group(['prefix' => '/reports'], function () {

@@ -42,4 +42,14 @@ class ItemSupplyRepository implements ItemSupplyRepositoryInterface
         $items = $items->paginate($this->perPage);
         return $items;
     }
+
+    public function updateItem($id, $data)
+    {
+        if(isset($data['adjusted_quantity']) && $data['adjusted_quantity'] != 0){
+            (new ItemSupplyHistoryRepository())->createFromAdjustment($id);
+        }
+        $this->update($id, $data);
+        return $this->getById($id);
+    }
+
 }

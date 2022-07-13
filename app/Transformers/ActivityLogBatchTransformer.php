@@ -60,6 +60,9 @@ class ActivityLogBatchTransformer extends TransformerAbstract
                 case 'purchase_request':
                     return $this->item($table->subject, new PurchaseRequestTransformer);
                     break;
+                case 'item_supply':
+                    return $this->item($table->subject, new ItemSupplyTransformer);
+                    break;
                 
                 default:
                     # code...

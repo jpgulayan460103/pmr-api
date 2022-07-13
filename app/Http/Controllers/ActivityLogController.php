@@ -58,8 +58,10 @@ class ActivityLogController extends Controller
         return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 
-    public function requisitionIssueItem(Request $request, $id)
+    public function itemSupply(Request $request, $id)
     {
-        
+        $logs = (new ActivityLogBatchRepository())->getLogs($id, 'item_supply');
+        // return $logs;
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 }

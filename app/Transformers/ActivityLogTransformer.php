@@ -4,6 +4,8 @@ namespace App\Transformers;
 
 use App\Models\ActivityLog;
 use App\Transformers\Logs\FormUploadLogTransformer;
+use App\Transformers\Logs\ItemSupplyHistoryLogTransformer;
+use App\Transformers\Logs\ItemSupplyLogTransformer;
 use App\Transformers\Logs\ProcurementPlanItemLogTransformer;
 use App\Transformers\Logs\ProcurementPlanLogTransformer;
 use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
@@ -62,6 +64,12 @@ class ActivityLogTransformer extends TransformerAbstract
                 break;
             case 'form_upload':
                 $logger = new FormUploadLogTransformer;
+                break;
+            case 'item_supply':
+                $logger = new ItemSupplyLogTransformer;
+                break;
+            case 'item_supply_history':
+                $logger = new ItemSupplyHistoryLogTransformer;
                 break;
             
             default:
