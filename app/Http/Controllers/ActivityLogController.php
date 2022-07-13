@@ -15,7 +15,9 @@ class ActivityLogController extends Controller
     }
     public function index(Request $request)
     {
-        return (new ActivityLogBatchRepository())->attach('logs')->getAll();
+        $logs = (new ActivityLogBatchRepository())->attach('logs,causer.user_information')->getAllLogs();
+        // return $logs;
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }
 
     public function purchaseRequest(Request $request, $id)

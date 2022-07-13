@@ -12,6 +12,7 @@ use App\Transformers\Logs\PurchaseRequestItemLogTransformer;
 use App\Transformers\Logs\PurchaseRequestLogTransformer;
 use App\Transformers\Logs\RequisitionIssueItemLogTransformer;
 use App\Transformers\Logs\RequisitionIssueLogTransformer;
+use App\Transformers\Logs\UserAccessLogTransformer;
 use League\Fractal\TransformerAbstract;
 use Illuminate\Support\Str;
 
@@ -43,38 +44,51 @@ class ActivityLogTransformer extends TransformerAbstract
     public function transform(ActivityLog $table)
     {
         $form_type = getModelType($table->subject_type);
-        switch ($form_type) {
-            case 'procurement_plan':
-                $logger = new ProcurementPlanLogTransformer;
-                break;
-            case 'procurement_plan_item':
-                $logger = new ProcurementPlanItemLogTransformer;
-                break;
-            case 'requisition_issue':
-                $logger = new RequisitionIssueLogTransformer;
-                break;
-            case 'requisition_issue_item':
-                $logger = new RequisitionIssueItemLogTransformer;
-                break;
-            case 'purchase_request':
-                $logger = new PurchaseRequestLogTransformer;
-                break;
-            case 'purchase_request_item':
-                $logger = new PurchaseRequestItemLogTransformer;
-                break;
-            case 'form_upload':
-                $logger = new FormUploadLogTransformer;
-                break;
-            case 'item_supply':
-                $logger = new ItemSupplyLogTransformer;
-                break;
-            case 'item_supply_history':
-                $logger = new ItemSupplyHistoryLogTransformer;
-                break;
-            
-            default:
-                # code...
-                break;
+        if($table->subject_type){
+            switch ($form_type) {
+                case 'procurement_plan':
+                    $logger = new ProcurementPlanLogTransformer;
+                    break;
+                case 'procurement_plan_item':
+                    $logger = new ProcurementPlanItemLogTransformer;
+                    break;
+                case 'requisition_issue':
+                    $logger = new RequisitionIssueLogTransformer;
+                    break;
+                case 'requisition_issue_item':
+                    $logger = new RequisitionIssueItemLogTransformer;
+                    break;
+                case 'purchase_request':
+                    $logger = new PurchaseRequestLogTransformer;
+                    break;
+                case 'purchase_request_item':
+                    $logger = new PurchaseRequestItemLogTransformer;
+                    break;
+                case 'form_upload':
+                    $logger = new FormUploadLogTransformer;
+                    break;
+                case 'item_supply':
+                    $logger = new ItemSupplyLogTransformer;
+                    break;
+                case 'item_supply_history':
+                    $logger = new ItemSupplyHistoryLogTransformer;
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }else{
+            switch ($table->log_name) {
+                case 'user_login':
+                case 'user_logout':
+                    $logger = new UserAccessLogTransformer;
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
         }
         return [
             'log_name' => $table->log_name,

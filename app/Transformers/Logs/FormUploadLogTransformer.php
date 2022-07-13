@@ -52,23 +52,4 @@ class FormUploadLogTransformer extends TransformerAbstract
         return [];
     }
 
-    public function addLabels($properties)
-    {
-        // return json_decode($properties, true);
-        $properties = json_decode($properties, true);
-        $properties['changes'] = [];
-        foreach ($properties['attributes'] as $key => $property) {
-            if(isset($this->labels[$key])){
-                $properties['changes'][] = [
-                    'label' => $this->labels[$key],
-                    'key' => "logger_$key",
-                    'old' => isset($properties['old'][$key]) ? $properties['old'][$key] : "",
-                    'new' => isset($properties['attributes'][$key]) ? $properties['attributes'][$key] : "",
-                ];
-            }
-        }
-        unset($properties['old']);
-        unset($properties['attributes']);
-        return $properties['changes'];
-    }
 }

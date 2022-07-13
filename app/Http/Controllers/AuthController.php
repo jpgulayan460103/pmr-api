@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\AuthRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,37 +30,21 @@ class AuthController extends Controller
         }
         if($authenticator['status'] == "ok"){
             $result = new Parser($_SERVER['HTTP_USER_AGENT']);
+            (new ActivityLogBatchRepository())->startBatch();
             activity('user_login')
             ->causedBy($user)
             ->withProperties(
                 [
-                    [
-                        'label' => "Device Type",
-                        'key' => "user_device",
-                        'old' => $result->device->type,
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "Device OS",
-                        'key' => "user_os",
-                        'old' => $result->os->toString(),
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "Browser",
-                        'key' => "user_browser",
-                        'old' => $result->browser->name . ' ' . $result->browser->version->toString(),
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "User IP Address",
-                        'key' => "user_ip",
-                        'old' => $_SERVER['REMOTE_ADDR'],
-                        'new' => "",
-                    ],
+                    "attributes" => [
+                        'user_device' => $result->device->type,
+                        'user_os' => $result->os->toString(),
+                        'user_browser' => $result->browser->name . ' ' . $result->browser->version->toString(),
+                        'user_ip' => $_SERVER['REMOTE_ADDR'],
+                    ]
                 ]
             )
             ->log('User login');
+            (new ActivityLogBatchRepository())->endCustomBatch('user_login', $user);
             $this->authRepository->revokeExistingTokens($user);
             $token = $this->authRepository->getAccessToken($request->only('username', 'password'), $user); // with refresh token
             return response()->json($token);   
@@ -78,38 +63,23 @@ class AuthController extends Controller
         if(Auth::check()){
             $user = Auth::user();
             $result = new Parser($_SERVER['HTTP_USER_AGENT']);
-            $this->authRepository->revokeExistingTokens($user);
+            
+            (new ActivityLogBatchRepository())->startBatch();
             activity('user_logout')
             ->causedBy($user)
             ->withProperties(
                 [
-                    [
-                        'label' => "Device Type",
-                        'key' => "user_device",
-                        'old' => $result->device->type,
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "Device OS",
-                        'key' => "user_os",
-                        'old' => $result->os->toString(),
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "Browser",
-                        'key' => "user_browser",
-                        'old' => $result->browser->name . ' ' . $result->browser->version->toString(),
-                        'new' => "",
-                    ],
-                    [
-                        'label' => "User IP Address",
-                        'key' => "user_ip",
-                        'old' => $_SERVER['REMOTE_ADDR'],
-                        'new' => "",
-                    ],
+                    "attributes" => [
+                        'user_device' => $result->device->type,
+                        'user_os' => $result->os->toString(),
+                        'user_browser' => $result->browser->name . ' ' . $result->browser->version->toString(),
+                        'user_ip' => $_SERVER['REMOTE_ADDR'],
+                    ]
                 ]
             )
             ->log('User logout');
+            (new ActivityLogBatchRepository())->endCustomBatch('user_logout', $user);
+            $this->authRepository->revokeExistingTokens($user);
         }
     }
 

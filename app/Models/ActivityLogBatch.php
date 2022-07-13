@@ -18,20 +18,9 @@ class ActivityLogBatch extends Model
         'subject_type',
         'subject_id',
         'user_id',
+        'causer_id',
+        'causer_type',
     ];
-
-    public static function boot()
-    {
-        $user = Auth::user();
-        parent::boot();
-        self::creating(function ($model) use ($user) {
-            $model->causer_id = $user->id;
-            $model->causer_type = get_class($user);
-        });
-        self::updating(function($model) {
-
-        });
-    }
 
     public function subject()
     {

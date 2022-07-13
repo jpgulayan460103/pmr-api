@@ -7,6 +7,7 @@ use App\Models\ActivityLogBatch;
 use App\Models\RequisitionIssue;
 use App\Repositories\Interfaces\ActivityLogBatchRepositoryInterface;
 use App\Repositories\HasCrud;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Facades\LogBatch;
 use Illuminate\Support\Str;
 
@@ -26,13 +27,27 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
 
     public function endBatch($form)
     {
+        $user = Auth::user();
         $uuid = LogBatch::getUuid();
         $form_type = getModelType(get_class($form));
         $this->create([
             'batch_uuid' => $uuid,
             'form_type' => $form_type,
             'subject_type' => get_class($form),
-            'subject_id' => $form->id
+            'subject_id' => $form->id,
+            'causer_id' => $user->id,
+            'causer_type' => get_class($user),
+        ]);
+    }
+
+    public function endCustomBatch($form_type, $user)
+    {
+        $uuid = LogBatch::getUuid();
+        $this->create([
+            'batch_uuid' => $uuid,
+            'form_type' => $form_type,
+            'causer_id' => $user->id,
+            'causer_type' => get_class($user),
         ]);
     }
 
@@ -57,6 +72,16 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
     public function getLogs($id, $type)
     {
         return $this->modelQuery()->where('subject_id', $id)->where('form_type', $type)->orderBy('id','desc')->get();
+    }
+
+    public function getAllLogs($user = null)
+    {
+        $results = $this->modelQuery()->orderBy('id','desc');
+        if($user){
+
+        }else{
+            return $results->paginate(20);
+        }
     }
 
 }
