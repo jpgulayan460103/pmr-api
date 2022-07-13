@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\ActivityLogBatchRepository;
 use App\Transformers\ActivityLogBatchTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ActivityLogController extends Controller
 {
@@ -16,6 +17,14 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         $logs = (new ActivityLogBatchRepository())->attach('logs,causer.user_information')->getAllLogs();
+        // return $logs;
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+    }
+
+    public function userActivities(Request $request)
+    {
+        $user = Auth::user();
+        $logs = (new ActivityLogBatchRepository())->attach('logs,causer.user_information')->getAllLogs($user->id);
         // return $logs;
         return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
     }

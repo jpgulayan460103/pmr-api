@@ -23,7 +23,7 @@ class UserController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|users.permission.update', ['only' => ['updatePermission']]);
         $this->middleware('role_or_permission:super-admin|admin|users.delete', ['only' => ['destroy']]);
         $this->middleware('role_or_permission:super-admin|admin|users.view', ['only' => ['index','show']]);
-        $this->middleware('role_or_permission:super-admin|admin|users.update', ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.update|profile.information.update|profile.twg.update|profile.office.update', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.
@@ -74,15 +74,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->userRepository->attach('user_information,user_offices,permissions,roles')->getById($id);
-        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions,roles');
+        $user = $this->userRepository->attach('user_information,user_offices,permissions,roles, user_groups.group')->getById($id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices,permissions,roles, user_groups.group');
     }
 
     public function auth()
     {
         $auth_user = Auth::user();
-        $user = $this->userRepository->attach('user_information,user_offices.office,permissions,roles')->getById($auth_user->id);
-        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices.office,permissions,roles');
+        $user = $this->userRepository->attach('user_information,user_offices.office,permissions,roles, user_groups.group')->getById($auth_user->id);
+        return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices.office,permissions,roles, user_groups.group');
         // sleep(5);
         return $user;
     }

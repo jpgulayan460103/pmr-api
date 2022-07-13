@@ -74,14 +74,13 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
         return $this->modelQuery()->where('subject_id', $id)->where('form_type', $type)->orderBy('id','desc')->get();
     }
 
-    public function getAllLogs($user = null)
+    public function getAllLogs($user_id = null)
     {
         $results = $this->modelQuery()->orderBy('id','desc');
-        if($user){
-
-        }else{
-            return $results->paginate(20);
+        if($user_id){
+            $results->where('causer_id', $user_id);
         }
+        return $results->paginate(20);
     }
 
 }
