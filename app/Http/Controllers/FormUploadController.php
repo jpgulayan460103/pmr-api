@@ -55,7 +55,10 @@ class FormUploadController extends Controller
     {
         $user = Auth::user();
         if(!$user->hasPermissionTo($this->formUploadRepository->permissions($type))){
-            abort(403);
+            return response()->json([
+                'error_code' => 403,
+                'message' => "You don't have permission to access or to make action to this resource."
+            ], 403);
         }
         (new ActivityLogBatchRepository())->startBatch();
         $upload = $this->formUploadRepository->upload($type, $id);
@@ -107,7 +110,10 @@ class FormUploadController extends Controller
     {
         $user = Auth::user();
         if(!$user->hasPermissionTo($this->formUploadRepository->permissions($type))){
-            abort(403);
+            return response()->json([
+                'error_code' => 403,
+                'message' => "You don't have permission to access or to make action to this resource."
+            ], 403);
         }
         $form_upload = $this->formUploadRepository->getById($id);
         (new ActivityLogBatchRepository())->startBatch();

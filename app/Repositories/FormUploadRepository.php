@@ -109,7 +109,7 @@ class FormUploadRepository implements FormUploadRepositoryInterface
         // list cases from PermissionSeeder.php
         switch ($form_type) {
             case 'purchase_request':
-                return "purchase.requests.attachments";
+                return "purchase.request.attachments";
                 break;
             case 'requisition_issue':
                 return "requisition.issue.attachments";

@@ -22,7 +22,7 @@ class LibraryController extends Controller
     public function __construct(LibraryRepository $libraryRepository)
     {
         $this->libraryRepository = $libraryRepository;
-        $this->middleware('auth:api', ['only' => ['store', 'update']]);
+        $this->middleware('auth:api', ['only' => ['store', 'update', 'index']]);
         // $this->middleware('role:super-admin', ['only' => ['store', 'update']]);
     }
     /**
@@ -58,7 +58,10 @@ class LibraryController extends Controller
     {
         $user = Auth::user();
         if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."add")){
-            abort(403);
+            return response()->json([
+                'error_code' => 403,
+                'message' => "You don't have permission to access or to make action to this resource."
+            ], 403);
         }
         switch ($type) {
             case 'items':
@@ -128,11 +131,17 @@ class LibraryController extends Controller
         $user = Auth::user();
         if(request()->has('is_active')){
             if(!$user->hasPermissionTo($this->libraryRepository->permissions($type)."delete")){
-                abort(403);
+                return response()->json([
+                    'error_code' => 403,
+                    'message' => "You don't have permission to access or to make action to this resource."
+                ], 403);
             }
         }else{
             if(!$user->hasRole('super-admin') && !$user->hasPermissionTo($this->libraryRepository->permissions($type)."update")){
-                abort(403);
+                return response()->json([
+                    'error_code' => 403,
+                    'message' => "You don't have permission to access or to make action to this resource."
+                ], 403);
             }
         }
         switch ($type) {

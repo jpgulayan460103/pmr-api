@@ -364,7 +364,10 @@ class FormRouteRepository implements FormRouteRepositoryInterface
             abort(404);
         }
         if(!$this->isUserOfficeSameAsRouteOffice($formRoute, $user)){
-            abort(403);
+            return response()->json([
+                'error_code' => 403,
+                'message' => "You don't have permission to access or to make action to this resource."
+            ], 403);
         }
     }
 

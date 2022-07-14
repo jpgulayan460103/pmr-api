@@ -32,9 +32,9 @@ class PurchaseRequestController extends Controller
                 'generatePdfPreview',
             ]
         ]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.create', ['only' => ['store']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.update',   ['only' => ['update']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.requests.view|procurement.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.request.create', ['only' => ['store']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.request.update',   ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.request.view|procurement.view',   ['only' => ['show', 'index']]);
     }
 
 

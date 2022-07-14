@@ -131,18 +131,24 @@
                     </td>
                     <td style="vertical-align: top; text-align: center;">{{ $item['request_quantity'] }}</td>
                     <td style="vertical-align: top; text-align: center;">
-                        @if($item['has_stock'] == 1)
+                        @if($item['has_stock'] == 1 && $issued_by_date)
                             <span style='font-family:helvetica'>&#10004;</span>
                         @endif
                     </td>
                     <td style="vertical-align: top; text-align: center;">
-                        @if($item['has_stock'] == 0)
+                        @if($item['has_stock'] == 0 && $issued_by_date)
                             <span style='font-family:helvetica'>&#10004;</span>
                         @endif
-                    <td style="vertical-align: top; text-align: center;">{{ $item['issue_quantity'] }}</td>
+                    <td style="vertical-align: top; text-align: center;">
+                        @if($issued_by_date)
+                            <span>{{ $item['issue_quantity'] }}</span>
+                        @endif
+                    </td>
                     <td style="vertical-align: top; text-align: left;">
-                        <span>{{ $item['is_pr_recommended'] == 1 ? "PR Recommended" : "" }}</span>
-                        <span>{{ $item['remarks'] ? $item['remarks'] : "" }}</span>
+                        @if($issued_by_date)
+                            <span>{{ $item['is_pr_recommended'] == 1 ? "PR Recommended" : "" }}</span>
+                            <span>{{ $item['remarks'] ? $item['remarks'] : "" }}</span>
+                        @endif
                     </td>
 
                 </tr>
@@ -184,31 +190,31 @@
             </tr>
             <tr>
                 <td>Designation:</td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $requested_by_date ? $requested_by_designation : "" }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $approved_by_date ? $approved_by_designation : "" }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $issued_by_date ? $issued_by_designation : "" }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $received_by_designation }}</b>
                 </td>
             </tr>
             <tr>
                 <td>Date:</td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $requested_by_date }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $approved_by_date }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $issued_by_date }}</b>
                 </td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" nowrap="nowrap">
                     <b>{{ $received_by_date }}</b>
                 </td>
             </tr>

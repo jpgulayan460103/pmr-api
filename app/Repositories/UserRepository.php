@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\HasCrud;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
+use WhichBrowser\Parser;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -50,13 +51,30 @@ class UserRepository implements UserRepositoryInterface
             $user_sigatories = $user->user_offices()->create($data);
             $user->givePermissionTo([
                 'profile.information.update',
-                'purchase.requests.view',
+                'purchase.request.view',
                 'procurement.plan.view',
                 'requisition.issue.view',
                 'libraries.uom.view',
                 'libraries.user.signatories.view',
             ]);
             $user->assignRole('user');
+
+            $result = new Parser($_SERVER['HTTP_USER_AGENT']);
+            (new ActivityLogBatchRepository())->startBatch();
+            activity('user_login')
+            ->causedBy($user)
+            ->withProperties(
+                [
+                    "attributes" => [
+                        'user_device' => $result->device->type,
+                        'user_os' => $result->os->toString(),
+                        'user_browser' => $result->browser->name . ' ' . $result->browser->version->toString(),
+                        'user_ip' => $_SERVER['REMOTE_ADDR'],
+                    ]
+                ]
+            )
+            ->log('User login');
+            (new ActivityLogBatchRepository())->endCustomBatch('user_login', $user);
             DB::commit();
             return $user;
         } catch (\Throwable $th) {
