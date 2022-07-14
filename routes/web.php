@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return redirect(config('services.ui.endpoint'));
     return view('welcome');
-});
+})->name('login');

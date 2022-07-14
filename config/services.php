@@ -39,6 +39,10 @@ return [
 
     'passport' => [
         'endpoint' => env('PASSPORT_ENDPOINT')
+    ],
+
+    'ui' => [
+        'endpoint' => env('UI_ENDPOINT', 'http://localhost:3000/')
     ]
 
 ];
