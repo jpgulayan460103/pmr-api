@@ -10,5 +10,6 @@ php artisan test --filter FormRDProcessApproveTest
 php artisan test --filter FormProcessApproveTwgTest
 php artisan test --filter FormProcessDisapproveTest
 php artisan test --filter ProcurementPlanTest
+php artisan test --filter RequisitionIssuePpmpTest
 redis-cli flushall
 PAUSE 
