@@ -52,4 +52,12 @@ class ItemSupplyRepository implements ItemSupplyRepositoryInterface
         return $this->getById($id);
     }
 
+    
+    public function createItem($data)
+    {
+        $created_item = $this->create($data);
+        (new ItemSupplyHistoryRepository())->createFromNewEntry($created_item, $data);
+        return $created_item;
+    }
+
 }

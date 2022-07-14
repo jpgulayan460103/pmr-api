@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateInventoryItemRequest;
+use App\Http\Requests\UpdateInventoryItemRequest;
 use App\Models\ItemSupply;
 use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\ItemSupplyRepository;
@@ -56,9 +58,19 @@ class ItemSupplyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateInventoryItemRequest $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            (new ActivityLogBatchRepository())->startBatch();
+            $item = $this->itemSupplyRepository->createItem($data);
+            (new ActivityLogBatchRepository())->endBatch($item);
+            DB::commit();
+        } catch (\Throwable $th) {
+            (new ActivityLogBatchRepository())->deleteBatch();
+            throw $th;
+        }
     }
 
     /**
@@ -90,7 +102,7 @@ class ItemSupplyController extends Controller
      * @param  \App\Models\ItemSupply  $itemSupply
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateInventoryItemRequest $request, $id)
     {
         DB::beginTransaction();
         try {
