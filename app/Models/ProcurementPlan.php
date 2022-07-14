@@ -60,6 +60,7 @@ class ProcurementPlan extends Model
         return LogOptions::defaults()
         ->logFillable()
         ->logOnlyDirty()
+        ->logOnly(['end_user.name', 'procurement_plan_type.name'])
         ->dontSubmitEmptyLogs()
         ->logExcept($this->logAttributesToIgnore);
     }

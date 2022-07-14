@@ -8,10 +8,10 @@ use League\Fractal\TransformerAbstract;
 class UserAccessLogTransformer extends TransformerAbstract
 {
     public $labels = [
-        'user_device' => 'user_device',
-        'user_os' => 'user_os',
-        'user_browser' => 'user_browser',
-        'user_ip' => 'user_ip',
+        'user_device' => 'Device',
+        'user_os' => 'OS',
+        'user_browser' => 'Browser',
+        'user_ip' => 'IP Address',
     ];
     /**
      * List of resources to automatically include

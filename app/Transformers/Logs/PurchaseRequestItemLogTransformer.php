@@ -13,17 +13,18 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
      * @var array
      */
     public $labels = [
-        'item_name' => 'item_name',
-        'description' => 'description',
-        'item_code' => 'item_code',
-        'item_id' => 'item_id',
-        'quantity' => 'quantity',
-        'unit_cost' => 'unit_cost',
-        'unit_of_measure_id' => 'unit_of_measure_id',
-        'total_unit_cost' => 'total_unit_cost',
-        'purchase_request_id' => 'purchase_request_id',
-        'purchase_request_item_uuid' => 'purchase_request_item_uuid',
-        'is_ppmp' => 'is_ppmp',
+        'item_name' => 'Item Name',
+        'description' => 'Description',
+        'item_code' => 'Item Code',
+        // 'item_id' => 'item_id',
+        'quantity' => 'Quantity',
+        'unit_cost' => 'Unit Cost',
+        // 'unit_of_measure_id' => 'unit_of_measure_id',
+        'total_unit_cost' => 'Total Unit Cost',
+        // 'purchase_request_id' => 'purchase_request_id',
+        // 'purchase_request_item_uuid' => 'purchase_request_item_uuid',
+        // 'is_ppmp' => 'is_ppmp',
+        'unit_of_measure.name' => 'Unit of Measure',
     ];
     protected array $defaultIncludes = [
         //

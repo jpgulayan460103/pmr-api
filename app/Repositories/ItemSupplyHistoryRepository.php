@@ -67,7 +67,7 @@ class ItemSupplyHistoryRepository implements ItemSupplyHistoryRepositoryInterfac
             'item_supply_id' => $created_item->id,
             'movement_quantity' => $data['remaining_quantity'],
             'remaining_quantity' => $data['remaining_quantity'],
-            'movement_type' => "",
+            'movement_type' => "in",
             'remarks' => "Initial Inventory",
         ];
         $this->create($insert);

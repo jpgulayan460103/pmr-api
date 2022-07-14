@@ -55,6 +55,7 @@ class RequisitionIssue extends Model
     {
         return LogOptions::defaults()
         ->logFillable()
+        ->logOnly(['end_user.name'])
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs()
         ->logExcept($this->logAttributesToIgnore);

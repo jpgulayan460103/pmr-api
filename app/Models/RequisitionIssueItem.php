@@ -32,6 +32,7 @@ class RequisitionIssueItem extends Model
     {
         return LogOptions::defaults()
         ->logFillable()
+        ->logOnly(['unit_of_measure.name'])
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
     }

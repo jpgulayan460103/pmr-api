@@ -8,10 +8,12 @@ use League\Fractal\TransformerAbstract;
 class ItemSupplyLogTransformer extends TransformerAbstract
 {
     public $labels = [
-        'item_name' => 'item_name',
-        'item_category_id' => 'item_category_id',
-        'unit_of_measure_id' => 'unit_of_measure_id',
-        'is_active' => 'is_active',
+        'item_name' => 'Item Name',
+        // 'item_category_id' => 'item_category_id',
+        // 'unit_of_measure_id' => 'unit_of_measure_id',
+        'is_active' => 'Active',
+        'unit_of_measure.name' => 'Unit of Measure',
+        'item_category.name' => 'Item Category',
     ];
     /**
      * List of resources to automatically include

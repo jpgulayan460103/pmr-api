@@ -8,17 +8,18 @@ use League\Fractal\TransformerAbstract;
 class RequisitionIssueItemLogTransformer extends TransformerAbstract
 {
     public $labels = [
-        'requisition_issue_id' => 'requisition_issue_id',
-        'procurement_plan_item_id' => 'procurement_plan_item_id',
-        'unit_of_measure_id' => 'unit_of_measure_id',
-        'description' => 'description',
-        'remarks' => 'remarks',
-        'item_id' => 'item_id',
-        'request_quantity' => 'request_quantity',
-        'issue_quantity' => 'issue_quantity',
-        'has_stock' => 'has_stock',
-        'has_issued_item' => 'has_issued_item',
-        'is_pr_recommended' => 'is_pr_recommended',
+        // 'requisition_issue_id' => 'requisition_issue_id',
+        // 'procurement_plan_item_id' => 'procurement_plan_item_id',
+        // 'unit_of_measure_id' => 'unit_of_measure_id',
+        'description' => 'Description',
+        'remarks' => 'Remarks',
+        // 'item_id' => 'item_id',
+        'request_quantity' => 'Requested Quantity',
+        'issue_quantity' => 'Issued Quantity',
+        'has_stock' => 'Has Stock',
+        // 'has_issued_item' => 'has_issued_item',
+        'is_pr_recommended' => 'For Purchase Request',
+        'unit_of_measure.name' => 'Unit of Measure',
     ];
     /**
      * List of resources to automatically include

@@ -44,6 +44,7 @@ class ProcurementPlanItem extends Model
     {
         return LogOptions::defaults()
         ->logFillable()
+        ->logOnly(['unit_of_measure.name', 'item_type.name'])
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
     }

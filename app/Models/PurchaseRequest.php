@@ -56,6 +56,7 @@ class PurchaseRequest extends Model
     {
         return LogOptions::defaults()
         ->logFillable()
+        ->logOnly(['account.name','mode_of_procurement.name', 'end_user.name', 'uacs_code.name'])
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs()
         ->logExcept($this->logAttributesToIgnore);

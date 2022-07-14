@@ -8,14 +8,14 @@ use League\Fractal\TransformerAbstract;
 class ItemSupplyHistoryLogTransformer extends TransformerAbstract
 {
     public $labels = [
-        'item_supply_id' => 'item_supply_id',
-        'movement_quantity' => 'movement_quantity',
-        'remaining_quantity' => 'remaining_quantity',
-        'movement_type' => 'movement_type',
-        'form_sourceable_id' => 'form_sourceable_id',
-        'form_sourceable_type' => 'form_sourceable_type',
-        'form_source' => 'form_source',
-        'remarks' => 'remarks',
+        // 'item_supply_id' => 'item_supply_id',
+        'movement_quantity' => 'Movement Quantity',
+        'remaining_quantity' => 'Remaining Quantity',
+        'movement_type' => 'Movement Type',
+        // 'form_sourceable_id' => 'form_sourceable_id',
+        // 'form_sourceable_type' => 'form_sourceable_type',
+        // 'form_source' => 'form_source',
+        'remarks' => 'Remarks',
     ];
     /**
      * List of resources to automatically include
