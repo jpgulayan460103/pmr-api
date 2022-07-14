@@ -55,7 +55,6 @@ class PermissionSeeder extends Seeder
             'purchase.requests.attachments',
             'profile.information.update',
             'profile.twg.update',
-            'profile.office.update',
             'requisition.issue.view',
             'requisition.issue.create',
             'requisition.issue.update',

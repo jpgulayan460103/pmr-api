@@ -23,7 +23,7 @@ class UserController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|users.permission.update', ['only' => ['updatePermission']]);
         $this->middleware('role_or_permission:super-admin|admin|users.delete', ['only' => ['destroy']]);
         $this->middleware('role_or_permission:super-admin|admin|users.view', ['only' => ['index','show']]);
-        $this->middleware('role_or_permission:super-admin|admin|users.update|profile.information.update|profile.twg.update|profile.office.update', ['only' => ['update']]);
+        $this->middleware('role_or_permission:super-admin|admin|users.update|profile.information.update|profile.twg.update', ['only' => ['update']]);
     }
     /**
      * Display a listing of the resource.

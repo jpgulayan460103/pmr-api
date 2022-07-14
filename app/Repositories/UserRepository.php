@@ -72,13 +72,13 @@ class UserRepository implements UserRepositoryInterface
                 $data['password'] = config('services.ad.default_password');
             }
             $user = $this->mUpdate($id, $data);
-            $user->user_offices()->delete();
+            $user->user_offices()->forceDelete();
             $user_information_data = (new UserInformation($data))->getAttributes();
             $user_information = $user->user_information()->update($user_information_data);
             $offices = $this->addOffices($data['office_id']);
             $user_offices = $user->user_offices()->createMany($offices);
             $groups = $this->addGroups($data['group_id']);
-            $user->user_groups()->delete();
+            $user->user_groups()->forceDelete();
             $user_groups = $user->user_groups()->createMany($groups);
             DB::commit();
             return $user;
