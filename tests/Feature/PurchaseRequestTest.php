@@ -30,17 +30,29 @@ class PurchaseRequestTest extends TestCase
     }
     public function test_create()
     {
+        $requested_office = Library::where('library_type','user_section')->where('title','OARDA')->first();
+        $requested_by = Library::where('library_type','user_section_signatory')->where('parent_id', $requested_office->id)->first();
+        $approved_office = Library::where('library_type','user_section')->where('title','ORD')->first();
+        $approved_by = Library::where('library_type','user_section_signatory')->where('parent_id', $approved_office->id)->first();
+
+
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $office = $user->user_offices;
         $response = $this->post('/api/purchase-requests',[
             'title' => $this->faker->text(200),
             'purpose' => $this->faker->text(200),
+            'requisition_issue_id' => 1,
+            'requisition_issue_file' => "a",
             // 'pr_date' => Carbon::now(),
             'pr_date' => $this->faker->dateTimeThisYear(date('Y-m-d', strtotime('Dec 31'))),
-            'end_user_id' => Library::find($office[0]['office_id'])->id,
-            'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
-            'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,
+            'end_user_id' => $office[0]['office_id'],
+            'requested_by_id' => $requested_by->id,
+            'requested_by_name' => $requested_by->name,
+            'requested_by_designation' => $requested_by->title,
+            'approved_by_id' => $approved_by->id,
+            'approved_by_name' => $approved_by->name,
+            'approved_by_designation' => $approved_by->title,
             'items' => [
                 [
                     'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
@@ -66,7 +78,12 @@ class PurchaseRequestTest extends TestCase
     }
 
     public function test_update_items()
-    {
+    {   
+        $requested_office = Library::where('library_type','user_section')->where('title','OARDA')->first();
+        $requested_by = Library::where('library_type','user_section_signatory')->where('parent_id', $requested_office->id)->first();
+        $approved_office = Library::where('library_type','user_section')->where('title','ORD')->first();
+        $approved_by = Library::where('library_type','user_section_signatory')->where('parent_id', $approved_office->id)->first();
+
         $user = User::with('user_offices.office')->where('username','ict')->first();
         Passport::actingAs($user);
         $purchase_request = PurchaseRequest::find(PurchaseRequestTest::$purchase_request_id)->toArray();
@@ -79,6 +96,12 @@ class PurchaseRequestTest extends TestCase
             'purpose' => $purchase_request['purpose'],
             'title' => $purchase_request['title'],
             'id' => $purchase_request['id'],
+            'requested_by_id' => $requested_by->id,
+            'requested_by_name' => $requested_by->name,
+            'requested_by_designation' => $requested_by->title,
+            'approved_by_id' => $approved_by->id,
+            'approved_by_name' => $approved_by->name,
+            'approved_by_designation' => $approved_by->title,
             'items' => [
                 $item_1,
                 [

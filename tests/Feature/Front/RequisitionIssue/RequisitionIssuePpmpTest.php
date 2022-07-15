@@ -36,8 +36,8 @@ class RequisitionIssuePpmpTest extends TestCase
         Passport::actingAs($user);
         $office = $user->user_offices;
         $items = [];
+        $ppmp = ProcurementManagement::with('items')->where('end_user_id', $office[0]['office_id'])->first();
         for ($i=0; $i < 5; $i++) {
-            $ppmp = ProcurementManagement::with('items')->where('end_user_id', $office[0]['office_id'])->first();
             $procurement_plan_item_id = $this->faker->randomElement($ppmp->items()->pluck('procurement_plan_item_id'));
             $procurement_management_item = $ppmp->items($procurement_plan_item_id)->first();
             $procurement_plan_item = ProcurementPlanItem::find($procurement_plan_item_id);

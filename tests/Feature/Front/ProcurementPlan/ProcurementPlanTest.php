@@ -42,7 +42,7 @@ class ProcurementPlanTest extends TestCase
             $procurement_plan_type = Library::where('library_type','procurement_plan_type')->where('name', supplementalPpmpValue())->first();
         }
         $itemsA = [];
-        for ($i=0; $i < 5; $i++) { 
+        for ($i=0; $i < 10; $i++) { 
             $item_id = $this->faker->randomElement(Item::where('item_type_id', $cse->id)->pluck('id'));
             $item = Item::find($item_id);
             $itemsA[] = [
@@ -69,7 +69,7 @@ class ProcurementPlanTest extends TestCase
         }
 
         $itemsB = [];
-        for ($i=0; $i < 5; $i++) { 
+        for ($i=0; $i < 10; $i++) { 
             $item_id = $this->faker->randomElement(Item::where('item_type_id', $cse->id)->pluck('id'));
             $item = Item::find($item_id);
             $itemsB[] = [

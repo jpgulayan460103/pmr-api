@@ -103,6 +103,7 @@ class PurchaseRequestRepository implements PurchaseRequestRepositoryInterface
                 $formProcessRepository->updateRouting($formProcess->id, "requested_by");
             }
         }
+        return $purchase_request;
     }
 
     public function addItems()
