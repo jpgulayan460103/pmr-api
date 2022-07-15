@@ -52,6 +52,7 @@ class RequisitionIssueItemTransformer extends TransformerAbstract
             'has_stock' => $table->has_stock,
             'has_issued_item' => $table->has_issued_item,
             'is_pr_recommended' => $table->is_pr_recommended,
+            'is_common_item' => $table->item_id != null,
         ];
     }
 

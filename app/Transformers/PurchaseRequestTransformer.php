@@ -39,6 +39,7 @@ class PurchaseRequestTransformer extends TransformerAbstract
         'uacs_code',
         'form_uploads',
         'created_by',
+        'requisition_issue'
     ];
     
     /**
@@ -80,9 +81,11 @@ class PurchaseRequestTransformer extends TransformerAbstract
             'approved_by_name' => $table->approved_by_name,
             'approved_by_designation' => $table->approved_by_designation,
             'mode_of_procurement_id' => $table->mode_of_procurement_id,
+            'requisition_issue_id' => $table->requisition_issue_id,
             'uacs_code_id' => $table->uacs_code_id,
             'charge_to' => $table->charge_to,
             'alloted_amount' => $table->alloted_amount,
+            'from_ppmp' => $table->from_ppmp,
             'sa_or' => $table->sa_or,
             'file' => route('api.purchase-requests.pdf', ['id' => $table->uuid]),
             'particulars' => $table->purpose, // set common field for all forms
@@ -168,6 +171,12 @@ class PurchaseRequestTransformer extends TransformerAbstract
     {
         if ($table->form_uploads) {
             return $this->collection($table->form_uploads, new FormUploadTransformer);
+        }
+    }
+    public function includeRequisitionIssue($table)
+    {
+        if ($table->requisition_issue) {
+            return $this->collection($table->requisition_issue, new FormUploadTransformer);
         }
     }
 }

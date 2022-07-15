@@ -60,7 +60,6 @@ class PurchaseRequestTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
-                    'is_ppmp' => true,
                 ],
                 [
                     'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
@@ -68,7 +67,6 @@ class PurchaseRequestTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => null,
-                    'is_ppmp' => false,
                 ],
             ]
         ]);
@@ -110,7 +108,6 @@ class PurchaseRequestTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => 2,
-                    'is_ppmp' => true,
                 ]
             ]
         ]);

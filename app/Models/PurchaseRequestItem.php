@@ -42,7 +42,7 @@ class PurchaseRequestItem extends Model
         'total_unit_cost',
         'purchase_request_id',
         'purchase_request_item_uuid',
-        'is_ppmp',
+        'requisition_issue_item_id',
     ];
 
 

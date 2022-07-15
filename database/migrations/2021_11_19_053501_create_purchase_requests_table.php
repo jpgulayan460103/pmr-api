@@ -42,6 +42,8 @@ class CreatePurchaseRequestsTable extends Migration
             $table->string('approved_by_name')->nullable();
             $table->string('approved_by_designation')->nullable();
             $table->unsignedBigInteger('created_by_id')->nullable();
+            $table->unsignedBigInteger('requisition_issue_id')->nullable();
+            $table->boolean('from_ppmp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

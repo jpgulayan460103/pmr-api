@@ -106,12 +106,14 @@ class AddTableForeignKeys extends Migration
             $table->foreign('mode_of_procurement_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('uacs_code_id')->references('id')->on('libraries')->onDelete('cascade');
             $table->foreign('created_by_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('requisition_issue_id')->references('id')->on('requisition_issues')->onDelete('set null');
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {
             $table->foreign('item_id')->references('id')->on('items')->onDelete('set null');
             $table->foreign('purchase_request_id')->references('id')->on('purchase_requests')->onDelete('cascade');
             $table->foreign('unit_of_measure_id')->references('id')->on('libraries')->onDelete('set null');
+            $table->foreign('requisition_issue_item_id')->references('id')->on('requisition_issue_items')->onDelete('set null');
         });
 
         Schema::table('requisition_issues', function (Blueprint $table) {
@@ -271,12 +273,14 @@ class AddTableForeignKeys extends Migration
             $table->dropForeign(['mode_of_procurement_id']);
             $table->dropForeign(['uacs_code_id']);
             $table->dropForeign(['created_by_id']);
+            $table->dropForeign(['requisition_issue_id']);
         });
 
         Schema::table('purchase_request_items', function (Blueprint $table) {
             $table->dropForeign(['item_id']);
             $table->dropForeign(['purchase_request_id']);
             $table->dropForeign(['unit_of_measure_id']);
+            $table->dropForeign(['requisition_issue_item_id']);
         });
         Schema::table('requisition_issues', function (Blueprint $table) {
             $table->dropForeign(['created_by_id']);

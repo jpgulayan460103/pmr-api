@@ -51,7 +51,6 @@ class FormProcessDisapproveTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
-                    'is_ppmp' => true,
                 ],
                 [
                     'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
@@ -59,7 +58,6 @@ class FormProcessDisapproveTest extends TestCase
                     'quantity' => $this->faker->numberBetween(1, 100),
                     'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
                     'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
-                    'is_ppmp' => true,
                 ],
             ]
         ]);

@@ -123,8 +123,10 @@
             <tbody>
                 @foreach($items['data'] as $item)
                 <tr>
-                    <td></td>
-                    <td style="vertical-align: top; text-align: center;">{{ $item['unit_of_measure']['name'] }}</td>
+                    <td>
+                        {{ isset($item['item']) ? $item['item']['item_code'] : "" }}
+                    </td>
+                    <td style="vertical-align: top; text-align: center;">{{ $item['unit_of_measure'] ? $item['unit_of_measure']['name'] : "" }}</td>
                     <td style="vertical-align: top; text-align: center;">
                         <!-- <div style="white-space: pre-line;">{{ $item['description'] }}</div> -->
                         <div style="white-space: pre-line;">{!! nl2br(e($item['description'])) !!}</div>

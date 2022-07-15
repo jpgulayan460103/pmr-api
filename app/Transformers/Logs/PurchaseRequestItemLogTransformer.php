@@ -23,7 +23,6 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
         'total_unit_cost' => 'Total Unit Cost',
         // 'purchase_request_id' => 'purchase_request_id',
         // 'purchase_request_item_uuid' => 'purchase_request_item_uuid',
-        // 'is_ppmp' => 'is_ppmp',
         'unit_of_measure.name' => 'Unit of Measure',
     ];
     protected array $defaultIncludes = [

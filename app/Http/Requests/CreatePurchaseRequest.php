@@ -40,6 +40,7 @@ class CreatePurchaseRequest extends FormRequest
             'approved_by_id' => ['required', new LibraryExistRule('user_section_signatory')],
             'title' => 'required',
             'items.*.item_name' => 'required',
+            'items.*.requisition_issue_item_id' => 'required',
             'items.*.unit_of_measure_id' => ['required', new LibraryExistRule('unit_of_measure')],
             'items.*.quantity' => ['required', 'integer', 'min:1', new MaxInt],
             'items.*.unit_cost' => ['required', 'numeric','min:0.01','regex:/^\d{1,15}(\.\d{1,2})?$/', new MaxFloat],

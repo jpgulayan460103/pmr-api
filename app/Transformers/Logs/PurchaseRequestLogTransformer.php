@@ -39,6 +39,7 @@ class PurchaseRequestLogTransformer extends TransformerAbstract
         'approved_by_designation' => 'Approved By Designation',
         // 'created_by_id' => 'created_by_id',
         'acount.name' => 'Account',
+        'from_ppmp' => 'From PPMP',
         'mode_of_procurement.name' => 'Mode of Procurement',
         'end_user.name' => 'End-User',
         'uacs_code.name' => 'UACS Code',

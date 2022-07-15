@@ -46,6 +46,8 @@ class PurchaseRequest extends Model
         'approved_by_name',
         'approved_by_designation',
         'created_by_id',
+        'requisition_issue_id',
+        'from_ppmp',
     ];
 
     public $logAttributesToIgnore = [
@@ -146,5 +148,9 @@ class PurchaseRequest extends Model
     public function quotations()
     {
         return $this->hasMany(Quotation::class);
+    }
+    public function requisition_issue()
+    {
+        return $this->belongsTo(RequisitionIssue::class);
     }
 }
