@@ -232,7 +232,10 @@ class FormRouteController extends Controller
 
     public function reject(Request $request, $id)
     {
-        $this->formRouteRepository->verifyRoute($id);
+        $user = Auth::user();
+        $formRoute = $this->formRouteRepository->getById($id);
+        $current_route_code = $formRoute->route_code;
+        $this->formRouteRepository->verifyRoute($formRoute, $user);
         DB::beginTransaction();
         try {
             $formRoute = $this->formRouteRepository->attach('form_process,to_office,from_office, form_routable.end_user')->getById($id);

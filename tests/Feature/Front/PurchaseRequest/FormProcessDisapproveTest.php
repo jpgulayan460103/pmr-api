@@ -28,42 +28,8 @@ class FormProcessDisapproveTest extends TestCase
     }
     public function test_create_purchase_request()
     {
-        $user = User::with('user_offices.office')->where('username','ict')->first();
-        Passport::actingAs($user);
-        $office = $user->user_offices;
-        $response = $this->post('/api/purchase-requests',[
-            'purpose' => $this->faker->text(200),
-            'title' => $this->faker->text(200),
-            'fund_cluster' => $this->faker->numerify('fc-####-####-###'),
-            'center_code' => $this->faker->numerify('cc-####-####-###'),
-            'pr_date' => Carbon::now(),
-            'end_user_id' => Library::find($office[0]['office_id'])->id,
-            'requested_by_id' => Library::where('library_type','user_signatory_name')->where('title','OARDA')->first()->id,
-            'approved_by_id' => Library::where('library_type','user_signatory_name')->where('title','ORD')->first()->id,
-            'uacs_code_id' => $this->faker->randomElement(Library::where('library_type','uacs_code')->get()->pluck('id')),
-            'charge_to' => $this->faker->name,
-            'alloted_amount' => $this->faker->randomFloat(2, 0, 1000000),
-            'sa_or' => $this->faker->numerify('sa-####-####-###'),
-            'items' => [
-                [
-                    'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
-                    'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
-                    'quantity' => $this->faker->numberBetween(1, 100),
-                    'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
-                ],
-                [
-                    'item_name' => $this->faker->randomElement(Item::get()->pluck('item_name')),
-                    'unit_of_measure_id' => $this->faker->randomElement(Library::where('library_type','unit_of_measure')->get()->pluck('id')),
-                    'quantity' => $this->faker->numberBetween(1, 100),
-                    'unit_cost' => $this->faker->randomFloat(2, 0, 10000),
-                    'item_id' => $this->faker->randomElement(Item::get()->pluck('id')),
-                ],
-            ]
-        ]);
-        $purchase_request = $response->decodeResponseJson();
-        FormProcessDisapproveTest::$purchase_request_id = $purchase_request['id'];
-        $response->assertStatus(201);
+        $purchase_request = PurchaseRequest::where('status', 'pending')->first();
+        FormProcessDisapproveTest::$purchase_request_id = $purchase_request->id;
     }
 
 
