@@ -155,6 +155,13 @@ class RequisitionIssueController extends Controller
     {
         $requisition_issue = $this->requisitionIssueRepository->attach('end_user,items.unit_of_measure')->getByUuid($uuid);
         $requisition_issue = fractal($requisition_issue, new RequisitionIssueTransformer)->parseIncludes('end_user,items.unit_of_measure')->toArray();
+
+        $count = 0;
+        foreach ($requisition_issue['items']['data'] as $key => $item) {
+            $count++;
+            $count += substr_count($item['description'],"\n");
+        }
+        $requisition_issue['count_items'] = $count;
         // return $requisition_issue;
         $config = [
             'instanceConfigurator' => function($mpdf) {

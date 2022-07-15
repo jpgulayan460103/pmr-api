@@ -14,7 +14,7 @@ class ItemSupplyHistoryTransformer extends TransformerAbstract
      * @var array
      */
     protected array $defaultIncludes = [
-        //
+        'item_supply'
     ];
     
     /**
@@ -46,6 +46,7 @@ class ItemSupplyHistoryTransformer extends TransformerAbstract
             'form_source' => $table->form_source,
             'remarks' => $table->remarks,
             'created_at' => $table->created_at,
+            'display_log' => $table->item_supply->item_name,
             'created_at_str' => $table->created_at->toDateString(),
             'created_at_custom' => $table->created_at->format("m/d/Y"),
         ];

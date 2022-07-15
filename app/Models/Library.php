@@ -8,6 +8,7 @@ use App\Models\UserOffice;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Support\Str;
 
 class Library extends Model
 {
@@ -40,6 +41,7 @@ class Library extends Model
         parent::boot();
         self::creating(function ($model) {
             $model->is_active = 1;
+            $model->uuid = (string) Str::uuid();
         });
         self::updating(function($model) {
 

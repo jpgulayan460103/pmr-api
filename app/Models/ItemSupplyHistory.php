@@ -23,9 +23,11 @@ class ItemSupplyHistory extends Model
         'remarks',
     ];
 
-    public function item()
+    protected $with = ['item_supply'];
+
+    public function item_supply()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(ItemSupply::class);
     }
 
     public function form_sourceable()
@@ -37,6 +39,7 @@ class ItemSupplyHistory extends Model
     {
         return LogOptions::defaults()
         ->logFillable()
+        ->logOnly(['item_supply.item_name'])
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
     }

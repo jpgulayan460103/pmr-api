@@ -153,8 +153,22 @@
 
                 </tr>
                 @endforeach
+                @for($i = 0; $i<=(19 - $count_items); $i ++)
                 <tr>
-                    <td colspan="8">Purpose: </td>
+                    <td style="text-align: center">&nbsp;</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                @endfor
+                <tr>
+                    <td colspan="8">
+                        Purpose: <b>{{ $purpose }}</b>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -16,6 +16,7 @@ class ItemSupplyHistoryLogTransformer extends TransformerAbstract
         // 'form_sourceable_type' => 'form_sourceable_type',
         // 'form_source' => 'form_source',
         'remarks' => 'Remarks',
+        'item_supply.item_name' => 'Item Name',
     ];
     /**
      * List of resources to automatically include

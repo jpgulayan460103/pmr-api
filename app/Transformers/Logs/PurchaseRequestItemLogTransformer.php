@@ -14,7 +14,7 @@ class PurchaseRequestItemLogTransformer extends TransformerAbstract
      */
     public $labels = [
         'item_name' => 'Item Name',
-        'description' => 'Description',
+        'description' => 'Item Description',
         'item_code' => 'Item Code',
         // 'item_id' => 'item_id',
         'quantity' => 'Quantity',

@@ -22,7 +22,7 @@ class ActivityLogBatchRepository implements ActivityLogBatchRepositoryInterface
         }
         $this->model($supplier);
         $this->perPage(200);
-        $this->attach('subject, logs, causer.user_information');
+        $this->attach('subject, logs.subject, causer.user_information');
     }
 
     public function endBatch($form)

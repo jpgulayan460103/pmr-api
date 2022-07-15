@@ -12,13 +12,13 @@ class ActivityLogController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
     public function index(Request $request)
     {
         $logs = (new ActivityLogBatchRepository())->attach('logs,causer.user_information')->getAllLogs();
         // return $logs;
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 
     public function userActivities(Request $request)
@@ -26,13 +26,13 @@ class ActivityLogController extends Controller
         $user = Auth::user();
         $logs = (new ActivityLogBatchRepository())->attach('logs,causer.user_information')->getAllLogs($user->id);
         // return $logs;
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 
     public function purchaseRequest(Request $request, $id)
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'purchase_request');
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 
     public function purchaseRequestItem(Request $request, $id)
@@ -54,7 +54,7 @@ class ActivityLogController extends Controller
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'procurement_plan');
         // return $logs;
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 
     public function procurementPlanItem(Request $request, $id)
@@ -66,13 +66,13 @@ class ActivityLogController extends Controller
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'requisition_issue');
         // return $logs;
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 
     public function itemSupply(Request $request, $id)
     {
         $logs = (new ActivityLogBatchRepository())->getLogs($id, 'item_supply');
         // return $logs;
-        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('causer.user_information');
+        return fractal($logs, new ActivityLogBatchTransformer)->parseIncludes('logs.subject, causer.user_information');
     }
 }

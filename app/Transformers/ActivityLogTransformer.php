@@ -33,7 +33,7 @@ class ActivityLogTransformer extends TransformerAbstract
      * @var array
      */
     protected array $availableIncludes = [
-        //
+        'subject'
     ];
     
     /**
@@ -140,5 +140,42 @@ class ActivityLogTransformer extends TransformerAbstract
         unset($properties['old']);
         unset($properties['attributes']);
         return $properties['changes'];
+    }
+
+    public function includeSubject(ActivityLog $table)
+    {
+        if ($table->subject) {
+            $form_type = getModelType($table->subject_type);
+            switch ($form_type) {
+                case 'form_upload':
+                    return $this->item($table->subject, new FormUploadTransformer);
+                    break;
+                case 'procurement_plan':
+                    return $this->item($table->subject, new ProcurementPlanTransformer);
+                    break;
+                case 'procurement_plan_item':
+                    return $this->item($table->subject, new ProcurementPlanItemTransformer);
+                    break;
+                case 'requisition_issue':
+                    return $this->item($table->subject, new RequisitionIssueTransformer);
+                    break;
+                case 'requisition_issue_item':
+                    return $this->item($table->subject, new RequisitionIssueItemTransformer);
+                    break;
+                case 'purchase_request':
+                    return $this->item($table->subject, new PurchaseRequestTransformer);
+                    break;
+                case 'item_supply':
+                    return $this->item($table->subject, new ItemSupplyTransformer);
+                    break;
+                case 'item_supply_history':
+                    return $this->item($table->subject, new ItemSupplyHistoryTransformer);
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
     }
 }

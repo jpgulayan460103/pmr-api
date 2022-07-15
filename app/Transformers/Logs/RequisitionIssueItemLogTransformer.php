@@ -11,7 +11,7 @@ class RequisitionIssueItemLogTransformer extends TransformerAbstract
         // 'requisition_issue_id' => 'requisition_issue_id',
         // 'procurement_plan_item_id' => 'procurement_plan_item_id',
         // 'unit_of_measure_id' => 'unit_of_measure_id',
-        'description' => 'Description',
+        'description' => 'Item Description',
         'remarks' => 'Remarks',
         // 'item_id' => 'item_id',
         'request_quantity' => 'Requested Quantity',
