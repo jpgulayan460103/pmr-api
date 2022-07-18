@@ -113,37 +113,37 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         );
 
         $procurement_plan_sql = "(";
-        if($user->hasPermissionTo('form.routing.review.procurement.plan') && $user->hasPermissionTo('form.routing.approve.procurement.plan')){
+        if($user->hasPermissionTo('forms.review.procurement.plan') && $user->hasPermissionTo('forms.approve.procurement.plan')){
             $procurement_plan_sql .= "route_type = 'procurement_plan'";
-        }elseif(!$user->hasPermissionTo('form.routing.review.procurement.plan') && $user->hasPermissionTo('form.routing.approve.procurement.plan')){
+        }elseif(!$user->hasPermissionTo('forms.review.procurement.plan') && $user->hasPermissionTo('forms.approve.procurement.plan')){
             $procurement_plan_sql .= "route_type = 'procurement_plan' and route_code != 'route_origin'";
-        }elseif($user->hasPermissionTo('form.routing.review.procurement.plan') && !$user->hasPermissionTo('form.routing.approve.procurement.plan')){
+        }elseif($user->hasPermissionTo('forms.review.procurement.plan') && !$user->hasPermissionTo('forms.approve.procurement.plan')){
             $procurement_plan_sql .= "route_type = 'procurement_plan' and route_code = 'route_origin'";
         }
         $procurement_plan_sql .= ")";
 
         $requisition_issue_sql = "(";
-        if($user->hasPermissionTo('form.routing.review.requisition.issue') && $user->hasPermissionTo('form.routing.approve.requisition.issue')){
+        if($user->hasPermissionTo('forms.review.requisition.issue') && $user->hasPermissionTo('forms.approve.requisition.issue')){
             $requisition_issue_sql .= "route_type = 'requisition_issue'";
-        }elseif(!$user->hasPermissionTo('form.routing.review.requisition.issue') && $user->hasPermissionTo('form.routing.approve.requisition.issue')){
+        }elseif(!$user->hasPermissionTo('forms.review.requisition.issue') && $user->hasPermissionTo('forms.approve.requisition.issue')){
             $requisition_issue_sql .= "route_type = 'requisition_issue' and route_code != 'route_origin' and route_code != 'last_route'";
-        }elseif($user->hasPermissionTo('form.routing.review.requisition.issue') && !$user->hasPermissionTo('form.routing.approve.requisition.issue')){
+        }elseif($user->hasPermissionTo('forms.review.requisition.issue') && !$user->hasPermissionTo('forms.approve.requisition.issue')){
             $requisition_issue_sql .= "route_type = 'requisition_issue' and route_code = 'route_origin'";
         }
         $requisition_issue_sql .= ")";
 
         $requisition_issue_item_sql = "(";
-        if($user->hasPermissionTo('form.routing.issue.requisition.issue')){
+        if($user->hasPermissionTo('forms.issue.requisition.issue')){
             $requisition_issue_item_sql .= "route_type = 'requisition_issue' and route_code = 'last_route'";
         }
         $requisition_issue_item_sql .= ")";
         
         $purchase_request_sql = "(";
-        if($user->hasPermissionTo('form.routing.review.purchase.request') && $user->hasPermissionTo('form.routing.approve.purchase.request')){
+        if($user->hasPermissionTo('forms.review.purchase.request') && $user->hasPermissionTo('forms.approve.purchase.request')){
             $purchase_request_sql .= "route_type = 'purchase_request'";
-        }elseif(!$user->hasPermissionTo('form.routing.review.purchase.request') && $user->hasPermissionTo('form.routing.approve.purchase.request')){
+        }elseif(!$user->hasPermissionTo('forms.review.purchase.request') && $user->hasPermissionTo('forms.approve.purchase.request')){
             $purchase_request_sql .= "route_type = 'purchase_request' and route_code != 'route_origin'";
-        }elseif($user->hasPermissionTo('form.routing.review.purchase.request') && !$user->hasPermissionTo('form.routing.approve.purchase.request')){
+        }elseif($user->hasPermissionTo('forms.review.purchase.request') && !$user->hasPermissionTo('forms.approve.purchase.request')){
             $purchase_request_sql .= "route_type = 'purchase_request' and route_code = 'route_origin'";
         }
         $purchase_request_sql .= ")";

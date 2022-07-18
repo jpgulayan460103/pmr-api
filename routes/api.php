@@ -91,18 +91,24 @@ Route::group(['prefix' => '/purchase-requests'], function () {
 Route::group(['prefix' => '/forms'], function () {
     Route::put('/process/{id}', [FormProcessController::class, 'update']);
     Route::get('/routes/{id}', [FormRouteController::class, 'show']);
+
+    Route::get('/rejected', [FormRouteController::class, 'getRejected']);
+    Route::get('/approved', [FormRouteController::class, 'getApproved']);
+
+    Route::get('/purchase-requests', [PurchaseRequestController::class, 'getForms']);
+    Route::get('/procurement-plans', [ProcurementManagementController::class, 'getForms']);
+    Route::get('/requisition-issues', [RequisitionIssueController::class, 'getForms']);
+    
+    Route::group(['prefix' => '/uploads'], function () {
+        Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
+        Route::delete('/{type}/{id}', [FormUploadController::class, 'destroy']);
+    });
+
     Route::group(['prefix' => '/routes'], function () {
         Route::get('/requests/pending', [FormRouteController::class, 'getPending']);
         Route::post('/requests/pending/{id}/approve', [FormRouteController::class, 'approve']);
         Route::post('/requests/pending/{id}/reject', [FormRouteController::class, 'reject']);
     }); 
-    Route::get('/rejected', [FormRouteController::class, 'getRejected']);
-    Route::get('/approved', [FormRouteController::class, 'getApproved']);
-
-    Route::group(['prefix' => '/uploads'], function () {
-        Route::post('/{type}/{id}', [FormUploadController::class, 'store']);
-        Route::delete('/{type}/{id}', [FormUploadController::class, 'destroy']);
-    });
 });
 
 Route::group(['prefix' => '/next-numbers'], function () {
@@ -137,4 +143,5 @@ Route::group(['prefix' => '/summaries'], function () {
 Route::group(['prefix' => '/downloads'], function () { 
     Route::get('/form-uploads/{id}', [FormUploadController::class, 'download'])->name('api.downloads.form-uploads');;
 });
+
 

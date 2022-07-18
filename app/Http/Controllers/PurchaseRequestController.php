@@ -35,6 +35,7 @@ class PurchaseRequestController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.view|procurement.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.request.view|forms.purchase.request.view',   ['only' => ['show', 'index']]);
     }
 
 
@@ -249,5 +250,10 @@ class PurchaseRequestController extends Controller
         return [
             'next_number' => str_pad(++$last_number,5,"0",STR_PAD_LEFT)
         ];
+    }
+
+    public function getForms(Request $request)
+    {
+        # code...
     }
 }
