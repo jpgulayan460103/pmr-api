@@ -29,9 +29,9 @@ class FormRouteController extends Controller
         $this->formRouteRepository = $formRouteRepository;
         $this->attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
         $this->middleware('auth:api');
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.pending.view',   ['only' => ['getPending']]);
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.disapproved.view',   ['only' => ['getRejected']]);
-        $this->middleware('role_or_permission:super-admin|admin|form.routing.approved.view',   ['only' => ['getApproved']]);
+        $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getPending']]);
+        $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getRejected']]);
+        $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getApproved']]);
     }
     /**
      * Display a listing of the resource.

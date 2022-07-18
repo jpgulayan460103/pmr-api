@@ -45,20 +45,14 @@ class PurchaseRequestController extends Controller
      */
     public function index(Request $request)
     {
-        $attach = 'end_user, account, mode_of_procurement, uacs_code, created_by.user_information';
         $filters = [];
-        if(request('type') == "all"){
-        }elseif(request('type') == "procurement"){
-            $filters['status'] = ['Approved'];
-            $attach .= ",bac_task";
-        }else{
-            $user = Auth::user();
-            $offices_ids = $user->user_offices->pluck('office_id');
-            $filters['offices_ids'] = $offices_ids;
-            if($user->hasRole('super-admin')){
-                unset($filters['offices_ids']);
-            }
+        $user = Auth::user();
+        $offices_ids = $user->user_offices->pluck('office_id');
+        $filters['offices_ids'] = $offices_ids;
+        if($user->hasRole('super-admin')){
+            unset($filters['offices_ids']);
         }
+        $attach = 'end_user, account, mode_of_procurement, uacs_code, created_by.user_information';
         $this->purchaseRequestRepository->attach($attach);
         $purchase_request = $this->purchaseRequestRepository->search($filters);
         // return $purchase_request;
