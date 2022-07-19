@@ -67,7 +67,7 @@ class AuthRepository implements AuthRepositoryInterface
         $username = $request['username'];
         $password = $request['password'];
         
-        $ldaprdn = config('services.ad.domain_1') . "\\" . $username;
+        $ldaprdn = config('services.ad.domain') . "\\" . $username;
 
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
@@ -76,7 +76,7 @@ class AuthRepository implements AuthRepositoryInterface
 
         if ($bind) {
             $filter="(sAMAccountName=$username)";
-            $result = ldap_search($ldap,"DC=".config('services.ad.domain_1').",DC=".config('services.ad.domain_2'),$filter);
+            $result = ldap_search($ldap,config('services.ad.search'),$filter);
             $info = ldap_get_entries($ldap, $result);
             for ($i=0; $i<$info["count"]; $i++)
             {

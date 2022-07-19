@@ -32,8 +32,8 @@ return [
 
     'ad' => [
         'host' => env('AD_HOST'),
-        'domain_1' => env('AD_DOMAIN_1'),
-        'domain_2' => env('AD_DOMAIN_2'),
+        'domain' => env('AD_DOMAIN'),
+        'search' => env('AD_SEARCH'),
         'default_password' => env('AD_DEFAULT_PASSWORD'),
     ],
 
