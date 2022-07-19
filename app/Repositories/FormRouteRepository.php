@@ -97,6 +97,7 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         if($type == "approved"){
             $results->where('route_code','<>','route_origin');
         }
+        $results->orderBy('id','DESC');
         $results = $this->filters($results, $filters);
         $results = $results->paginate(20);
         return $results;   

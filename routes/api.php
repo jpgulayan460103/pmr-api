@@ -96,7 +96,7 @@ Route::group(['prefix' => '/forms'], function () {
     Route::get('/approved', [FormRouteController::class, 'getApproved']);
 
     Route::get('/purchase-requests', [PurchaseRequestController::class, 'getForms']);
-    Route::get('/procurement-plans', [ProcurementManagementController::class, 'getForms']);
+    Route::get('/procurement-plans', [ProcurementPlanController::class, 'getForms']);
     Route::get('/requisition-issues', [RequisitionIssueController::class, 'getForms']);
     
     Route::group(['prefix' => '/uploads'], function () {

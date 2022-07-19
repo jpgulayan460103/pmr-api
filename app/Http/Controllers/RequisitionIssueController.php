@@ -179,4 +179,15 @@ class RequisitionIssueController extends Controller
         }
         return $pdf->download('PMS-requisition-and-issue-slip-'.$requisition_issue['form_number'].'.pdf');
     }
+
+    public function getForms(Request $request)
+    {
+        $user = Auth::user();
+        $filters = [];
+        $attach = 'form_process,form_routes, form_uploads, end_user, items';
+        $this->requisitionIssueRepository->attach($attach);
+        $procurement_plans = $this->requisitionIssueRepository->search($filters);
+        // return $procurement_plans;
+        return fractal($procurement_plans, new RequisitionIssueTransformer)->parseIncludes($attach);
+    }
 }

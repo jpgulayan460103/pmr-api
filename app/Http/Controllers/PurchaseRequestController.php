@@ -254,6 +254,11 @@ class PurchaseRequestController extends Controller
 
     public function getForms(Request $request)
     {
-        # code...
+        $filters = [];
+        $attach = 'end_user, account, mode_of_procurement, uacs_code, created_by.user_information';
+        $this->purchaseRequestRepository->attach($attach);
+        $purchase_request = $this->purchaseRequestRepository->search($filters);
+        // return $purchase_request;
+        return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach);
     }
 }

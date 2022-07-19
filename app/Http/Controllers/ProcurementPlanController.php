@@ -207,4 +207,14 @@ class ProcurementPlanController extends Controller
         // return $pdf->stream('PMS-procurement-plan-'.$procurement_plan['form_number'].'.pdf');
         return $pdf->download('PMS-procurement-plan-'.$procurement_plan['form_number'].'.pdf');
     }
+
+    public function getForms(Request $request)
+    {
+        $filters = [];
+        $attach = 'form_process,form_routes, form_uploads, end_user, procurement_plan_type';
+        $this->procurementPlanRepository->attach($attach);
+        $procurement_plans = $this->procurementPlanRepository->search($filters);
+        // return $procurement_plans;
+        return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
+    }
 }
