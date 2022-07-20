@@ -33,6 +33,7 @@ class ProcurementPlanController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|procurement.plan.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|procurement.plan.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|procurement.plan.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|forms.procurement.plan.view',   ['only' => ['getForms']]);
     }
     /**
      * Display a listing of the resource.

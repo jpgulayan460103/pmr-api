@@ -35,7 +35,8 @@ class PurchaseRequestController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|purchase.request.view|procurement.view',   ['only' => ['show', 'index']]);
-        $this->middleware('role_or_permission:super-admin|admin|purchase.request.view|forms.purchase.request.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|purchase.request.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|forms.purchase.request.view',   ['only' => ['getForms']]);
     }
 
 

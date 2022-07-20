@@ -31,6 +31,7 @@ class RequisitionIssueController extends Controller
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.view',   ['only' => ['show', 'index']]);
+        $this->middleware('role_or_permission:super-admin|admin|forms.requisition.issue.view',   ['only' => ['getForms']]);
     }
     /**
      * Display a listing of the resource.
