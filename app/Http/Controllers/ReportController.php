@@ -39,6 +39,7 @@ class ReportController extends Controller
         $most_cost_items = $this->reportRepository->mostRequestedItems($date, $type, 'cost', $dateRange, $end_user_id);
         $accounts = $this->reportRepository->accounts($date, $type, $dateRange, $end_user_id);
         $mode_of_procurements = $this->reportRepository->modeOfProcurements($date, $type, $dateRange, $end_user_id);
+        $uacsCodes = $this->reportRepository->uacsCodes($date, $type, $dateRange, $end_user_id);
         // return $per_section;
         return [
             'approved_month' => $approved_month,
@@ -51,6 +52,7 @@ class ReportController extends Controller
             'most_cost_items' => $most_cost_items,
             'accounts' => $accounts,
             'mode_of_procurements' => $mode_of_procurements,
+            'uacs_codes' => $uacsCodes,
         ];
     }
 }

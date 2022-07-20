@@ -403,4 +403,78 @@ class ReportRepository implements ReportRepositoryInterface
             'end_day' => $end_day->format("F d, Y"),
         ];
     }
+
+    public function uacsCodes($date, $freq, $dateRange = [], $end_user_id = null)
+    {
+        $custom_dates = [];
+        if($freq == "custom"){
+            $custom_dates = [
+                Carbon::parse($dateRange[0])->copy()->startOfMonth(),
+                Carbon::parse($dateRange[1])->copy()->endOfMonth(),
+            ];
+        }else{
+            $first_day_month = Carbon::parse($date)->copy()->startOfMonth();
+            $last_day_month = Carbon::parse($date)->copy()->endOfMonth();
+            $first_day_year = Carbon::parse($date)->copy()->startOfYear();
+            $last_day_year = Carbon::parse($date)->copy()->endOfYear();
+        }
+
+
+        $types = PurchaseRequest::with('uacs_code')->where('status', "approved");
+        $types->select(
+            DB::raw('ROUND(SUM(total_cost), 2) as sum_cost'),
+            'uacs_code_id'
+        );
+        if($end_user_id){
+            $types->where('end_user_id', $end_user_id);
+        }
+
+        switch ($freq) {
+            case 'monthly':
+                $types->whereBetween('pr_date', [
+                    $first_day_month,
+                    $last_day_month,
+                ]);
+                $start_day = $first_day_month;
+                $end_day = $last_day_month;
+                break;
+            case 'yearly':
+                $types->whereBetween('pr_date', [
+                    $first_day_year,
+                    $last_day_year,
+                ]);
+                $start_day = $first_day_year;
+                $end_day = $last_day_year;
+                break;
+            case 'custom':
+                $types->whereBetween('pr_date', $custom_dates);
+                $start_day = $custom_dates[0];
+                $end_day = $custom_dates[1];
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        $types->groupBy('uacs_code_id');
+        $types = $types->get();
+        $total = $this->totalPurchaseRequest('approved', $freq, $date, $dateRange, $end_user_id);
+        $total = $total['data'];
+        foreach ($types as $key => $type) {
+            $type->key = ++$key;
+            $type->uacs_code_id = $type->uacs_code ? $type->uacs_code->id : null;
+            $type->name = $type->uacs_code ? $type->uacs_code->name : "";
+            $type->title = $type->uacs_code ? $type->uacs_code->title : "";
+            $type->uacs_code_percentage = round((($type->sum_cost / $total) * 100), 2);
+            if($type->uacs_code){
+                unset($type->uacs_code);
+            }
+        }
+        return [
+            'data' => $types,
+            'start_day' => $start_day->format("F d, Y"),
+            'end_day' => $end_day->format("F d, Y"),
+        ];
+    }
 }
