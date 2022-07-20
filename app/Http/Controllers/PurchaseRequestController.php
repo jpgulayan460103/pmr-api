@@ -262,4 +262,28 @@ class PurchaseRequestController extends Controller
         // return $purchase_request;
         return fractal($purchase_request, new PurchaseRequestTransformer)->parseIncludes($attach);
     }
+
+    public function archive(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'remarks' => 'required|string',
+        ]);
+        DB::beginTransaction();
+        try {
+            $purchase_request = $this->purchaseRequestRepository->getById($id);
+            $origin_route = $purchase_request->form_routes()->first();
+            if($purchase_request->status == "Disapproved" || $origin_route->status == "pending"){
+                $this->purchaseRequestRepository->update($id, [
+                    'status' => "Archived",
+                    'remarks' => request('remarks'),
+                ]);
+                $current_route = $purchase_request->form_routes()->orderBy('id', 'desc')->first();
+                (new FormRouteRepository())->archiveRoute($current_route);
+            }
+            DB::commit();
+            return $purchase_request;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

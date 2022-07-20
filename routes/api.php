@@ -48,18 +48,22 @@ Route::post('/register', [UserController::class, 'register']);
 Route::resources([
     'purchase-requests' => PurchaseRequestController::class,
     'purchase-orders' => PurchaseOrderController::class,
+    'procurement-plans' => ProcurementPlanController::class,
+    'requisition-issues' => RequisitionIssueController::class,
     'items' => ItemController::class,
     'users' => UserController::class,
     'user_offices' => UserOfficeController::class,
     'form-routes' => FormRouteController::class,
     'suppliers' => SupplierController::class,
     'quotations' => QuotationController::class,
-    'procurement-plans' => ProcurementPlanController::class,
-    'requisition-issues' => RequisitionIssueController::class,
     'procurement-managements' => ProcurementManagementController::class,
     'item-supplies' => ItemSupplyController::class,
     'nas-certificates' => NoStockCertificateController::class,
 ]);
+
+Route::post('/procurement-plans/{id}/archive', [ProcurementPlanController::class, 'archive']);
+Route::post('/requisition-issues/{id}/archive', [RequisitionIssueController::class, 'archive']);
+Route::post('/purchase-requests/{id}/archive', [PurchaseRequestController::class, 'archive']);
 
 Route::group(['prefix' => '/libraries'], function () {
     Route::get('/', [LibraryController::class, 'index']);
@@ -69,11 +73,6 @@ Route::group(['prefix' => '/libraries'], function () {
 });
 
 Route::group(['prefix' => '/pdf'], function () {
-    Route::group(['prefix' => '/preview'], function () {
-        Route::get('/purchase-requests', [PurchaseRequestController::class, 'generatePdfPreview'])->name('api.purchase-requests.pdf.preview');
-        Route::post('/purchase-requests', [PurchaseRequestController::class, 'validatePdfPreview'])->name('api.purchase-requests.pdf.validate');
-    });
-    
     Route::get('/purchase-request/{id}', [PurchaseRequestController::class, 'pdf'])->name('api.purchase-requests.pdf');
     Route::get('/procurement-plan/{id}', [ProcurementPlanController::class, 'pdf'])->name('api.procurement-plans.pdf');
     Route::get('/quotations/{id}', [QuotationController::class, 'pdf'])->name('api.quotation.pdf');
@@ -83,10 +82,6 @@ Route::group(['prefix' => '/pdf'], function () {
     Route::get('/nas-certificate/{id}', [NoStockCertificateController::class, 'pdf'])->name('api.no-stock-certificate.pdf');
 });
 
-
-Route::group(['prefix' => '/purchase-requests'], function () {
-    Route::post('/{id}/bac-tasks', [PurchaseRequestController::class, 'updateBacTasks']);
-});
 
 Route::group(['prefix' => '/forms'], function () {
     Route::put('/process/{id}', [FormProcessController::class, 'update']);
@@ -137,7 +132,6 @@ Route::group(['prefix' => '/reports'], function () {
 
 
 Route::group(['prefix' => '/summaries'], function () {
-    // Route::get('/procurement-plans', [ProcurementPlanController::class, 'summary']);
     Route::get('/procurement-management', [ProcurementManagementController::class, 'summary'])->middleware('auth:api');
 });
 Route::group(['prefix' => '/downloads'], function () { 

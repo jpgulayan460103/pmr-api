@@ -170,7 +170,8 @@ class FormRouteController extends Controller
                     $this->formRouteRepository->updateRoute($formRoute, ['status'=>'approved']);
                     break;
                 }elseif($formRoute->status == "with_issues" && $route['status'] == "pending" && $formRoute->from_office_id == $formRoutes[$key]['office_id']){
-                    $this->formRouteRepository->updateRoute($formRoute, ['status'=>'resolved', 'remarks' => request('remarks')]);
+                    $this->formRouteRepository->updateRoute($formRoute, ['status'=>'resolved', 'route_code'=> 'resolved', 'remarks' => request('remarks')]);
+                    (new FormRouteRepository())->resolveForm($formRoute);
                     break;
                 }
                 $step++;
@@ -254,6 +255,7 @@ class FormRouteController extends Controller
                 'action_taken' => "Returned to ".$office->name."."
             ]);
             $form = $formRoute->form_routable;
+            (new FormRouteRepository())->disapproveForm($formRoute);
             $return = [
                 'form_route' => $formRoute,
                 'next_route' => [

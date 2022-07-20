@@ -218,4 +218,28 @@ class ProcurementPlanController extends Controller
         // return $procurement_plans;
         return fractal($procurement_plans, new ProcurementPlanTransformer)->parseIncludes($attach);
     }
+
+    public function archive(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'remarks' => 'required|string',
+        ]);
+        DB::beginTransaction();
+        try {
+            $procurement_plans = $this->procurementPlanRepository->getById($id);
+            $origin_route = $procurement_plans->form_routes()->first();
+            if($procurement_plans->status == "Disapproved" || $origin_route->status == "pending"){
+                $this->procurementPlanRepository->update($id, [
+                    'status' => "Archived",
+                    'remarks' => request('remarks'),
+                ]);
+                $current_route = $procurement_plans->form_routes()->orderBy('id', 'desc')->first();
+                (new FormRouteRepository())->archiveRoute($current_route);
+            }
+            DB::commit();
+            return $procurement_plans;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

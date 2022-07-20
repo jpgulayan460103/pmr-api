@@ -23,11 +23,11 @@ class RequisitionIssueController extends Controller
     public function __construct(RequisitionIssueRepository $requisitionIssueRepository)
     {
         $this->requisitionIssueRepository = $requisitionIssueRepository;
-        $this->middleware('auth:api', [
+/*         $this->middleware('auth:api', [
             'except' => [
                 'pdf',
             ]
-        ]);
+        ]); */
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.create', ['only' => ['store']]);
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.update',   ['only' => ['update']]);
         $this->middleware('role_or_permission:super-admin|admin|requisition.issue.view',   ['only' => ['show', 'index']]);
@@ -190,5 +190,29 @@ class RequisitionIssueController extends Controller
         $procurement_plans = $this->requisitionIssueRepository->search($filters);
         // return $procurement_plans;
         return fractal($procurement_plans, new RequisitionIssueTransformer)->parseIncludes($attach);
+    }
+
+    public function archive(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'remarks' => 'required|string',
+        ]);
+        DB::beginTransaction();
+        try {
+            $requisition_issue = $this->requisitionIssueRepository->getById($id);
+            $origin_route = $requisition_issue->form_routes()->first();
+            if($requisition_issue->status == "Disapproved" || $origin_route->status == "pending"){
+                $this->requisitionIssueRepository->update($id, [
+                    'status' => "Archived",
+                    'remarks' => request('remarks'),
+                ]);
+                $current_route = $requisition_issue->form_routes()->orderBy('id', 'desc')->first();
+                (new FormRouteRepository())->archiveRoute($current_route);
+            }
+            DB::commit();
+            return $requisition_issue;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

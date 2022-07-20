@@ -524,4 +524,36 @@ class FormRouteRepository implements FormRouteRepositoryInterface
         }
     }
 
+    public function archiveRoute($formRoute)
+    {
+        $user = Auth::user();
+        $formRoute->status = "archived";
+        $formRoute->remarks = request('remarks');
+        $formRoute->processed_by_id = $user->id;
+        $formRoute->action_taken = "Archived";
+        $formRoute->route_code = "archived";
+        $formRoute->save();
+        return $formRoute;
+    }
+
+    public function resolveForm($formRoute)
+    {
+        $formProcess = $formRoute->form_process;
+        $form = $formRoute->form_routable;
+        $form->disableLogging();
+        $form->status = "Pending";
+        $formProcess->save();
+        $form->save();
+    }
+
+    public function disapproveForm($formRoute)
+    {
+        $formProcess = $formRoute->form_process;
+        $form = $formRoute->form_routable;
+        $form->disableLogging();
+        $form->status = "Disapproved";
+        $formProcess->save();
+        $form->save();
+    }
+
 }
