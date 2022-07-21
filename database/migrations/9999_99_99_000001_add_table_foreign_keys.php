@@ -19,6 +19,10 @@ class AddTableForeignKeys extends Migration
             $table->foreign('purchase_request_id')->references('id')->on('purchase_requests');
         });
 
+        Schema::table('firebase_tokens', function (Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');;
+        });
+
         Schema::table('form_processes', function (Blueprint $table) {
             $table->foreign('office_id')->references('id')->on('libraries')->onDelete('set null');
             $table->index(['form_processable_id', 'form_processable_type']);
@@ -186,6 +190,10 @@ class AddTableForeignKeys extends Migration
 
         Schema::table('bac_tasks', function (Blueprint $table) {
             $table->dropForeign(['purchase_request_id']);
+        });
+
+        Schema::table('firebase_tokens', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
         });
 
         Schema::table('form_processes', function (Blueprint $table) {

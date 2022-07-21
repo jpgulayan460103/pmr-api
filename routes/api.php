@@ -14,6 +14,7 @@ use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\UserOfficeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuditTrailController;
+use App\Http\Controllers\FirebaseTokenController;
 use App\Http\Controllers\FormProcessController;
 use App\Http\Controllers\FormUploadController;
 use App\Http\Controllers\ItemSupplyController;
@@ -137,5 +138,7 @@ Route::group(['prefix' => '/summaries'], function () {
 Route::group(['prefix' => '/downloads'], function () { 
     Route::get('/form-uploads/{id}', [FormUploadController::class, 'download'])->name('api.downloads.form-uploads');;
 });
+
+Route::post('/tokens/firebase', [FirebaseTokenController::class, 'store']);
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FirebaseToken;
 use App\Models\User;
 use App\Repositories\ActivityLogBatchRepository;
 use App\Repositories\AuthRepository;
@@ -80,6 +81,7 @@ class AuthController extends Controller
             ->log('User logout');
             (new ActivityLogBatchRepository())->endCustomBatch('user_logout', $user);
             $this->authRepository->revokeExistingTokens($user);
+            FirebaseToken::where('user_id', $user->id)->delete();
         }
     }
 
