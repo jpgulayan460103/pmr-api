@@ -54,7 +54,7 @@ class ProcessNotification implements ShouldQueue
         $fields = json_encode ( $fields );
     
         $headers = array (
-                'Authorization: key=' . "AAAA1Xi__98:APA91bFinn-gbyJBe6cRXkbzfFoIF4q2mF7hepr2XMymytRMZB_AOpE1HVDCghP1Ta-a3W0bUGGaQyQHqO49Sk-3lxQJQ_OksJODbqMaImcsNZNzNPH3PxYO1gMAPjngOovXlS3D8efs",
+                'Authorization: key=' . config('services.firebase.cloud_messaging_api'),
                 'Content-Type: application/json'
         );
     

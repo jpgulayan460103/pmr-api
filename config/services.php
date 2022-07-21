@@ -43,6 +43,10 @@ return [
 
     'ui' => [
         'endpoint' => env('UI_ENDPOINT', 'http://localhost:3000/')
+    ],
+
+    'firebase' => [
+        'cloud_messaging_api' => env("FIREBASE_CLOUD_MESSAGING_API", "")
     ]
 
 ];
