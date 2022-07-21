@@ -140,5 +140,6 @@ Route::group(['prefix' => '/downloads'], function () {
 });
 
 Route::post('/tokens/firebase', [FirebaseTokenController::class, 'store']);
+Route::get('/tokens/firebase', [FirebaseTokenController::class, 'test']);
 
 

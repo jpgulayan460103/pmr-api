@@ -10,7 +10,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
+use App\Jobs\ProcessNotification;
+use App\Models\FirebaseToken;
 use App\Models\Library;
+use App\Repositories\FirebaseTokenRepository;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\LibraryRepository;
 use App\Repositories\PurchaseRequestRepository;
@@ -220,11 +223,9 @@ class FormRouteController extends Controller
                 ],
             ];
             DB::commit();
-            try {
-                event(new NewMessage($return));
-            } catch (\Throwable $th) {
-                // return $th;
-            }
+            $tokens = (new FirebaseTokenRepository)->filterUserByOffice($nextRoute['office_id']);
+            $job = (new ProcessNotification($return, $tokens, []));
+            dispatch($job);
             return $return;
         } catch (\Throwable $th) {
             throw $th;
@@ -279,11 +280,9 @@ class FormRouteController extends Controller
                 ],
             ];
             DB::commit();
-            try {
-                event(new NewMessage($return));
-            } catch (\Throwable $th) {
-                // return $th;
-            }
+            $tokens = (new FirebaseTokenRepository)->filterUserByOffice($office->id);
+            $job = (new ProcessNotification($return, $tokens, []));
+            dispatch($job);
             return $return;
         } catch (\Throwable $th) {
             throw $th;
