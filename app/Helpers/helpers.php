@@ -52,3 +52,24 @@ if (!function_exists('getModelType')) {
         return Illuminate\Support\Str::snake(last($model_name_exploded));
     }
 }
+
+if (!function_exists('formTypeToLabel')) {
+    function formTypeToLabel($form){
+        switch ($form) {
+            case 'purchase_request':
+                return "Purchase Request";
+                break;
+            case 'procurement_plan':
+                return "Project Procurement Plan";
+                break;
+            case 'requisition_issue':
+                return "Requisition and Issue Slip";
+                break;
+            
+            default:
+                return $form;
+                # code...
+                break;
+        }
+    }
+}

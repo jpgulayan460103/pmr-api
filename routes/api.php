@@ -20,6 +20,7 @@ use App\Http\Controllers\FormUploadController;
 use App\Http\Controllers\ItemSupplyController;
 use App\Http\Controllers\ItemSupplyHistoryController;
 use App\Http\Controllers\NoStockCertificateController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProcurementManagementController;
 use App\Http\Controllers\RequisitionIssueController;
 use App\Http\Controllers\ProcurementPlanController;
@@ -141,5 +142,8 @@ Route::group(['prefix' => '/downloads'], function () {
 
 Route::post('/tokens/firebase', [FirebaseTokenController::class, 'store']);
 Route::get('/tokens/firebase', [FirebaseTokenController::class, 'test']);
+Route::get('/notifications', [NotificationController::class, 'index']);
+Route::put('/notifications/{id}', [NotificationController::class, 'update']);
+Route::delete('/notifications/{id?}', [NotificationController::class, 'destroy']);
 
 

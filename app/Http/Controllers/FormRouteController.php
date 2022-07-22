@@ -10,13 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Events\NewMessage;
+use App\Jobs\CreateNotifications;
 use App\Jobs\ProcessNotification;
 use App\Models\FirebaseToken;
 use App\Models\Library;
 use App\Repositories\FirebaseTokenRepository;
 use App\Repositories\FormProcessRepository;
 use App\Repositories\LibraryRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\PurchaseRequestRepository;
+use App\Repositories\UserRepository;
 use App\Rules\LibraryExistRule;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -222,15 +225,34 @@ class FormRouteController extends Controller
                     "datetime" => Carbon::now()->toDayDateTimeString()
                 ],
             ];
+            $permission = (new FormRouteRepository())->permissions($formRoute);
+            $users = (new UserRepository())->getUsersByOfficeWithPermission($permission, $nextRoute['office_id']);
+            $notify_user_ids = $users->pluck('id');
+            $tokens = (new FirebaseTokenRepository)->getTokensByUserIds($notify_user_ids);
+            if($createdNextRoute){
+                $uuid = $createdNextRoute->uuid;
+                $notification = [
+                    'title' => "Pending Form",
+                    'body' => "A new ".formTypeToLabel($formRoute->route_type)." has been forwarded to your office.",
+                    'url' => "/forms/preview/$uuid",
+                ];
+                $job = (new ProcessNotification($tokens, $notification));
+                dispatch($job);
+                $job = (new CreateNotifications($notify_user_ids, $notification));
+                dispatch($job);
+            }else{
+                $uuid = $formRoute->uuid;
+                $notification = [
+                    'title' => "Approved Form",
+                    'body' => formTypeToLabel($formRoute->route_type)." has been approved.",
+                    'url' => "/forms/preview/$uuid",
+                ];
+                $job = (new ProcessNotification($tokens, $notification));
+                dispatch($job);
+                $job = (new CreateNotifications($notify_user_ids, $notification));
+                dispatch($job);
+            }
             DB::commit();
-            $tokens = (new FirebaseTokenRepository)->filterUserByOffice($nextRoute['office_id']);
-            $notification = [
-                'title' => "Pending Forms",
-                'body' => "A new ".Str::headline($formRoute->route_type)." has been forwarded to your office.",
-                'click_action' => 'https://example.com',
-            ];
-            $job = (new ProcessNotification($tokens, $notification));
-            dispatch($job);
             return $return;
         } catch (\Throwable $th) {
             throw $th;
@@ -253,7 +275,7 @@ class FormRouteController extends Controller
             $data['forwarded_by_id'] = $user->id;
             $data['remarks'] = request('remarks');
             $office = (new LibraryRepository)->getById($data['to_office_id']);
-            $this->formRouteRepository->create($data);
+            $createdNextRoute =  $this->formRouteRepository->create($data);
             $this->formRouteRepository->updateRoute($formRoute, [
                 'status'=>'rejected',
                 'route_code'=>'rejected',
@@ -285,13 +307,18 @@ class FormRouteController extends Controller
                 ],
             ];
             DB::commit();
-            $tokens = (new FirebaseTokenRepository)->filterUserByOffice($office->id);
+            $users = (new UserRepository())->getUsersByOfficeWithPermission('forms.resolve', $office->id);
+            $notify_user_ids = $users->pluck('id');
+            $tokens = (new FirebaseTokenRepository)->getTokensByUserIds($notify_user_ids);
+            $uuid = $createdNextRoute->uuid;
             $notification = [
-                'title' => "Pending Forms",
-                'body' => Str::headline($formRoute->route_type)." has been disapproved.",
-                'click_action' => 'https://example.com',
+                'title' => "Disapproved Form",
+                'body' => formTypeToLabel($formRoute->route_type)." has been disapproved.",
+                'url' => "/forms/preview/$uuid",
             ];
             $job = (new ProcessNotification($tokens, $notification));
+            dispatch($job);
+            $job = (new CreateNotifications($notify_user_ids, $notification));
             dispatch($job);
             return $return;
         } catch (\Throwable $th) {
