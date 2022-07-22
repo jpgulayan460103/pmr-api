@@ -82,6 +82,7 @@ class UserController extends Controller
     {
         $auth_user = Auth::user();
         $user = $this->userRepository->attach('user_information,user_offices.office,permissions,roles, user_groups.group')->getById($auth_user->id);
+        // return $user;
         return fractal($user, new UserTransformer)->parseIncludes('user_information,user_offices.office,permissions,roles, user_groups.group');
         // sleep(5);
         return $user;

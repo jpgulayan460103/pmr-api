@@ -95,4 +95,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserGroup::class);
     }
+
+    public function firebase_token()
+    {
+        return $this->hasOne(FirebaseToken::class);
+    }
 }

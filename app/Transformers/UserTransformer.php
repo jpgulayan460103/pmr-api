@@ -32,6 +32,7 @@ class UserTransformer extends TransformerAbstract
         'permissions',
         'roles',
         'user_groups',
+        'firebase_token',
     ];
     
     /**
@@ -78,6 +79,12 @@ class UserTransformer extends TransformerAbstract
     {
         if ($table->user_groups) {
             return $this->collection($table->user_groups, new UserGroupTransformer);
+        }
+    }
+    public function includeFirebaseToken(User $table)
+    {
+        if ($table->firebase_token) {
+            return $this->item($table->firebase_token, new FirebaseTokenTransformer);
         }
     }
 }

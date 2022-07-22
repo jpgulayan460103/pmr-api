@@ -13,9 +13,8 @@ class ProcessNotification implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $message;
     public $receivers;
-    public $notification;
+    public $data;
 
     /**
      * Create a new job instance.
@@ -23,18 +22,10 @@ class ProcessNotification implements ShouldQueue
      * @return void
      */
     
-    public function __construct($message, $receivers, $notification)
+    public function __construct($receivers, $data)
     {
-        $this->message = [
-            "message" => "asdasdasd"
-        ];
         $this->receivers = $receivers;
-        $this->notification = [
-            'title' => '1',
-            'body' => 'Test Push',
-            'icon' => 'push.png',
-            'click_action' => 'https://example.com',
-        ];
+        $this->data = $data;
     }
 
     /**
@@ -48,8 +39,7 @@ class ProcessNotification implements ShouldQueue
 
         $fields = [
             'registration_ids' => $this->receivers,
-            'data' => $this->message,
-            'notification' => $this->notification,
+            'data' => $this->data,
         ];
         $fields = json_encode ( $fields );
     

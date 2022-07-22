@@ -28,5 +28,14 @@ class FirebaseTokenRepository implements FirebaseTokenRepositoryInterface
     {
         return FirebaseToken::leftJoin('user_offices', 'firebase_tokens.user_id', '=', 'user_offices.user_id')->where('user_offices.office_id', $office_id)->pluck('token');
     }
+
+    public function filterUserByPermission($office_id)
+    {
+        $query = FirebaseToken::query();
+        $query->leftJoin('user_offices', 'firebase_tokens.user_id', '=', 'user_offices.user_id');
+        $query->leftJoin('user_offices', 'firebase_tokens.user_id', '=', 'user_offices.user_id');
+        $query->where('user_offices.office_id', $office_id);
+        return $query->pluck('token');
+    }
     
 }

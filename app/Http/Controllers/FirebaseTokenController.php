@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\FirebaseToken;
+use App\Models\User;
 use App\Repositories\FirebaseTokenRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FirebaseTokenController extends Controller
 {
@@ -33,7 +35,7 @@ class FirebaseTokenController extends Controller
     public function test(Request $request)
     {
 
-        $tokens = $this->firebaseTokenRepository->filterUserByOffice(116);
+        $tokens = $this->firebaseTokenRepository->filterUserByOffice(202);
         // return $tokens;
 
         $url = 'https://fcm.googleapis.com/fcm/send';
@@ -41,11 +43,8 @@ class FirebaseTokenController extends Controller
         $fields = [
             'registration_ids' => $tokens,
             'data' => [
-                'message' => 'asdasd'
-            ],
-            'notification' => [
-                'title' => '1',
-                'body' => 'Test Push',
+                'title' => 'Pending Forms',
+                'body' => 'A new type of form has been forwarded to your office.',
                 'icon' => 'push.png',
                 'click_action' => 'https://example.com',
             ],
@@ -53,7 +52,7 @@ class FirebaseTokenController extends Controller
         $fields = json_encode ( $fields );
     
         $headers = array (
-                'Authorization: key=' . "AAAA1Xi__98:APA91bFinn-gbyJBe6cRXkbzfFoIF4q2mF7hepr2XMymytRMZB_AOpE1HVDCghP1Ta-a3W0bUGGaQyQHqO49Sk-3lxQJQ_OksJODbqMaImcsNZNzNPH3PxYO1gMAPjngOovXlS3D8efs",
+                'Authorization: key=' . config('services.firebase.cloud_messaging_api'),
                 'Content-Type: application/json'
         );
     

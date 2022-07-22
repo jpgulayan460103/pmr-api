@@ -224,7 +224,12 @@ class FormRouteController extends Controller
             ];
             DB::commit();
             $tokens = (new FirebaseTokenRepository)->filterUserByOffice($nextRoute['office_id']);
-            $job = (new ProcessNotification($return, $tokens, []));
+            $notification = [
+                'title' => "Pending Forms",
+                'body' => "A new ".Str::headline($formRoute->route_type)." has been forwarded to your office.",
+                'click_action' => 'https://example.com',
+            ];
+            $job = (new ProcessNotification($tokens, $notification));
             dispatch($job);
             return $return;
         } catch (\Throwable $th) {
@@ -281,7 +286,12 @@ class FormRouteController extends Controller
             ];
             DB::commit();
             $tokens = (new FirebaseTokenRepository)->filterUserByOffice($office->id);
-            $job = (new ProcessNotification($return, $tokens, []));
+            $notification = [
+                'title' => "Pending Forms",
+                'body' => Str::headline($formRoute->route_type)." has been disapproved.",
+                'click_action' => 'https://example.com',
+            ];
+            $job = (new ProcessNotification($tokens, $notification));
             dispatch($job);
             return $return;
         } catch (\Throwable $th) {

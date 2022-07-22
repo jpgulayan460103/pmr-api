@@ -134,5 +134,35 @@ class UserRepository implements UserRepositoryInterface
         return UserOffice::with('user.user_information','office')->get();
     }
 
+    public function getUsersByOfficeWithPermission($permission, $office_id)
+    {
+        $users = User::whereHas("permissions", function($q) use ($permission){
+            $q->where("name", $permission);
+        });
+        $users->whereHas("user_offices", function($q) use ($office_id){
+            $q->where("office_id", $office_id);
+        });
+        $users = $users->get();
+        return $users;
+    }
+
+    public function getUsersByPermission($permission)
+    {
+        $users = User::whereHas("permissions", function($q) use ($permission){
+            $q->where("name", $permission);
+        });
+        $users = $users->get();
+        return $users;
+    }
+
+    public function getUsersByOffice($office_id)
+    {
+        $users = User::whereHas("user_offices", function($q) use ($office_id){
+            $q->where("office_id", $office_id);
+        });
+        $users = $users->get();
+        return $users;
+    }
+
     
 }
