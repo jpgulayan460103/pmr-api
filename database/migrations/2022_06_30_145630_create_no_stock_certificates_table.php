@@ -15,11 +15,13 @@ class CreateNoStockCertificatesTable extends Migration
     {
         Schema::create('no_stock_certificates', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
             $table->string('cnas_number')->nullable();
             $table->date('cnas_date')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('uuid')->nullable();
             $table->timestamps();
+
+            $table->index('uuid');
         });
     }
 

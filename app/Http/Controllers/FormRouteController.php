@@ -31,7 +31,7 @@ class FormRouteController extends Controller
     {
         $this->formRouteRepository = $formRouteRepository;
         $this->attach = 'form_routable,end_user,to_office,from_office,form_process,user.user_information';
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
         $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getPending']]);
         $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getRejected']]);
         $this->middleware('role_or_permission:super-admin|admin',   ['only' => ['getApproved']]);
@@ -80,8 +80,8 @@ class FormRouteController extends Controller
      */
     public function show($id)
     {
-        $formRoute = $this->formRouteRepository->attach('form_process')->getById($id);
-        return fractal($formRoute, new FormRouteTransformer);
+        $formRoute = $this->formRouteRepository->getByUuid($id);
+        return fractal($formRoute, new FormRouteTransformer)->parseIncludes($this->attach);
     }
 
     /**

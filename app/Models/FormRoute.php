@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Library;
 use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class FormRoute extends Model
 {
@@ -29,6 +30,17 @@ class FormRoute extends Model
         'action_taken',
         'route_code',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->uuid = (string) Str::uuid();
+        });
+        self::updating(function($model) {
+
+        });
+    }
     
     public function form_routable()
     {

@@ -15,7 +15,6 @@ class CreatePurchaseRequestsTable extends Migration
     {
         Schema::create('purchase_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
             $table->string('pr_number')->nullable();
             $table->integer('gen_number')->nullable();
             $table->text('purpose')->nullable();
@@ -44,8 +43,11 @@ class CreatePurchaseRequestsTable extends Migration
             $table->unsignedBigInteger('created_by_id')->nullable();
             $table->unsignedBigInteger('requisition_issue_id')->nullable();
             $table->boolean('from_ppmp')->nullable();
+            $table->string('uuid')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('uuid');
         });
     }
 

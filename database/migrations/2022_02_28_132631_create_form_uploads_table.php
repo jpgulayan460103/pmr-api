@@ -15,7 +15,6 @@ class CreateFormUploadsTable extends Migration
     {
         Schema::create('form_uploads', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
             $table->string('disk')->nullable();
             $table->string('upload_type')->nullable();
             $table->string('title')->nullable();
@@ -31,8 +30,11 @@ class CreateFormUploadsTable extends Migration
             $table->string('form_attachable_type')->nullable();
             $table->boolean('is_removable')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->softDeletes();
+            $table->string('uuid')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('uuid');
         });
     }
 

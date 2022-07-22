@@ -15,7 +15,6 @@ class CreateProcurementPlansTable extends Migration
     {
         Schema::create('procurement_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
             $table->string('title')->nullable();
             $table->string('purpose')->nullable();
             $table->unsignedBigInteger('procurement_plan_type_id')->nullable();
@@ -44,8 +43,11 @@ class CreateProcurementPlansTable extends Migration
             $table->unsignedBigInteger('approved_by_id')->nullable();
             $table->string('approved_by_name')->nullable();
             $table->string('approved_by_designation')->nullable();
+            $table->string('uuid')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('uuid');
         });
     }
 

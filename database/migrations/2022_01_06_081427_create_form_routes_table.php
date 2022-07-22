@@ -30,8 +30,11 @@ class CreateFormRoutesTable extends Migration
             $table->unsignedBigInteger('form_process_id')->nullable();
             $table->string('action_taken')->nullable();
             $table->string('route_code')->nullable();
+            $table->string('uuid')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('uuid');
         });
     }
 

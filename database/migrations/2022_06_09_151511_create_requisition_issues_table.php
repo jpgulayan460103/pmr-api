@@ -15,7 +15,6 @@ class CreateRequisitionIssuesTable extends Migration
     {
         Schema::create('requisition_issues', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->nullable();
             $table->string('title')->nullable();
             $table->string('fund_cluster')->nullable();
             $table->string('center_code')->nullable();
@@ -42,8 +41,11 @@ class CreateRequisitionIssuesTable extends Migration
             $table->string('received_by_name')->nullable();
             $table->string('received_by_designation')->nullable();
             $table->date('received_by_date')->nullable();
+            $table->string('uuid')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('uuid');
         });
     }
 
