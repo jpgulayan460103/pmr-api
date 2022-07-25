@@ -84,7 +84,10 @@ class FormRouteController extends Controller
     public function show($id)
     {
         $formRoute = $this->formRouteRepository->getByUuid($id);
-        return fractal($formRoute, new FormRouteTransformer)->parseIncludes($this->attach);
+        if($formRoute != null){
+            return fractal($formRoute, new FormRouteTransformer)->parseIncludes($this->attach);
+        }
+        abort(404);
     }
 
     /**
@@ -227,9 +230,9 @@ class FormRouteController extends Controller
             ];
             $permission = (new FormRouteRepository())->permissions($formRoute);
             $users = (new UserRepository())->getUsersByOfficeWithPermission($permission, $nextRoute['office_id']);
-            $notify_user_ids = $users->pluck('id');
+            $notify_user_ids = $users->pluck('id')->toArray();
             $tokens = (new FirebaseTokenRepository)->getTokensByUserIds($notify_user_ids);
-            if($createdNextRoute){
+            if(isset($createdNextRoute)){
                 $uuid = $createdNextRoute->uuid;
                 $notification = [
                     'title' => "Pending Form",
@@ -242,6 +245,9 @@ class FormRouteController extends Controller
                 $job = (new CreateNotifications($notify_user_ids, $notification));
                 dispatch($job);
             }else{
+
+                $users = (new UserRepository())->getUsersByOfficeWithPermission($permission, $formRoute->origin_office_id);
+                $notify_user_ids = $users->pluck('id')->toArray();
                 $uuid = $formRoute->uuid;
                 $notification = [
                     'title' => "Approved Form",
@@ -310,7 +316,7 @@ class FormRouteController extends Controller
             ];
             DB::commit();
             $users = (new UserRepository())->getUsersByOfficeWithPermission('forms.resolve', $office->id);
-            $notify_user_ids = $users->pluck('id');
+            $notify_user_ids = $users->pluck('id')->toArray();
             $tokens = (new FirebaseTokenRepository)->getTokensByUserIds($notify_user_ids);
             $uuid = $createdNextRoute->uuid;
             $notification = [

@@ -26,7 +26,7 @@ class FirebaseTokenRepository implements FirebaseTokenRepositoryInterface
 
     public function getTokensByUserIds($user_ids)
     {
-        return FirebaseToken::whereIn('user_id', $user_ids)->pluck('token');
+        return FirebaseToken::whereIn('user_id', $user_ids)->pluck('token')->toArray();
     }
     
 }

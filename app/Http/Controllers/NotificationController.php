@@ -16,7 +16,7 @@ class NotificationController extends Controller
     public function __construct(NotificationRepository $notificationRepository)
     {
         $this->notificationRepository = $notificationRepository;
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -25,9 +25,12 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $notifications = $this->notificationRepository->getByUserId($user->id);
-        return fractal($notifications, new NotificationTransformer);
+        if(Auth::check()){
+            $user = Auth::user();
+            $notifications = $this->notificationRepository->getByUserId($user->id);
+            return fractal($notifications, new NotificationTransformer);
+        }
+        return [];
     }
 
     /**

@@ -65,7 +65,7 @@ Trait HasCrud {
         }
     }
 
-    public function getByUuid($uuid) : object
+    public function getByUuid($uuid)
     {
         return $this->modelQuery()->where($this->uuid,$uuid)->first();
     }
