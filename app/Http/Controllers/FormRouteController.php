@@ -234,7 +234,8 @@ class FormRouteController extends Controller
                 $notification = [
                     'title' => "Pending Form",
                     'body' => "A new ".formTypeToLabel($formRoute->route_type)." has been forwarded to your office.",
-                    'url' => config('services.ui.endpoint')."/forms/preview/$uuid",
+                    'url' => "/forms/preview/$uuid",
+                    'base_url' => config('services.ui.endpoint'),
                 ];
                 $job = (new ProcessNotification($tokens, $notification));
                 dispatch($job);
@@ -245,7 +246,8 @@ class FormRouteController extends Controller
                 $notification = [
                     'title' => "Approved Form",
                     'body' => formTypeToLabel($formRoute->route_type)." has been approved.",
-                    'url' => config('services.ui.endpoint')."/forms/preview/$uuid",
+                    'url' => "/forms/preview/$uuid",
+                    'base_url' => config('services.ui.endpoint'),
                 ];
                 $job = (new ProcessNotification($tokens, $notification));
                 dispatch($job);
@@ -314,7 +316,8 @@ class FormRouteController extends Controller
             $notification = [
                 'title' => "Disapproved Form",
                 'body' => formTypeToLabel($formRoute->route_type)." has been disapproved.",
-                'url' => config('services.ui.endpoint')."/forms/preview/$uuid",
+                'url' => "/forms/preview/$uuid",
+                'base_url' => config('services.ui.endpoint'),
             ];
             $job = (new ProcessNotification($tokens, $notification));
             dispatch($job);

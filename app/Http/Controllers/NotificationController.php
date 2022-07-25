@@ -16,7 +16,7 @@ class NotificationController extends Controller
     public function __construct(NotificationRepository $notificationRepository)
     {
         $this->notificationRepository = $notificationRepository;
-        // $this->middleware('auth:api');
+        $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
