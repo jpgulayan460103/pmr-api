@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use App\Repositories\NotificationRepository;
+use App\Transformers\NotificationTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class NotificationController extends Controller
     public function __construct(NotificationRepository $notificationRepository)
     {
         $this->notificationRepository = $notificationRepository;
-        $this->middleware('auth:api');
+        // $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -25,7 +26,8 @@ class NotificationController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return $this->notificationRepository->getByUserId($user->id);
+        $notifications = $this->notificationRepository->getByUserId($user->id);
+        return fractal($notifications, new NotificationTransformer);
     }
 
     /**
@@ -84,7 +86,8 @@ class NotificationController extends Controller
             'status' => 0,
         ]);
         $user = Auth::user();
-        return (new NotificationRepository())->getByUserId($user->id);
+        $notifications = (new NotificationRepository())->getByUserId($user->id);
+        return fractal($notifications, new NotificationTransformer);
     }
 
     /**
@@ -101,6 +104,7 @@ class NotificationController extends Controller
         }else{
             (new NotificationRepository())->delete($id);
         }
-        return (new NotificationRepository())->getByUserId($user->id);
+        $notifications = (new NotificationRepository())->getByUserId($user->id);
+        return fractal($notifications, new NotificationTransformer);
     }
 }

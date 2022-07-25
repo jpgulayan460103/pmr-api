@@ -18,12 +18,6 @@ class Notification extends Model
         'status'
     ];
 
-    protected $casts = [
-        'message' => 'array',
-        // 'created_at' => "datetime:F d, Y",
-        
-    ];
-
     public function user()
     {
         return $this->setConnection('mysql')->belongsTo(User::class, 'causer_id');
